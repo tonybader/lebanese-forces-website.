@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import {
   ADMIN_COOKIE,
+  EDITOR_COOKIE,
   hasValidRequestOrigin,
   verifyAdminSession,
+  verifyEditorSession,
 } from "@/lib/admin-auth";
 import { createArticle, listArticles } from "@/lib/article-store";
 
@@ -28,7 +30,10 @@ export async function POST(request: Request) {
   }
 
   const cookieStore = await cookies();
-  if (!verifyAdminSession(cookieStore.get(ADMIN_COOKIE)?.value)) {
+  const authenticated =
+    verifyEditorSession(cookieStore.get(EDITOR_COOKIE)?.value) ||
+    verifyAdminSession(cookieStore.get(ADMIN_COOKIE)?.value);
+  if (!authenticated) {
     return NextResponse.json({ error: "Please sign in again." }, { status: 401 });
   }
 

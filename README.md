@@ -1,21 +1,23 @@
 # Lebanese Forces website
 
-The multilingual Lebanese Forces website, article archive and protected article manager. The production application now builds as a standard Next.js App Router project for Vercel.
+The multilingual Lebanese Forces website, article archive, protected newsroom and visual homepage editor. The production application builds as a standard Next.js App Router project for Vercel.
 
 ## Vercel deployment
 
 Vercel should use the **Next.js** framework preset. Leave the Output Directory setting empty. The repository's `vercel.json` and `build` script both run a native Next.js build.
 
-Add these Environment Variables to Production, Preview and Development before using `/admin`:
+Add these Environment Variables to Production, Preview and Development before using the management pages:
 
 - `ADMIN_USERNAME`: `LFadmin`
 - `ADMIN_PASSWORD`: the private administration password
 - `ADMIN_SESSION_SECRET`: a long random value used to sign login sessions
+- `EDITOR_USERNAME`: optional dedicated newsroom username; defaults to the admin username when omitted
+- `EDITOR_PASSWORD`: optional dedicated newsroom password; defaults to the admin password when omitted
 - `GITHUB_CONTENT_TOKEN`: a fine-grained GitHub token limited to this repository with **Contents: Read and write**
 - `CONTENT_REPOSITORY`: `tonybader/lebanese-forces-website.`
 - `CONTENT_BRANCH`: `main`
 
-The article manager stores photographs under `public/uploads/` and records under `data/articles.json`. Every publish action creates repository commits, and the public news archive always sorts records by `publishedAt` in descending order.
+Use `/editor` to create, edit and delete articles. It stores photographs under `public/uploads/` and records under `data/articles.json`. Use `/admin` to edit homepage text and photographs in a live WYSIWYG preview; its content is stored under `data/homepage.json`. Every save creates repository commits, and the public news archive always sorts records by `publishedAt` in descending order.
 
 ## Prerequisites
 

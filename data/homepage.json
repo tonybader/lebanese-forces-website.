@@ -1,0 +1,121 @@
+{
+  "updatedAt": "2026-09-15T00:00:00.000Z",
+  "hero": {
+    "eyebrow": {
+      "ar": "القوات اللبنانية",
+      "en": "Lebanese Forces",
+      "fr": "Forces Libanaises"
+    },
+    "title": {
+      "ar": "تاريخٌ من المقاومة.\nمشروعٌ من أجل الدولة.",
+      "en": "A history of resistance.\nA project for the state.",
+      "fr": "Une histoire de résistance.\nUn projet pour l’État."
+    },
+    "intro": {
+      "ar": "حزب سياسي لبناني يعمل من أجل جمهورية سيّدة، حرّة وديمقراطية، يكون فيها الإنسان وكرامته في صلب العمل العام.",
+      "en": "A Lebanese political party working for a sovereign, free and democratic republic where people and their dignity stand at the heart of public life.",
+      "fr": "Un parti politique libanais engagé pour une république souveraine, libre et démocratique, plaçant l’être humain et sa dignité au cœur de la vie publique."
+    },
+    "imageUrl": "/lf-logo.png",
+    "imageAlt": {
+      "ar": "شعار القوات اللبنانية",
+      "en": "Lebanese Forces emblem",
+      "fr": "Emblème des Forces Libanaises"
+    }
+  },
+  "vision": {
+    "kicker": { "ar": "الحزب", "en": "The party", "fr": "Le parti" },
+    "title": {
+      "ar": "الإنسان. الحرية. الدولة.",
+      "en": "People. Freedom. The state.",
+      "fr": "L’humain. La liberté. L’État."
+    },
+    "text": {
+      "ar": "تضع القوات اللبنانية العمل السياسي في خدمة الخير العام، وتلتزم بقيام دولة دستورية سيدة، مرجعيتها القانون ومؤسساتها الشرعية.",
+      "en": "The Lebanese Forces places political action at the service of the common good and is committed to a sovereign constitutional state governed by law and legitimate institutions.",
+      "fr": "Les Forces Libanaises mettent l’action politique au service du bien commun et s’engagent pour un État constitutionnel souverain, régi par le droit et les institutions légitimes."
+    }
+  },
+  "news": {
+    "kicker": { "ar": "المشهد الآن", "en": "Now", "fr": "Maintenant" },
+    "title": { "ar": "آخر الأخبار", "en": "Latest news", "fr": "Dernières actualités" },
+    "text": {
+      "ar": "أحدث النشاطات والمواقف والملفات من الموقع الرسمي للقوات اللبنانية.",
+      "en": "The latest party activity, positions and public affairs from the official news platform.",
+      "fr": "Les dernières activités, positions et affaires publiques depuis la plateforme officielle."
+    }
+  },
+  "history": {
+    "kicker": { "ar": "ذاكرة حيّة", "en": "Living memory", "fr": "Mémoire vivante" },
+    "title": {
+      "ar": "محطات صنعت المسيرة",
+      "en": "Milestones that shaped the journey",
+      "fr": "Les étapes d’un parcours"
+    },
+    "text": {
+      "ar": "انتقل بين السنوات لاكتشاف المحطات الأساسية من التأسيس إلى العمل السياسي والمؤسساتي اليوم.",
+      "en": "Move through the years to explore defining moments from the party’s founding to its political and institutional role today.",
+      "fr": "Parcourez les années et découvrez les moments clés, de la fondation au rôle politique et institutionnel d’aujourd’hui."
+    }
+  },
+  "president": {
+    "kicker": { "ar": "رئيس الحزب", "en": "Party president", "fr": "Président du parti" },
+    "title": { "ar": "الدكتور سمير جعجع", "en": "Dr Samir Geagea", "fr": "Dr Samir Geagea" },
+    "role": {
+      "ar": "رئيس حزب القوات اللبنانية",
+      "en": "President of the Lebanese Forces",
+      "fr": "Président des Forces Libanaises"
+    },
+    "bio": {
+      "ar": "وُلد في عين الرمانة عام 1952، ودرس الطب في الجامعة الأميركية في بيروت ثم في جامعة القديس يوسف. تدرّج في المسؤوليات الحزبية، وتسلّم قيادة القوات اللبنانية عام 1986.",
+      "en": "Born in Ain el-Remmaneh in 1952, Samir Geagea studied medicine at the American University of Beirut and Saint Joseph University. He rose through party responsibilities and assumed leadership of the Lebanese Forces in 1986.",
+      "fr": "Né à Aïn el-Remmaneh en 1952, Samir Geagea a étudié la médecine à l’Université américaine de Beyrouth puis à l’Université Saint-Joseph. Il a gravi les échelons du parti et pris la direction des Forces Libanaises en 1986."
+    },
+    "bio2": {
+      "ar": "وافق على اتفاق الطائف عام 1989 وقاد انتقال القوات إلى العمل السياسي. اعتُقل عام 1994 وبقي في السجن أحد عشر عاماً وثلاثة أشهر، قبل إقرار قانون العفو وعودته إلى الحرية والحياة السياسية عام 2005.",
+      "en": "He endorsed the Taif Agreement in 1989 and led the transition to political action. Arrested in 1994, he spent eleven years and three months in prison before an amnesty law enabled his return to freedom and political life in 2005.",
+      "fr": "Il a approuvé l’Accord de Taëf en 1989 et conduit la transition vers l’action politique. Arrêté en 1994, il a passé onze ans et trois mois en prison avant qu’une loi d’amnistie permette son retour à la liberté et à la vie politique en 2005."
+    },
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Samir_Geagea_7.jpg",
+    "imageAlt": { "ar": "الدكتور سمير جعجع", "en": "Dr Samir Geagea", "fr": "Dr Samir Geagea" },
+    "imageCredit": {
+      "ar": "وزارة الخارجية الأميركية · ملكية عامة",
+      "en": "U.S. Department of State · Public domain",
+      "fr": "Département d’État des États-Unis · Domaine public"
+    }
+  },
+  "leadership": {
+    "kicker": { "ar": "المؤسسات والتمثيل", "en": "Institutions & representation", "fr": "Institutions & représentation" },
+    "title": { "ar": "القيادة والكتل", "en": "Leadership and blocs", "fr": "Direction et blocs" },
+    "text": {
+      "ar": "تعرّف إلى أعضاء الهيئة التنفيذية، نواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
+      "en": "Meet the Executive Committee, the Lebanese Forces MPs in Parliament and the current ministers.",
+      "fr": "Découvrez le Comité exécutif, les députés des Forces Libanaises et les ministres actuels."
+    }
+  },
+  "publications": {
+    "kicker": { "ar": "مكتبة الحزب", "en": "Party library", "fr": "Bibliothèque du parti" },
+    "title": { "ar": "المنشورات والوثائق", "en": "Publications and documents", "fr": "Publications et documents" },
+    "text": {
+      "ar": "الوصول المباشر إلى المرجعيات التنظيمية والفكرية، الأرشيف والأوراق الاقتصادية.",
+      "en": "Direct access to the party’s organizational and intellectual references, archive and economic papers.",
+      "fr": "Accès direct aux références organisationnelles et intellectuelles, aux archives et aux analyses économiques."
+    }
+  },
+  "media": {
+    "kicker": { "ar": "صوت وصورة", "en": "Sound & image", "fr": "Son & image" },
+    "title": { "ar": "المكتبة الإعلامية", "en": "Media library", "fr": "Médiathèque" },
+    "text": {
+      "ar": "أناشيد، فيديوهات وصور توثّق الذاكرة والنشاط العام.",
+      "en": "Songs, videos and photographs documenting memory and public activity.",
+      "fr": "Chants, vidéos et photographies documentant la mémoire et l’action publique."
+    }
+  },
+  "footer": {
+    "line": {
+      "ar": "جمهورية قوية. دولة واحدة. مستقبل يليق باللبنانيين.",
+      "en": "A strong republic. One state. A future worthy of the Lebanese.",
+      "fr": "Une république forte. Un seul État. Un avenir digne des Libanais."
+    }
+  }
+}

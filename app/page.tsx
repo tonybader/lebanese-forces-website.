@@ -33,8 +33,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import seedArticleData from "@/data/articles.json";
+import seedHomepageData from "@/data/homepage.json";
 import type { Article } from "@/lib/article-types";
 import { articleHref, articleText, formatArticleDate } from "@/lib/article-types";
+import type { HomepageContent } from "@/lib/homepage-types";
+import { homepageText } from "@/lib/homepage-types";
 
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
@@ -661,7 +664,39 @@ export default function Home() {
       (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
     ),
   );
-  const t = ui[lang];
+  const [homepage, setHomepage] = useState<HomepageContent>(
+    seedHomepageData as HomepageContent,
+  );
+  const t = {
+    ...ui[lang],
+    eyebrow: homepageText(homepage.hero.eyebrow, lang),
+    title: homepageText(homepage.hero.title, lang),
+    intro: homepageText(homepage.hero.intro, lang),
+    latestKicker: homepageText(homepage.news.kicker, lang),
+    latest: homepageText(homepage.news.title, lang),
+    newsText: homepageText(homepage.news.text, lang),
+    visionKicker: homepageText(homepage.vision.kicker, lang),
+    visionTitle: homepageText(homepage.vision.title, lang),
+    visionText: homepageText(homepage.vision.text, lang),
+    historyKicker: homepageText(homepage.history.kicker, lang),
+    historyTitle: homepageText(homepage.history.title, lang),
+    historyText: homepageText(homepage.history.text, lang),
+    presidentKicker: homepageText(homepage.president.kicker, lang),
+    presidentTitle: homepageText(homepage.president.title, lang),
+    presidentRole: homepageText(homepage.president.role, lang),
+    presidentBio: homepageText(homepage.president.bio, lang),
+    presidentBio2: homepageText(homepage.president.bio2, lang),
+    leadershipKicker: homepageText(homepage.leadership.kicker, lang),
+    leadershipTitle: homepageText(homepage.leadership.title, lang),
+    leadershipText: homepageText(homepage.leadership.text, lang),
+    publicationsKicker: homepageText(homepage.publications.kicker, lang),
+    publicationsTitle: homepageText(homepage.publications.title, lang),
+    publicationsText: homepageText(homepage.publications.text, lang),
+    mediaKicker: homepageText(homepage.media.kicker, lang),
+    mediaTitle: homepageText(homepage.media.title, lang),
+    mediaText: homepageText(homepage.media.text, lang),
+    footerLine: homepageText(homepage.footer.line, lang),
+  };
   const rtl = lang === "ar";
   const currentTimeline = useMemo(
     () => timeline.find((item) => item.year === activeYear) || timeline[0],
@@ -680,6 +715,20 @@ export default function Home() {
       .then((data) => {
         const payload = data as { articles?: Article[] };
         if (active && payload.articles?.length) setArticles(payload.articles);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/homepage", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load homepage content")))
+      .then((data) => {
+        const payload = data as { content?: HomepageContent };
+        if (active && payload.content) setHomepage(payload.content);
       })
       .catch(() => undefined);
     return () => {
@@ -875,7 +924,7 @@ export default function Home() {
             <div className="absolute inset-8 rounded-[42%] bg-[#df1f2d] opacity-90 blur-[1px]" />
             <div className="absolute -inset-5 rounded-full border border-[#df1f2d]/10" />
             <div className="cedar-float glass relative aspect-square overflow-hidden rounded-[42px] p-7 sm:p-10">
-              <img src="/lf-logo.png" alt={t.eyebrow} className="h-full w-full rounded-[30px] object-contain mix-blend-multiply" />
+              <img src={homepage.hero.imageUrl} alt={homepageText(homepage.hero.imageAlt, lang)} className="h-full w-full rounded-[30px] object-contain mix-blend-multiply" />
             </div>
             <div className="absolute -bottom-5 start-4 rounded-[20px] bg-[#191919] px-5 py-4 text-white shadow-2xl sm:start-0 sm:px-6 sm:py-5">
               <div className="text-2xl font-extrabold tabular-nums sm:text-3xl">1976</div>
@@ -901,7 +950,7 @@ export default function Home() {
 
       <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <div className="mb-10 flex items-end justify-between gap-5">
-          <SectionHeading kicker={t.latestKicker} title={t.latest} />
+          <SectionHeading kicker={t.latestKicker} title={t.latest} description={t.newsText} />
           <a href="/news" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
             {t.allNews}
             <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
@@ -1004,13 +1053,13 @@ export default function Home() {
           <div className="relative grid items-stretch lg:grid-cols-[.92fr_1.08fr]">
           <div className="relative min-h-[500px] overflow-hidden bg-[#111] lg:min-h-[650px]">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Samir_Geagea_7.jpg"
-              alt={t.presidentTitle}
+              src={homepage.president.imageUrl}
+              alt={homepageText(homepage.president.imageAlt, lang)}
               className="absolute inset-0 h-full w-full object-cover object-top grayscale transition duration-700 hover:scale-[1.025] hover:grayscale-0"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-transparent to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-7 lg:p-10">
-              <div className="text-[11px] font-normal text-white/48">U.S. Department of State · Public domain</div>
+              <div className="text-[11px] font-normal text-white/48">{homepageText(homepage.president.imageCredit, lang)}</div>
             </div>
           </div>
           <div className="relative flex flex-col justify-center px-6 py-16 sm:px-9 lg:px-14 lg:py-20">
@@ -1021,9 +1070,9 @@ export default function Home() {
               <p>{t.presidentBio}</p>
               <p>{t.presidentBio2}</p>
             </div>
-            <a href="https://www.lebanese-forces.com/person/politicians-samir-geagea/" target="_blank" rel="noreferrer" className="mt-8 inline-flex w-fit items-center gap-3 rounded-full bg-white px-6 py-3 text-[13px] font-bold text-[#161616] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#df1f2d] hover:text-white">
+            <a href="/samir-geagea" className="mt-8 inline-flex w-fit items-center gap-3 rounded-full bg-white px-6 py-3 text-[13px] font-bold text-[#161616] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#df1f2d] hover:text-white">
               {t.bioLink}
-              <ExternalLink size={15} />
+              <ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />
             </a>
             <div className="mt-10 grid gap-2 sm:grid-cols-3">
               {t.presidentFacts.map(([year, fact]) => (
