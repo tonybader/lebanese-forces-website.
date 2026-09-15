@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T00:00:00.000Z",
+  "updatedAt": "2026-09-15T21:24:07.799Z",
   "hero": {
     "eyebrow": {
       "ar": "القوات اللبنانية",
@@ -24,7 +24,11 @@
     }
   },
   "vision": {
-    "kicker": { "ar": "الحزب", "en": "The party", "fr": "Le parti" },
+    "kicker": {
+      "ar": "الحزب",
+      "en": "The party",
+      "fr": "Le parti"
+    },
     "title": {
       "ar": "الإنسان. الحرية. الدولة.",
       "en": "People. Freedom. The state.",
@@ -37,8 +41,16 @@
     }
   },
   "news": {
-    "kicker": { "ar": "المشهد الآن", "en": "Now", "fr": "Maintenant" },
-    "title": { "ar": "آخر الأخبار", "en": "Latest news", "fr": "Dernières actualités" },
+    "kicker": {
+      "ar": "المشهد الآن",
+      "en": "Now",
+      "fr": "Maintenant"
+    },
+    "title": {
+      "ar": "آخر الأخبار",
+      "en": "Latest news",
+      "fr": "Dernières actualités"
+    },
     "text": {
       "ar": "أحدث النشاطات والمواقف والملفات من الموقع الرسمي للقوات اللبنانية.",
       "en": "The latest party activity, positions and public affairs from the official news platform.",
@@ -46,21 +58,33 @@
     }
   },
   "history": {
-    "kicker": { "ar": "ذاكرة حيّة", "en": "Living memory", "fr": "Mémoire vivante" },
+    "kicker": {
+      "ar": "ذاكرة حيّة",
+      "en": "Living memory",
+      "fr": "Mémoire vivante"
+    },
     "title": {
       "ar": "محطات صنعت المسيرة",
       "en": "Milestones that shaped the journey",
       "fr": "Les étapes d’un parcours"
     },
     "text": {
-      "ar": "انتقل بين السنوات لاكتشاف المحطات الأساسية من التأسيس إلى العمل السياسي والمؤسساتي اليوم.",
+      "ar": "انتقل بين السنوات لاكتشاف المحطات الأساسية من التأسيس إلى العمل السياسي اليوم.",
       "en": "Move through the years to explore defining moments from the party’s founding to its political and institutional role today.",
       "fr": "Parcourez les années et découvrez les moments clés, de la fondation au rôle politique et institutionnel d’aujourd’hui."
     }
   },
   "president": {
-    "kicker": { "ar": "رئيس الحزب", "en": "Party president", "fr": "Président du parti" },
-    "title": { "ar": "الدكتور سمير جعجع", "en": "Dr Samir Geagea", "fr": "Dr Samir Geagea" },
+    "kicker": {
+      "ar": "رئيس الحزب",
+      "en": "Party president",
+      "fr": "Président du parti"
+    },
+    "title": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
     "role": {
       "ar": "رئيس حزب القوات اللبنانية",
       "en": "President of the Lebanese Forces",
@@ -77,7 +101,11 @@
       "fr": "Il a approuvé l’Accord de Taëf en 1989 et conduit la transition vers l’action politique. Arrêté en 1994, il a passé onze ans et trois mois en prison avant qu’une loi d’amnistie permette son retour à la liberté et à la vie politique en 2005."
     },
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Samir_Geagea_7.jpg",
-    "imageAlt": { "ar": "الدكتور سمير جعجع", "en": "Dr Samir Geagea", "fr": "Dr Samir Geagea" },
+    "imageAlt": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
     "imageCredit": {
       "ar": "وزارة الخارجية الأميركية · ملكية عامة",
       "en": "U.S. Department of State · Public domain",
@@ -85,8 +113,16 @@
     }
   },
   "leadership": {
-    "kicker": { "ar": "المؤسسات والتمثيل", "en": "Institutions & representation", "fr": "Institutions & représentation" },
-    "title": { "ar": "القيادة والكتل", "en": "Leadership and blocs", "fr": "Direction et blocs" },
+    "kicker": {
+      "ar": "المؤسسات والتمثيل",
+      "en": "Institutions & representation",
+      "fr": "Institutions & représentation"
+    },
+    "title": {
+      "ar": "القيادة والكتل",
+      "en": "Leadership and blocs",
+      "fr": "Direction et blocs"
+    },
     "text": {
       "ar": "تعرّف إلى أعضاء الهيئة التنفيذية، نواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
       "en": "Meet the Executive Committee, the Lebanese Forces MPs in Parliament and the current ministers.",
@@ -94,8 +130,16 @@
     }
   },
   "publications": {
-    "kicker": { "ar": "مكتبة الحزب", "en": "Party library", "fr": "Bibliothèque du parti" },
-    "title": { "ar": "المنشورات والوثائق", "en": "Publications and documents", "fr": "Publications et documents" },
+    "kicker": {
+      "ar": "مكتبة الحزب",
+      "en": "Party library",
+      "fr": "Bibliothèque du parti"
+    },
+    "title": {
+      "ar": "المنشورات والوثائق",
+      "en": "Publications and documents",
+      "fr": "Publications et documents"
+    },
     "text": {
       "ar": "الوصول المباشر إلى المرجعيات التنظيمية والفكرية، الأرشيف والأوراق الاقتصادية.",
       "en": "Direct access to the party’s organizational and intellectual references, archive and economic papers.",
@@ -103,10 +147,18 @@
     }
   },
   "media": {
-    "kicker": { "ar": "صوت وصورة", "en": "Sound & image", "fr": "Son & image" },
-    "title": { "ar": "المكتبة الإعلامية", "en": "Media library", "fr": "Médiathèque" },
+    "kicker": {
+      "ar": "صوت وصورة",
+      "en": "Sound & image",
+      "fr": "Son & image"
+    },
+    "title": {
+      "ar": "المكتبة الإعلامية",
+      "en": "Media library",
+      "fr": "Médiathèque"
+    },
     "text": {
-      "ar": "أناشيد، فيديوهات وصور توثّق الذاكرة والنشاط العام.",
+      "ar": "أناشيد، فيديوهات وصور توثّق الذاكرة.",
       "en": "Songs, videos and photographs documenting memory and public activity.",
       "fr": "Chants, vidéos et photographies documentant la mémoire et l’action publique."
     }
