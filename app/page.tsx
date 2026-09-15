@@ -32,6 +32,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import seedArticleData from "@/data/articles.json";
+import type { Article } from "@/lib/article-types";
+import { articleHref, articleText, formatArticleDate } from "@/lib/article-types";
 
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
@@ -490,49 +493,6 @@ const ministers: { name: Localized; portfolio: Localized }[] = [
   },
 ];
 
-const news = [
-  {
-    date: { ar: "15 أيلول 2026", en: "15 September 2026", fr: "15 septembre 2026" },
-    tag: { ar: "نشاطات حزبية", en: "Party activity", fr: "Activité du parti" },
-    title: {
-      ar: "القداس السنوي لشهداء المقاومة اللبنانية في مراكز الانتشار",
-      en: "Annual Mass for the martyrs of the Lebanese Resistance across diaspora chapters",
-      fr: "Messe annuelle pour les martyrs de la Résistance libanaise dans les sections de la diaspora",
-    },
-    href: "https://www.lebanese-forces.com/2026/09/15/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-769/",
-  },
-  {
-    date: { ar: "7 أيلول 2026", en: "7 September 2026", fr: "7 septembre 2026" },
-    tag: { ar: "موقف", en: "Position", fr: "Position" },
-    title: {
-      ar: "جعجع يضع الإصبع على الجرح… من أجل دولة تستعيد قرارها",
-      en: "Geagea addresses the core issue: a state that reclaims its decision",
-      fr: "Geagea au cœur du problème : un État qui retrouve sa décision",
-    },
-    href: "https://www.lebanese-forces.com/2026/09/07/%D8%AC%D8%B9%D8%AC%D8%B9-865/",
-  },
-  {
-    date: { ar: "14 أيلول 2026", en: "14 September 2026", fr: "14 septembre 2026" },
-    tag: { ar: "ذاكرة", en: "Memory", fr: "Mémoire" },
-    title: {
-      ar: "ساكني العالي اطمئنوا حيث أنتم… القوات ستبقى «قوات»",
-      en: "Rest assured where you are… the Lebanese Forces will remain steadfast",
-      fr: "Soyez rassurés là-haut… les Forces Libanaises resteront fidèles",
-    },
-    href: "https://www.lebanese-forces.com/2026/09/10/%D8%B3%D9%85%D9%8A%D8%B1-%D8%AC%D8%B9%D8%AC%D8%B9-79/",
-  },
-  {
-    date: { ar: "15 أيلول 2026", en: "15 September 2026", fr: "15 septembre 2026" },
-    tag: { ar: "صحافة", en: "Press", fr: "Presse" },
-    title: {
-      ar: "الأباتي بولس نعمان: وداعاً يا مؤرخ الحرية",
-      en: "Abbot Boulos Naaman: Farewell to the historian of freedom",
-      fr: "Abbé Boulos Naaman : adieu à l’historien de la liberté",
-    },
-    href: "https://www.lebanese-forces.com/2026/09/15/abbot-boulos-naaman-2/",
-  },
-];
-
 const publications = [
   {
     icon: FileText,
@@ -696,6 +656,11 @@ export default function Home() {
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [articles, setArticles] = useState<Article[]>(
+    () => [...(seedArticleData as Article[])].sort(
+      (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
+    ),
+  );
   const t = ui[lang];
   const rtl = lang === "ar";
   const currentTimeline = useMemo(
@@ -707,6 +672,20 @@ export default function Home() {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
   }, [lang, rtl]);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/articles", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load articles")))
+      .then((data) => {
+        const payload = data as { articles?: Article[] };
+        if (active && payload.articles?.length) setArticles(payload.articles);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.add("reveal-ready");
@@ -923,38 +902,38 @@ export default function Home() {
       <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <div className="mb-10 flex items-end justify-between gap-5">
           <SectionHeading kicker={t.latestKicker} title={t.latest} />
-          <a href="https://www.lebanese-forces.com/category/lebanese-forces/" target="_blank" rel="noreferrer" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
+          <a href="/news" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
             {t.allNews}
             <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
           </a>
         </div>
         <div className="grid gap-5 lg:grid-cols-[1.16fr_.84fr]" data-reveal>
-          <a href={news[0].href} target="_blank" rel="noreferrer" className="group relative min-h-[500px] overflow-hidden rounded-[32px] bg-[#191919] shadow-[0_24px_70px_rgba(0,0,0,.12)]">
-            <img src="https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/samir-geagea%28116%29.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-[1.035]" />
+          <a href={articleHref(articles[0])} target={articles[0].externalUrl ? "_blank" : undefined} rel={articles[0].externalUrl ? "noreferrer" : undefined} className="group relative min-h-[500px] overflow-hidden rounded-[32px] bg-[#191919] shadow-[0_24px_70px_rgba(0,0,0,.12)]">
+            <img src={articles[0].imageUrl} alt={articleText(articles[0].imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-[1.035]" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/5" />
             <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
             <div className="absolute inset-x-0 bottom-0 p-7 text-white sm:p-9 lg:p-11">
               <div className="flex items-center gap-2 text-[12px] font-bold text-[#ff6570]">
                 <span className="h-2 w-2 rounded-full bg-[#ff4350]" />
-                {text(news[0].tag, lang)} · {text(news[0].date, lang)}
+                {articleText(articles[0].category, lang)} · {formatArticleDate(articles[0].publishedAt, lang)}
               </div>
-              <h3 className="section-title mt-4 max-w-3xl text-[clamp(2rem,4vw,3.55rem)] font-extrabold leading-[1.25] tracking-[-.025em]">{text(news[0].title, lang)}</h3>
+              <h3 className="section-title mt-4 max-w-3xl text-[clamp(2rem,4vw,3.55rem)] font-extrabold leading-[1.25] tracking-[-.025em]">{articleText(articles[0].title, lang)}</h3>
               <div className="mt-6 inline-flex items-center gap-2 text-[13px] font-bold">{t.read}<ArrowUpLeft size={17} /></div>
             </div>
           </a>
           <div className="grid gap-3">
-            {news.slice(1).map((story) => (
-              <a key={story.href} href={story.href} target="_blank" rel="noreferrer" className="group flex min-h-[154px] items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:p-6">
+            {articles.slice(1, 4).map((story) => (
+              <a key={story.id} href={articleHref(story)} target={story.externalUrl ? "_blank" : undefined} rel={story.externalUrl ? "noreferrer" : undefined} className="group flex min-h-[154px] items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:p-6">
                 <div>
-                  <div className="text-[11px] font-bold text-[#df1f2d]">{text(story.tag, lang)} · {text(story.date, lang)}</div>
-                  <h3 className="mt-3 text-[16px] font-extrabold leading-7 sm:text-[18px]">{text(story.title, lang)}</h3>
+                  <div className="text-[11px] font-bold text-[#df1f2d]">{articleText(story.category, lang)} · {formatArticleDate(story.publishedAt, lang)}</div>
+                  <h3 className="mt-3 text-[16px] font-extrabold leading-7 sm:text-[18px]">{articleText(story.title, lang)}</h3>
                 </div>
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f4f4f1] text-black/55 transition group-hover:bg-[#df1f2d] group-hover:text-white">
                   <ArrowUpLeft size={16} className={rtl ? "" : "-rotate-90"} />
                 </span>
               </a>
             ))}
-            <a href="https://www.lebanese-forces.com/category/lebanese-forces/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold sm:hidden">
+            <a href="/news" className="flex items-center justify-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold sm:hidden">
               {t.allNews}
               <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
             </a>
