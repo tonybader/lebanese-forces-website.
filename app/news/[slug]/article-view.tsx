@@ -2,8 +2,15 @@
 
 import { ArrowLeft, CalendarDays, Globe2, Newspaper } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ArticleTagLinks } from "@/components/article-tag-links";
 import type { Article, ArticleLanguage } from "@/lib/article-types";
-import { articleText, formatArticleDate } from "@/lib/article-types";
+import {
+  articleChannelHref,
+  articleChannelText,
+  articleText,
+  formatArticleDate,
+  getArticleChannel,
+} from "@/lib/article-types";
 
 const labels = {
   ar: { back: "كل الأخبار", home: "الرئيسية", article: "خبر", fallback: "النسخة العربية" },
@@ -15,6 +22,7 @@ export function ArticleView({ article }: { article: Article }) {
   const [language, setLanguage] = useState<ArticleLanguage>("ar");
   const rtl = language === "ar";
   const t = labels[language];
+  const channel = getArticleChannel(article);
   const localizedBody = articleText(article.body, language);
   const isFallback = language !== "ar" && !article.body[language]?.trim();
 
@@ -51,9 +59,10 @@ export function ArticleView({ article }: { article: Article }) {
             <span>{t.article}</span>
           </div>
           <div className="mt-10 max-w-5xl">
-            <div className="flex flex-wrap items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><Newspaper size={15} />{articleText(article.category, language)}<span className="text-black/15">·</span><CalendarDays size={14} />{formatArticleDate(article.publishedAt, language)}</div>
+            <div className="flex flex-wrap items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><Newspaper size={15} /><a href={articleChannelHref(channel)} className="hover:underline">{articleChannelText(channel, language)}</a><span className="text-black/15">·</span><CalendarDays size={14} />{formatArticleDate(article.publishedAt, language)}</div>
             <h1 className="section-title mt-5 text-[clamp(2.4rem,6vw,5.8rem)] font-extrabold leading-[1.2] tracking-[-.045em]">{articleText(article.title, language)}</h1>
             {isFallback && <div className="mt-5 inline-flex rounded-full bg-amber-100 px-4 py-2 text-[11px] font-bold text-amber-900">{t.fallback}</div>}
+            <div className="mt-7"><ArticleTagLinks article={article} language={language} /></div>
           </div>
         </div>
 

@@ -8,6 +8,7 @@ import {
   verifyEditorSession,
 } from "@/lib/admin-auth";
 import { createArticle, listArticles } from "@/lib/article-store";
+import { isArticleChannel } from "@/lib/article-types";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +16,28 @@ export async function GET() {
   const articles = await listArticles();
   return NextResponse.json(
     { articles },
-    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
+      },
+    },
   );
 }
 
 function value(form: FormData, key: string): string {
   const entry = form.get(key);
   return typeof entry === "string" ? entry : "";
+}
+
+function tagList(form: FormData, key: string): string[] {
+  try {
+    const parsed = JSON.parse(value(form, key));
+    return Array.isArray(parsed) ? parsed.filter((tag): tag is string => typeof tag === "string") : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function POST(request: Request) {
@@ -54,6 +70,10 @@ export async function POST(request: Request) {
       en: value(form, "bodyEn"),
       fr: value(form, "bodyFr"),
     };
+    const channel = value(form, "channel");
+    if (!isArticleChannel(channel)) {
+      return NextResponse.json({ error: "Please choose a publishing section." }, { status: 400 });
+    }
 
     if (title.ar.length > 240 || title.en.length > 240 || title.fr.length > 240) {
       return NextResponse.json({ error: "The title is too long." }, { status: 400 });
@@ -65,6 +85,10 @@ export async function POST(request: Request) {
     const article = await createArticle({
       title,
       body,
+      channel,
+      regions: tagList(form, "regions"),
+      activityTypes: tagList(form, "activityTypes"),
+      people: tagList(form, "people"),
       image: {
         bytes: new Uint8Array(await image.arrayBuffer()),
         contentType: image.type,

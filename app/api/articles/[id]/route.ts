@@ -8,6 +8,7 @@ import {
   verifyEditorSession,
 } from "@/lib/admin-auth";
 import { deleteArticle, updateArticle } from "@/lib/article-store";
+import { isArticleChannel } from "@/lib/article-types";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,15 @@ type RouteContext = { params: Promise<{ id: string }> };
 function value(form: FormData, key: string): string {
   const entry = form.get(key);
   return typeof entry === "string" ? entry : "";
+}
+
+function tagList(form: FormData, key: string): string[] {
+  try {
+    const parsed = JSON.parse(value(form, key));
+    return Array.isArray(parsed) ? parsed.filter((tag): tag is string => typeof tag === "string") : [];
+  } catch {
+    return [];
+  }
 }
 
 async function isAuthorized(): Promise<boolean> {
@@ -54,6 +64,10 @@ export async function PUT(request: Request, { params }: RouteContext) {
       en: value(form, "bodyEn"),
       fr: value(form, "bodyFr"),
     };
+    const channel = value(form, "channel");
+    if (!isArticleChannel(channel)) {
+      return NextResponse.json({ error: "Please choose a publishing section." }, { status: 400 });
+    }
 
     if (title.ar.length > 240 || title.en.length > 240 || title.fr.length > 240) {
       return NextResponse.json({ error: "The title is too long." }, { status: 400 });
@@ -62,7 +76,16 @@ export async function PUT(request: Request, { params }: RouteContext) {
       return NextResponse.json({ error: "The article is too long." }, { status: 400 });
     }
 
-    const article = await updateArticle({ id: decodeURIComponent(id), title, body, image });
+    const article = await updateArticle({
+      id: decodeURIComponent(id),
+      title,
+      body,
+      channel,
+      regions: tagList(form, "regions"),
+      activityTypes: tagList(form, "activityTypes"),
+      people: tagList(form, "people"),
+      image,
+    });
     return NextResponse.json({ article });
   } catch (error) {
     const message = error instanceof Error ? error.message : "The article could not be updated.";

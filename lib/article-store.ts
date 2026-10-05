@@ -1,7 +1,14 @@
 import "server-only";
 
 import seedArticleData from "@/data/articles.json";
-import type { Article, LocalizedArticleText } from "@/lib/article-types";
+import {
+  articleChannelCategory,
+  getArticleChannel,
+  isArticleChannel,
+  type Article,
+  type ArticleChannel,
+  type LocalizedArticleText,
+} from "@/lib/article-types";
 
 const DEFAULT_REPOSITORY = "tonybader/lebanese-forces-website.";
 const DEFAULT_BRANCH = "main";
@@ -17,6 +24,10 @@ type GitHubFile = {
 export type NewArticleInput = {
   title: LocalizedArticleText;
   body: LocalizedArticleText;
+  channel: ArticleChannel;
+  regions: string[];
+  activityTypes: string[];
+  people: string[];
   image: {
     bytes: Uint8Array;
     contentType: string;
@@ -27,6 +38,10 @@ export type UpdateArticleInput = {
   id: string;
   title: LocalizedArticleText;
   body: LocalizedArticleText;
+  channel: ArticleChannel;
+  regions: string[];
+  activityTypes: string[];
+  people: string[];
   image?: {
     bytes: Uint8Array;
     contentType: string;
@@ -65,6 +80,24 @@ function contentApiUrl(path: string): string {
   return `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}`;
 }
 
+function cleanTags(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  const tags: string[] = [];
+  const seen = new Set<string>();
+
+  for (const entry of value) {
+    if (typeof entry !== "string") continue;
+    const tag = entry.normalize("NFKC").replace(/\s+/g, " ").trim().slice(0, 80);
+    const key = tag.toLocaleLowerCase("ar-LB");
+    if (!tag || seen.has(key)) continue;
+    seen.add(key);
+    tags.push(tag);
+    if (tags.length === 16) break;
+  }
+
+  return tags;
+}
+
 function normalizeArticles(value: unknown): Article[] {
   if (!Array.isArray(value)) return [];
   return (value as Article[])
@@ -78,6 +111,20 @@ function normalizeArticles(value: unknown): Article[] {
         typeof article.body?.ar === "string" &&
         typeof article.imageUrl === "string",
     )
+    .map((article) => {
+      const channel = getArticleChannel(article);
+      return {
+        ...article,
+        channel,
+        regions: cleanTags(article.regions),
+        activityTypes: cleanTags(article.activityTypes),
+        people: cleanTags(article.people),
+        category:
+          article.category && typeof article.category.ar === "string"
+            ? article.category
+            : articleChannelCategory(channel),
+      };
+    })
     .sort(
       (left, right) =>
         new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
@@ -250,6 +297,9 @@ export async function createArticle(input: NewArticleInput): Promise<Article> {
   if (!input.image.bytes.length || input.image.bytes.length > MAX_IMAGE_BYTES) {
     throw new Error("The photograph must be smaller than 3.5 MB.");
   }
+  if (!isArticleChannel(input.channel)) {
+    throw new Error("Choose where this article should be published.");
+  }
 
   const extension = imageExtension(input.image.contentType);
   const publishedAt = new Date().toISOString();
@@ -264,16 +314,16 @@ export async function createArticle(input: NewArticleInput): Promise<Article> {
     publishedAt,
     title: cleanLocalized(input.title),
     body: cleanLocalized(input.body),
-    category: {
-      ar: "أخبار القوات",
-      en: "Lebanese Forces news",
-      fr: "Actualités des Forces Libanaises",
-    },
+    category: articleChannelCategory(input.channel),
     imageUrl: `https://raw.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}/${encodeURIComponent(branch)}/${imagePath
       .split("/")
       .map(encodeURIComponent)
       .join("/")}`,
     imageAlt: cleanLocalized(input.title),
+    channel: input.channel,
+    regions: cleanTags(input.regions),
+    activityTypes: cleanTags(input.activityTypes),
+    people: cleanTags(input.people),
   };
 
   const current = await readArticleDocument();
@@ -300,6 +350,9 @@ export async function updateArticle(input: UpdateArticleInput): Promise<Article>
   }
   if (input.image && (!input.image.bytes.length || input.image.bytes.length > MAX_IMAGE_BYTES)) {
     throw new Error("The photograph must be smaller than 3.5 MB.");
+  }
+  if (!isArticleChannel(input.channel)) {
+    throw new Error("Choose where this article should be published.");
   }
 
   const current = await readArticleDocument();
@@ -331,8 +384,13 @@ export async function updateArticle(input: UpdateArticleInput): Promise<Article>
     ...previous,
     title: cleanLocalized(input.title),
     body: cleanLocalized(input.body),
+    category: articleChannelCategory(input.channel),
     imageUrl,
     imageAlt: cleanLocalized(input.title),
+    channel: input.channel,
+    regions: cleanTags(input.regions),
+    activityTypes: cleanTags(input.activityTypes),
+    people: cleanTags(input.people),
   };
   const articles = [...current.articles];
   articles[index] = updated;

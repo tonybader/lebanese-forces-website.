@@ -15,15 +15,25 @@ import {
   ImageIcon,
   Landmark,
   MapPin,
+  Megaphone,
   Menu,
+  MessageSquareQuote,
   Music2,
+  PartyPopper,
   Play,
+  Plane,
   Quote,
   Users,
   Video,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { ArticleTagLinks } from "@/components/article-tag-links";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -34,8 +44,15 @@ import {
 } from "@/components/ui/dialog";
 import seedArticleData from "@/data/articles.json";
 import seedHomepageData from "@/data/homepage.json";
-import type { Article } from "@/lib/article-types";
-import { articleHref, articleText, formatArticleDate } from "@/lib/article-types";
+import type { Article, ArticleChannel } from "@/lib/article-types";
+import {
+  articleChannelHref,
+  articleChannelText,
+  articleHref,
+  articleText,
+  formatArticleDate,
+  getArticleChannel,
+} from "@/lib/article-types";
 import type { HomepageContent } from "@/lib/homepage-types";
 import { homepageText } from "@/lib/homepage-types";
 
@@ -52,6 +69,7 @@ const ui = {
       ["president", "رئيس الحزب"],
       ["leadership", "القيادة والكتل"],
       ["news", "الأخبار"],
+      ["diaspora", "الانتشار"],
       ["publications", "المنشورات"],
       ["media", "الميديا"],
     ],
@@ -107,10 +125,14 @@ const ui = {
     mp: "نائب في المجلس النيابي",
     minister: "وزير في الحكومة اللبنانية",
     listed: "أعضاء الهيئة التنفيذية بحسب نتائج الانتخابات المباشرة، والكتلتان النيابية والوزارية بحسب القوائم الحالية.",
+    expandLeadership: "عرض القيادة والكتل",
+    collapseLeadership: "إخفاء القيادة والكتل",
     newsKicker: "متابعة",
     newsTitle: "أخبار ومواقف",
     newsText: "أحدث النشاطات والمواقف والملفات من الموقع الرسمي للقوات اللبنانية.",
     read: "اقرأ الخبر",
+    browseSection: "عرض كل المواد",
+    noStories: "لا توجد مواد منشورة في هذا القسم بعد.",
     publicationsKicker: "مكتبة الحزب",
     publicationsTitle: "المنشورات والوثائق",
     publicationsText:
@@ -141,6 +163,7 @@ const ui = {
       ["president", "Party president"],
       ["leadership", "Leadership & blocs"],
       ["news", "News"],
+      ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Media"],
     ],
@@ -196,10 +219,14 @@ const ui = {
     mp: "Member of Parliament",
     minister: "Minister in the Lebanese government",
     listed: "Executive Committee members follow the direct-election results; parliamentary and ministerial blocs follow the current lists.",
+    expandLeadership: "View leadership and blocs",
+    collapseLeadership: "Hide leadership and blocs",
     newsKicker: "Follow",
     newsTitle: "News and positions",
     newsText: "The latest party activity, positions and public affairs from the official news platform.",
     read: "Read article",
+    browseSection: "View all coverage",
+    noStories: "No stories have been published in this section yet.",
     publicationsKicker: "Party library",
     publicationsTitle: "Publications and documents",
     publicationsText:
@@ -230,6 +257,7 @@ const ui = {
       ["president", "Président du parti"],
       ["leadership", "Direction & blocs"],
       ["news", "Actualités"],
+      ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Médias"],
     ],
@@ -285,10 +313,14 @@ const ui = {
     mp: "Député au Parlement",
     minister: "Ministre du gouvernement libanais",
     listed: "Les membres du Comité exécutif suivent les résultats du vote direct; les blocs parlementaire et ministériel suivent les listes actuelles.",
+    expandLeadership: "Voir la direction et les blocs",
+    collapseLeadership: "Masquer la direction et les blocs",
     newsKicker: "Suivre",
     newsTitle: "Actualités et positions",
     newsText: "Les dernières activités, positions et affaires publiques depuis la plateforme officielle.",
     read: "Lire l’article",
+    browseSection: "Voir toute l’actualité",
+    noStories: "Aucun contenu n’a encore été publié dans cette rubrique.",
     publicationsKicker: "Bibliothèque du parti",
     publicationsTitle: "Publications et documents",
     publicationsText:
@@ -313,6 +345,49 @@ const ui = {
     official: "Site officiel d’actualités",
   },
 } as const;
+
+const newsChannelPresentation: Record<ArticleChannel, {
+  title: Localized;
+  description: Localized;
+  icon: typeof Megaphone;
+}> = {
+  statements: {
+    title: { ar: "آخر البيانات", en: "Latest statements", fr: "Derniers communiqués" },
+    description: {
+      ar: "أحدث بيانات القوات اللبنانية أو رئيس الحزب.",
+      en: "The latest statement from the Lebanese Forces or the party president.",
+      fr: "Le dernier communiqué des Forces Libanaises ou du président du parti.",
+    },
+    icon: Megaphone,
+  },
+  positions: {
+    title: { ar: "آخر مواقف النواب والوزراء", en: "Latest MPs & ministers’ positions", fr: "Dernières positions des députés et ministres" },
+    description: {
+      ar: "أحدث المواقف والتصريحات الصادرة عن نواب ووزراء القوات.",
+      en: "The latest positions and remarks from Lebanese Forces MPs and ministers.",
+      fr: "Les dernières prises de position des députés et ministres des Forces Libanaises.",
+    },
+    icon: MessageSquareQuote,
+  },
+  party: {
+    title: { ar: "آخر أخبار ونشاطات الحزب", en: "Latest party news & activities", fr: "Dernières actualités et activités du parti" },
+    description: {
+      ar: "اجتماعات، جولات ونشاطات حزبية من مختلف المناطق.",
+      en: "Meetings, visits and party activities from across Lebanon.",
+      fr: "Réunions, visites et activités du parti dans tout le Liban.",
+    },
+    icon: PartyPopper,
+  },
+  diaspora: {
+    title: { ar: "نشاطات الانتشار", en: "Diaspora activities", fr: "Activités de la diaspora" },
+    description: {
+      ar: "أخبار ونشاطات مراكز القوات اللبنانية حول العالم.",
+      en: "News and activities from Lebanese Forces chapters around the world.",
+      fr: "Actualités et activités des sections des Forces Libanaises dans le monde.",
+    },
+    icon: Plane,
+  },
+};
 
 const timeline: { year: string; title: Localized; body: Localized }[] = [
   {
@@ -544,22 +619,25 @@ const tracks = [
 
 const photos = [
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/1/18/Samir_Geagea_-_1988.jpg",
-    title: { ar: "سمير جعجع عام 1988", en: "Samir Geagea in 1988", fr: "Samir Geagea en 1988" },
-    credit: "Wikimedia Commons · Public domain",
-    href: "https://commons.wikimedia.org/wiki/File:Samir_Geagea_-_1988.jpg",
+    src: "https://lebaneseforces.org/bachir-gemayel.jpg",
+    title: { ar: "الرئيس الشهيد بشير الجميّل", en: "President-elect Bachir Gemayel", fr: "Le président élu Béchir Gemayel" },
+    credit: "Lebanese Forces historical archive",
+    href: "https://lebaneseforces.org/",
+    fit: "cover" as const,
   },
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/0/09/Secretary_Pompeo_Meets_With_Samir_Geagea.jpg",
-    title: { ar: "لقاء دولي في واشنطن، 2019", en: "International meeting in Washington, 2019", fr: "Rencontre internationale à Washington, 2019" },
+    title: { ar: "رئيس الحزب الدكتور سمير جعجع", en: "Party president Dr Samir Geagea", fr: "Le président du parti Dr Samir Geagea" },
     credit: "U.S. Department of State · Public domain",
     href: "https://commons.wikimedia.org/wiki/File:Secretary_Pompeo_Meets_With_Samir_Geagea.jpg",
+    fit: "cover" as const,
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/c/c0/Pierre_Bou_Assi%2C_Lebanese_Minister_for_Social_Affairs_-_P036791007501-878207.jpg",
-    title: { ar: "بيار بو عاصي في لقاء أوروبي، 2018", en: "Pierre Bou Assi at a European meeting, 2018", fr: "Pierre Bou Assi lors d’une rencontre européenne, 2018" },
-    credit: "European Commission / Lukasz Kobus · CC BY 4.0",
-    href: "https://commons.wikimedia.org/wiki/File:Pierre_Bou_Assi,_Lebanese_Minister_for_Social_Affairs_-_P036791007501-878207.jpg",
+    src: "/lf-logo.png",
+    title: { ar: "شعار القوات اللبنانية", en: "Lebanese Forces emblem", fr: "Emblème des Forces Libanaises" },
+    credit: "Lebanese Forces brand identity",
+    href: "/",
+    fit: "contain" as const,
   },
 ];
 
@@ -650,6 +728,94 @@ function ExecutiveRegionCard({
   );
 }
 
+function NewsChannelPanel({
+  channel,
+  stories,
+  lang,
+  readLabel,
+  browseLabel,
+  emptyLabel,
+}: {
+  channel: Exclude<ArticleChannel, "diaspora">;
+  stories: Article[];
+  lang: Lang;
+  readLabel: string;
+  browseLabel: string;
+  emptyLabel: string;
+}) {
+  const presentation = newsChannelPresentation[channel];
+  const Icon = presentation.icon;
+  const lead = stories[0];
+
+  return (
+    <section className="flex min-h-[620px] flex-col overflow-hidden rounded-[30px] border border-black/[.07] bg-white shadow-[0_15px_50px_rgba(0,0,0,.055)]" data-reveal>
+      <div className="border-b border-black/[.06] p-6 sm:p-7">
+        <div className="flex items-start justify-between gap-4">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f4f4f1] text-[#df1f2d]"><Icon size={20} /></span>
+          <span className="text-[10px] font-extrabold uppercase tracking-[.12em] text-black/25">{articleChannelText(channel, lang)}</span>
+        </div>
+        <h3 className="section-title mt-5 text-[clamp(1.45rem,2.6vw,2rem)] font-extrabold leading-[1.35]">{text(presentation.title, lang)}</h3>
+        <p className="mt-3 min-h-[52px] text-[13px] leading-6 text-black/45">{text(presentation.description, lang)}</p>
+      </div>
+
+      {lead ? (
+        <div className="flex flex-1 flex-col">
+          <a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="group relative block aspect-[16/9] overflow-hidden bg-[#191919]">
+            <img src={lead.imageUrl} alt={articleText(lead.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+          </a>
+          <div className="flex flex-1 flex-col p-6 sm:p-7">
+            <div className="text-[11px] font-bold text-[#df1f2d]">{formatArticleDate(lead.publishedAt, lang)}</div>
+            <h4 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="transition hover:text-[#df1f2d]">{articleText(lead.title, lang)}</a></h4>
+            <div className="mt-4"><ArticleTagLinks article={lead} language={lang} compact /></div>
+            {stories.slice(1, 3).length > 0 && (
+              <div className="mt-6 space-y-3 border-t border-black/[.07] pt-5">
+                {stories.slice(1, 3).map((story) => (
+                  <a key={story.id} href={articleHref(story)} target={story.externalUrl ? "_blank" : undefined} rel={story.externalUrl ? "noreferrer" : undefined} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#df1f2d]">
+                    <span>{articleText(story.title, lang)}</span><ArrowUpLeft size={14} className="mt-1 shrink-0 transition group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </a>
+                ))}
+              </div>
+            )}
+            <a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="mt-auto inline-flex items-center gap-2 pt-7 text-[12px] font-extrabold text-black/45 transition hover:text-[#df1f2d]">{readLabel}<ArrowUpLeft size={15} /></a>
+          </div>
+        </div>
+      ) : (
+        <div className="grid flex-1 place-items-center p-8 text-center text-[13px] leading-7 text-black/38">{emptyLabel}</div>
+      )}
+
+      <a href={articleChannelHref(channel)} className="flex items-center justify-between border-t border-black/[.06] px-6 py-4 text-[12px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white sm:px-7">
+        {browseLabel}<ArrowLeft size={15} />
+      </a>
+    </section>
+  );
+}
+
+function DiasporaStoryCard({
+  article,
+  lang,
+  readLabel,
+}: {
+  article: Article;
+  lang: Lang;
+  readLabel: string;
+}) {
+  return (
+    <article className="group overflow-hidden rounded-[26px] border border-white/[.08] bg-white/[.055] transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-white/[.075]">
+      <a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined} className="relative block aspect-[16/9] overflow-hidden bg-black/20">
+        <img src={article.imageUrl} alt={articleText(article.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+      </a>
+      <div className="p-6">
+        <div className="text-[11px] font-bold text-[#ff7780]">{formatArticleDate(article.publishedAt, lang)}</div>
+        <h3 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined}>{articleText(article.title, lang)}</a></h3>
+        <div className="mt-4"><ArticleTagLinks article={article} language={lang} dark compact /></div>
+        <a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined} className="mt-6 inline-flex items-center gap-2 text-[12px] font-extrabold text-white/55 transition group-hover:text-white">{readLabel}<ArrowUpLeft size={15} /></a>
+      </div>
+    </article>
+  );
+}
+
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ar");
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -657,6 +823,7 @@ export default function Home() {
   const [activeYear, setActiveYear] = useState("1976");
   const [activeTrack, setActiveTrack] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
+  const [leadershipOpen, setLeadershipOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [articles, setArticles] = useState<Article[]>(
@@ -702,6 +869,16 @@ export default function Home() {
     () => timeline.find((item) => item.year === activeYear) || timeline[0],
     [activeYear],
   );
+  const articlesByChannel = useMemo<Record<ArticleChannel, Article[]>>(() => {
+    const grouped: Record<ArticleChannel, Article[]> = {
+      statements: [],
+      positions: [],
+      party: [],
+      diaspora: [],
+    };
+    articles.forEach((article) => grouped[getArticleChannel(article)].push(article));
+    return grouped;
+  }, [articles]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -710,29 +887,34 @@ export default function Home() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/articles", { cache: "no-store" })
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load articles")))
-      .then((data) => {
-        const payload = data as { articles?: Article[] };
-        if (active && payload.articles?.length) setArticles(payload.articles);
-      })
-      .catch(() => undefined);
-    return () => {
-      active = false;
+    const refreshContent = async () => {
+      try {
+        const requestOptions = {
+          cache: "no-store" as const,
+          headers: { "Cache-Control": "no-cache" },
+        };
+        const fresh = Date.now();
+        const [articlesResponse, homepageResponse] = await Promise.all([
+          fetch(`/api/articles?fresh=${fresh}`, requestOptions),
+          fetch(`/api/homepage?fresh=${fresh}`, requestOptions),
+        ]);
+        if (!articlesResponse.ok || !homepageResponse.ok) return;
+        const [articleData, homepageData] = await Promise.all([
+          articlesResponse.json() as Promise<{ articles?: Article[] }>,
+          homepageResponse.json() as Promise<{ content?: HomepageContent }>,
+        ]);
+        if (!active) return;
+        if (articleData.articles) setArticles(articleData.articles);
+        if (homepageData.content) setHomepage(homepageData.content);
+      } catch {
+        // Keep the last known content if the network is temporarily unavailable.
+      }
     };
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/api/homepage", { cache: "no-store" })
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load homepage content")))
-      .then((data) => {
-        const payload = data as { content?: HomepageContent };
-        if (active && payload.content) setHomepage(payload.content);
-      })
-      .catch(() => undefined);
+    void refreshContent();
+    window.addEventListener("focus", refreshContent);
     return () => {
       active = false;
+      window.removeEventListener("focus", refreshContent);
     };
   }, []);
 
@@ -956,36 +1138,40 @@ export default function Home() {
             <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
           </a>
         </div>
-        <div className="grid gap-5 lg:grid-cols-[1.16fr_.84fr]" data-reveal>
-          <a href={articleHref(articles[0])} target={articles[0].externalUrl ? "_blank" : undefined} rel={articles[0].externalUrl ? "noreferrer" : undefined} className="group relative min-h-[500px] overflow-hidden rounded-[32px] bg-[#191919] shadow-[0_24px_70px_rgba(0,0,0,.12)]">
-            <img src={articles[0].imageUrl} alt={articleText(articles[0].imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-700 group-hover:scale-[1.035]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/5" />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
-            <div className="absolute inset-x-0 bottom-0 p-7 text-white sm:p-9 lg:p-11">
-              <div className="flex items-center gap-2 text-[12px] font-bold text-[#ff6570]">
-                <span className="h-2 w-2 rounded-full bg-[#ff4350]" />
-                {articleText(articles[0].category, lang)} · {formatArticleDate(articles[0].publishedAt, lang)}
-              </div>
-              <h3 className="section-title mt-4 max-w-3xl text-[clamp(2rem,4vw,3.55rem)] font-extrabold leading-[1.25] tracking-[-.025em]">{articleText(articles[0].title, lang)}</h3>
-              <div className="mt-6 inline-flex items-center gap-2 text-[13px] font-bold">{t.read}<ArrowUpLeft size={17} /></div>
-            </div>
-          </a>
-          <div className="grid gap-3">
-            {articles.slice(1, 4).map((story) => (
-              <a key={story.id} href={articleHref(story)} target={story.externalUrl ? "_blank" : undefined} rel={story.externalUrl ? "noreferrer" : undefined} className="group flex min-h-[154px] items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:p-6">
-                <div>
-                  <div className="text-[11px] font-bold text-[#df1f2d]">{articleText(story.category, lang)} · {formatArticleDate(story.publishedAt, lang)}</div>
-                  <h3 className="mt-3 text-[16px] font-extrabold leading-7 sm:text-[18px]">{articleText(story.title, lang)}</h3>
-                </div>
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f4f4f1] text-black/55 transition group-hover:bg-[#df1f2d] group-hover:text-white">
-                  <ArrowUpLeft size={16} className={rtl ? "" : "-rotate-90"} />
-                </span>
-              </a>
-            ))}
-            <a href="/news" className="flex items-center justify-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold sm:hidden">
-              {t.allNews}
-              <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
-            </a>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {(["statements", "positions", "party"] as const).map((channel) => (
+            <NewsChannelPanel
+              key={channel}
+              channel={channel}
+              stories={articlesByChannel[channel].slice(0, 3)}
+              lang={lang}
+              readLabel={t.read}
+              browseLabel={t.browseSection}
+              emptyLabel={t.noStories}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section id="diaspora" className="px-5 pb-12 lg:px-8 lg:pb-20">
+        <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] px-6 py-14 text-white shadow-[0_30px_80px_rgba(0,0,0,.14)] sm:px-9 lg:px-14 lg:py-18">
+          <div className="absolute -end-32 -top-36 h-96 w-96 rounded-full bg-[#df1f2d]/24 blur-3xl" />
+          <div className="absolute -bottom-40 -start-28 h-80 w-80 rounded-full bg-[#0b7740]/16 blur-3xl" />
+          <div className="relative flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading
+              kicker={articleChannelText("diaspora", lang)}
+              title={text(newsChannelPresentation.diaspora.title, lang)}
+              description={text(newsChannelPresentation.diaspora.description, lang)}
+              light
+            />
+            <a href={articleChannelHref("diaspora")} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[.06] px-5 py-3 text-[12px] font-extrabold text-white/70 transition hover:bg-white hover:text-[#191919]">{t.browseSection}<ArrowLeft size={15} className={rtl ? "" : "rotate-180"} /></a>
+          </div>
+          <div className="relative mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+            {articlesByChannel.diaspora.length > 0 ? articlesByChannel.diaspora.slice(0, 3).map((article) => (
+              <DiasporaStoryCard key={article.id} article={article} lang={lang} readLabel={t.read} />
+            )) : (
+              <div className="rounded-[24px] border border-white/[.08] bg-white/[.045] p-8 text-[13px] leading-7 text-white/45 md:col-span-2 lg:col-span-3">{t.noStories}</div>
+            )}
           </div>
         </div>
       </section>
@@ -1089,41 +1275,49 @@ export default function Home() {
 
       <section id="leadership" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <SectionHeading kicker={t.leadershipKicker} title={t.leadershipTitle} description={t.leadershipText} />
-        <Tabs defaultValue="executive" dir={rtl ? "rtl" : "ltr"} className="mt-11">
-          <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]" variant="line">
-            <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
-            <TabsTrigger value="parliament" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
-            <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
-          </TabsList>
-          <TabsContent value="executive" className="mt-7">
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {executiveRegions.map((group, index) => (
-                <ExecutiveRegionCard
-                  key={text(group.region, lang)}
-                  region={text(group.region, lang)}
-                  members={group.members.map((member) => text(member, lang))}
-                  label={t.committeeMember}
-                  index={index}
-                />
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="parliament" className="mt-7">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {mps.map((person, index) => (
-                <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.mp} detail={text(person.district, lang)} index={index} />
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="cabinet" className="mt-7">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {ministers.map((person, index) => (
-                <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.minister} detail={text(person.portfolio, lang)} index={index} />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-        <p className="mt-6 text-[12px] font-normal leading-6 text-black/38">{t.listed}</p>
+        <Collapsible open={leadershipOpen} onOpenChange={setLeadershipOpen} className="mt-10">
+          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white px-5 py-5 text-start shadow-[0_10px_35px_rgba(0,0,0,.045)] transition hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:px-7">
+            <span className="flex items-center gap-4">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#191919] text-white transition group-hover:bg-[#df1f2d]"><Users size={20} /></span>
+              <span>
+                <span className="block text-[16px] font-extrabold">{leadershipOpen ? t.collapseLeadership : t.expandLeadership}</span>
+                <span className="mt-1 block text-[12px] font-normal text-black/40">{t.tabs.join(" · ")}</span>
+              </span>
+            </span>
+            <ChevronDown size={20} className={`shrink-0 text-black/38 transition-transform duration-300 ${leadershipOpen ? "rotate-180" : ""}`} />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <Tabs defaultValue="executive" dir={rtl ? "rtl" : "ltr"} className="mt-7">
+              <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]" variant="line">
+                <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
+                <TabsTrigger value="parliament" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
+                <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="executive" className="mt-7">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {executiveRegions.map((group, index) => (
+                    <ExecutiveRegionCard key={text(group.region, lang)} region={text(group.region, lang)} members={group.members.map((member) => text(member, lang))} label={t.committeeMember} index={index} />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="parliament" className="mt-7">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {mps.map((person, index) => (
+                    <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.mp} detail={text(person.district, lang)} index={index} />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="cabinet" className="mt-7">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {ministers.map((person, index) => (
+                    <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.minister} detail={text(person.portfolio, lang)} index={index} />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+            <p className="mt-6 text-[12px] font-normal leading-6 text-black/38">{t.listed}</p>
+          </CollapsibleContent>
+        </Collapsible>
       </section>
 
       <section id="publications" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
@@ -1205,7 +1399,7 @@ export default function Home() {
           <div className="mt-7 grid gap-4 md:grid-cols-3" data-reveal>
             {photos.map((photo, index) => (
               <button key={photo.src} onClick={() => setSelectedPhoto(index)} className="group relative aspect-[4/3] overflow-hidden rounded-[24px] bg-white/5 text-start shadow-[0_16px_45px_rgba(0,0,0,.18)] ring-1 ring-white/[.06]">
-                <img src={photo.src} alt={text(photo.title, lang)} className="h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+                <img src={photo.src} alt={text(photo.title, lang)} className={`h-full w-full transition duration-700 group-hover:scale-105 ${photo.fit === "contain" ? "bg-white p-8 object-contain" : "object-cover grayscale group-hover:grayscale-0"}`} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
                   <div className="mb-2 flex items-center gap-2 text-[11px] font-bold text-[#ff6570]"><ImageIcon size={13} />0{index + 1}</div>
@@ -1259,7 +1453,7 @@ export default function Home() {
           {selectedPhoto !== null && (
             <>
               <div className="max-h-[70vh] overflow-hidden bg-black">
-                <img src={photos[selectedPhoto].src} alt={text(photos[selectedPhoto].title, lang)} className="max-h-[70vh] w-full object-contain" />
+                <img src={photos[selectedPhoto].src} alt={text(photos[selectedPhoto].title, lang)} className={`max-h-[70vh] w-full object-contain ${photos[selectedPhoto].fit === "contain" ? "bg-white p-10" : ""}`} />
               </div>
               <DialogHeader className="p-6 text-start">
                 <DialogTitle className="text-xl font-extrabold">{text(photos[selectedPhoto].title, lang)}</DialogTitle>

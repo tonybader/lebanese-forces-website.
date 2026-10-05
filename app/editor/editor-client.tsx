@@ -9,11 +9,18 @@ import {
   Loader2,
   LockKeyhole,
   LogOut,
+  MapPin,
+  Megaphone,
+  MessageSquareQuote,
   Newspaper,
+  PartyPopper,
+  Plane,
   Plus,
   Save,
+  Tags,
   Trash2,
   UploadCloud,
+  UserRound,
   X,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -33,15 +40,125 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import type { Article, ArticleLanguage } from "@/lib/article-types";
-import { articleHref, formatArticleDate } from "@/lib/article-types";
+import type { Article, ArticleChannel, ArticleLanguage } from "@/lib/article-types";
+import {
+  articleChannelText,
+  articleHref,
+  formatArticleDate,
+  getArticleChannel,
+} from "@/lib/article-types";
 
 type TranslationState = Record<ArticleLanguage, string>;
 type Notice = { kind: "success" | "error"; text: string } | null;
 
 const emptyTranslations = (): TranslationState => ({ ar: "", en: "", fr: "" });
+
+const channelOptions = [
+  {
+    value: "statements" as const,
+    label: "Latest statements",
+    description: "Official party or party president statements",
+    icon: Megaphone,
+  },
+  {
+    value: "positions" as const,
+    label: "MPs & ministers",
+    description: "Positions by MPs and ministers",
+    icon: MessageSquareQuote,
+  },
+  {
+    value: "party" as const,
+    label: "Party news",
+    description: "Party news, meetings and activities",
+    icon: PartyPopper,
+  },
+  {
+    value: "diaspora" as const,
+    label: "Diaspora",
+    description: "Activities from overseas chapters",
+    icon: Plane,
+  },
+] satisfies Array<{
+  value: ArticleChannel;
+  label: string;
+  description: string;
+  icon: typeof Megaphone;
+}>;
+
+function parseTagText(value: string): string[] {
+  const tags: string[] = [];
+  const seen = new Set<string>();
+  for (const part of value.split(/[,،\n]+/)) {
+    const tag = part.normalize("NFKC").replace(/\s+/g, " ").trim().slice(0, 80);
+    const key = tag.toLocaleLowerCase("ar-LB");
+    if (!tag || seen.has(key)) continue;
+    seen.add(key);
+    tags.push(tag);
+    if (tags.length === 16) break;
+  }
+  return tags;
+}
+
+function TagField({
+  id,
+  label,
+  hint,
+  placeholder,
+  value,
+  onChange,
+  icon,
+}: {
+  id: string;
+  label: string;
+  hint: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  icon: React.ReactNode;
+}) {
+  const tags = parseTagText(value);
+
+  return (
+    <div className="rounded-[20px] border border-black/[.07] bg-[#fafaf8] p-4">
+      <Label htmlFor={id} className="flex items-center gap-2 font-extrabold">
+        <span className="text-[#df1f2d]">{icon}</span>
+        {label}
+      </Label>
+      <p className="mt-1 text-[11px] leading-5 text-black/42">{hint}</p>
+      <Input
+        id={id}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            onChange(value.trimEnd().endsWith(",") ? `${value} ` : `${value.trimEnd()}, `);
+          }
+        }}
+        className="mt-3 h-11 rounded-xl bg-white px-3"
+        placeholder={placeholder}
+      />
+      {tags.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => onChange(tags.filter((item) => item !== tag).join(", "))}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#191919] px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-[#df1f2d]"
+              aria-label={`Remove ${tag}`}
+            >
+              {tag}<X size={12} />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 async function optimizeImage(file: File): Promise<File> {
   if (!file.type.startsWith("image/")) throw new Error("Please choose a valid image.");
@@ -170,6 +287,10 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const formRef = useRef<HTMLElement>(null);
   const [title, setTitle] = useState<TranslationState>(emptyTranslations);
   const [body, setBody] = useState<TranslationState>(emptyTranslations);
+  const [channel, setChannel] = useState<ArticleChannel>("party");
+  const [regions, setRegions] = useState("");
+  const [activityTypes, setActivityTypes] = useState("");
+  const [people, setPeople] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [editing, setEditing] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -200,6 +321,10 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setEditing(null);
     setTitle(emptyTranslations());
     setBody(emptyTranslations());
+    setChannel("party");
+    setRegions("");
+    setActivityTypes("");
+    setPeople("");
     setImage(null);
     setFileKey((value) => value + 1);
   };
@@ -208,6 +333,10 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setEditing(article);
     setTitle({ ...article.title });
     setBody({ ...article.body });
+    setChannel(getArticleChannel(article));
+    setRegions((article.regions || []).join(", "));
+    setActivityTypes((article.activityTypes || []).join(", "));
+    setPeople((article.people || []).join(", "));
     setImage(null);
     setFileKey((value) => value + 1);
     setNotice(null);
@@ -241,6 +370,10 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
       form.set("bodyAr", body.ar);
       form.set("bodyEn", body.en);
       form.set("bodyFr", body.fr);
+      form.set("channel", channel);
+      form.set("regions", JSON.stringify(parseTagText(regions)));
+      form.set("activityTypes", JSON.stringify(parseTagText(activityTypes)));
+      form.set("people", JSON.stringify(parseTagText(people)));
       const response = await fetch(
         editing ? `/api/articles/${encodeURIComponent(editing.id)}` : "/api/articles",
         { method: editing ? "PUT" : "POST", body: form },
@@ -316,6 +449,33 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           </div>
 
           <form onSubmit={saveArticle} className="space-y-7">
+            <fieldset>
+              <legend className="mb-3 block text-[14px] font-extrabold">Publish in *</legend>
+              <RadioGroup
+                value={channel}
+                onValueChange={(value) => setChannel(value as ArticleChannel)}
+                className="grid gap-2 sm:grid-cols-2"
+              >
+                {channelOptions.map((option) => {
+                  const Icon = option.icon;
+                  const selected = channel === option.value;
+                  return (
+                    <Label
+                      key={option.value}
+                      htmlFor={`channel-${option.value}`}
+                      className={`flex min-h-[104px] cursor-pointer items-start gap-3 rounded-[18px] border p-4 transition ${selected ? "border-[#df1f2d] bg-red-50 shadow-[0_8px_25px_rgba(223,31,45,.08)]" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}
+                    >
+                      <RadioGroupItem id={`channel-${option.value}`} value={option.value} className="mt-1" />
+                      <span className="min-w-0">
+                        <span className={`flex items-center gap-2 text-[13px] font-extrabold ${selected ? "text-[#df1f2d]" : "text-[#191919]"}`}><Icon size={16} />{option.label}</span>
+                        <span className="mt-1.5 block text-[11px] font-normal leading-5 text-black/45">{option.description}</span>
+                      </span>
+                    </Label>
+                  );
+                })}
+              </RadioGroup>
+            </fieldset>
+
             <div>
               <Label htmlFor="article-image" className="mb-3 block font-extrabold">Cover photograph {editing ? "(optional)" : "*"}</Label>
               <label htmlFor="article-image" className="group relative grid aspect-[16/7.5] cursor-pointer place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#df1f2d]/50">
@@ -337,6 +497,17 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
                 </TabsContent>
               ))}
             </Tabs>
+
+            <fieldset>
+              <legend className="mb-1 flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#df1f2d]" />Searchable tags</legend>
+              <p className="mb-4 text-[12px] leading-6 text-black/45">Separate multiple tags with a comma. Visitors can click any tag to see related coverage.</p>
+              <div className="grid gap-3">
+                <TagField id="regions" label="Regions" hint="Districts, cities or overseas regions covered by the story." placeholder="Beirut, Keserwan, Zahle…" value={regions} onChange={setRegions} icon={<MapPin size={16} />} />
+                <TagField id="activity-types" label="Activity types" hint="The nature of the event or activity." placeholder="Meeting, tour, conference, Mass…" value={activityTypes} onChange={setActivityTypes} icon={<Tags size={16} />} />
+                <TagField id="people" label="MPs, ministers and public figures" hint="Add every person whose related stories should be grouped together." placeholder="Samir Geagea, Sethrida Geagea…" value={people} onChange={setPeople} icon={<UserRound size={16} />} />
+              </div>
+            </fieldset>
+
             <Button type="submit" disabled={submitting || !publishingConfigured} className="h-14 w-full rounded-2xl bg-[#df1f2d] text-[15px] font-extrabold shadow-[0_12px_30px_rgba(223,31,45,.2)] hover:bg-[#c51825] sm:w-auto sm:px-9">
               {submitting ? <Loader2 className="animate-spin" /> : editing ? <Save /> : <UploadCloud />} {editing ? "Save changes" : "Publish article"}
             </Button>
@@ -348,7 +519,12 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           <div className="mt-6 max-h-[900px] space-y-3 overflow-y-auto pr-1">
             {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : articles.map((article, index) => (
               <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#df1f2d] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
-                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{index + 1}</span>{formatArticleDate(article.publishedAt, "ar")}{article.externalUrl && <span className="rounded-full bg-white/8 px-2 py-0.5">External</span>}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{formatArticleDate(article.publishedAt, "ar")}{article.externalUrl && <span className="rounded-full bg-white/8 px-2 py-0.5">External</span>}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+                {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].slice(0, 5).map((tag, tagIndex) => <span key={`${tag}-${tagIndex}`} className="rounded-full bg-white/[.07] px-2.5 py-1 text-[10px] font-bold text-white/50">{tag}</span>)}
+                  </div>
+                )}
                 <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[.07] pt-3">
                   <Button type="button" size="sm" onClick={() => startEdit(article)} className="rounded-full bg-white/8 text-white hover:bg-white hover:text-[#191919]"><Edit3 /> Edit</Button>
                   <Button asChild type="button" size="sm" variant="ghost" className="rounded-full text-white/55 hover:bg-white/8 hover:text-white"><a href={articleHref(article)} target="_blank"><ExternalLink /> View</a></Button>

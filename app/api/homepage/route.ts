@@ -14,7 +14,13 @@ export async function GET() {
   const content = await getHomepageContent();
   return NextResponse.json(
     { content },
-    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
+      },
+    },
   );
 }
 
