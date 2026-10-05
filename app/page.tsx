@@ -120,7 +120,7 @@ const ui = {
     leadershipTitle: "القيادة والكتل",
     leadershipText:
       "تعرّف إلى أعضاء الهيئة التنفيذية، نواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
-    tabs: ["الهيئة التنفيذية", "الكتلة النيابية", "الكتلة الوزارية"],
+    tabs: ["الكتلة الوزارية", "الكتلة النيابية", "الهيئة التنفيذية"],
     committeeMember: "عضو منتخب في الهيئة التنفيذية",
     vicePresident: "نائب رئيس الحزب",
     mp: "نائب في المجلس النيابي",
@@ -214,7 +214,7 @@ const ui = {
     leadershipTitle: "Leadership and blocs",
     leadershipText:
       "Meet the Executive Committee, the Lebanese Forces MPs in Parliament and the current ministers.",
-    tabs: ["Executive Committee", "Parliamentary bloc", "Ministerial bloc"],
+    tabs: ["Ministerial bloc", "Parliamentary bloc", "Executive Committee"],
     committeeMember: "Elected Executive Committee member",
     vicePresident: "Party vice president",
     mp: "Member of Parliament",
@@ -308,7 +308,7 @@ const ui = {
     leadershipTitle: "Direction et blocs",
     leadershipText:
       "Découvrez le Comité exécutif, les députés des Forces Libanaises et les ministres actuels.",
-    tabs: ["Comité exécutif", "Bloc parlementaire", "Bloc ministériel"],
+    tabs: ["Bloc ministériel", "Bloc parlementaire", "Comité exécutif"],
     committeeMember: "Membre élu du Comité exécutif",
     vicePresident: "Vice-président du parti",
     mp: "Député au Parlement",
@@ -1245,16 +1245,16 @@ export default function Home() {
             <ChevronDown size={20} className={`shrink-0 text-black/38 transition-transform duration-300 ${leadershipOpen ? "rotate-180" : ""}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <Tabs defaultValue="executive" dir={rtl ? "rtl" : "ltr"} className="mt-7">
+            <Tabs defaultValue="cabinet" dir={rtl ? "rtl" : "ltr"} className="mt-7">
               <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]">
-                <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
+                <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
                 <TabsTrigger value="parliament" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
-                <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
+                <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
               </TabsList>
-              <TabsContent value="executive" className="mt-7">
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {executiveRegions.map((group, index) => (
-                    <ExecutiveRegionCard key={text(group.region, lang)} region={text(group.region, lang)} members={group.members.map((member) => text(member, lang))} label={t.committeeMember} index={index} />
+              <TabsContent value="cabinet" className="mt-7">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {ministers.map((person, index) => (
+                    <PersonCard key={person.slug} person={person} lang={lang} role={t.minister} index={index} />
                   ))}
                 </div>
               </TabsContent>
@@ -1265,10 +1265,10 @@ export default function Home() {
                   ))}
                 </div>
               </TabsContent>
-              <TabsContent value="cabinet" className="mt-7">
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {ministers.map((person, index) => (
-                    <PersonCard key={person.slug} person={person} lang={lang} role={t.minister} index={index} />
+              <TabsContent value="executive" className="mt-7">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {executiveRegions.map((group, index) => (
+                    <ExecutiveRegionCard key={text(group.region, lang)} region={text(group.region, lang)} members={group.members.map((member) => text(member, lang))} label={t.committeeMember} index={index} />
                   ))}
                 </div>
               </TabsContent>
