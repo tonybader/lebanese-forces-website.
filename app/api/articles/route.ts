@@ -89,6 +89,7 @@ export async function POST(request: Request) {
       regions: tagList(form, "regions"),
       activityTypes: tagList(form, "activityTypes"),
       people: tagList(form, "people"),
+      pinned: value(form, "pinned") === "true",
       image: {
         bytes: new Uint8Array(await image.arrayBuffer()),
         contentType: image.type,

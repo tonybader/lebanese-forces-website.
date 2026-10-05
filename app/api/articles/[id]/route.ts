@@ -84,6 +84,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
       regions: tagList(form, "regions"),
       activityTypes: tagList(form, "activityTypes"),
       people: tagList(form, "people"),
+      pinned: value(form, "pinned") === "true",
       image,
     });
     return NextResponse.json({ article });

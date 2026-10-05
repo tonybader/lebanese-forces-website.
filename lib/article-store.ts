@@ -28,6 +28,7 @@ export type NewArticleInput = {
   regions: string[];
   activityTypes: string[];
   people: string[];
+  pinned: boolean;
   image: {
     bytes: Uint8Array;
     contentType: string;
@@ -42,6 +43,7 @@ export type UpdateArticleInput = {
   regions: string[];
   activityTypes: string[];
   people: string[];
+  pinned: boolean;
   image?: {
     bytes: Uint8Array;
     contentType: string;
@@ -119,6 +121,7 @@ function normalizeArticles(value: unknown): Article[] {
         regions: cleanTags(article.regions),
         activityTypes: cleanTags(article.activityTypes),
         people: cleanTags(article.people),
+        pinned: article.pinned === true,
         category:
           article.category && typeof article.category.ar === "string"
             ? article.category
@@ -127,6 +130,7 @@ function normalizeArticles(value: unknown): Article[] {
     })
     .sort(
       (left, right) =>
+        Number(right.pinned === true) - Number(left.pinned === true) ||
         new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
     );
 }
@@ -324,6 +328,7 @@ export async function createArticle(input: NewArticleInput): Promise<Article> {
     regions: cleanTags(input.regions),
     activityTypes: cleanTags(input.activityTypes),
     people: cleanTags(input.people),
+    pinned: input.pinned,
   };
 
   const current = await readArticleDocument();
@@ -391,6 +396,7 @@ export async function updateArticle(input: UpdateArticleInput): Promise<Article>
     regions: cleanTags(input.regions),
     activityTypes: cleanTags(input.activityTypes),
     people: cleanTags(input.people),
+    pinned: input.pinned,
   };
   const articles = [...current.articles];
   articles[index] = updated;

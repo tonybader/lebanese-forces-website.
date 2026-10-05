@@ -26,6 +26,7 @@ export type Article = {
   imageUrl: string;
   imageAlt: LocalizedArticleText;
   externalUrl?: string;
+  pinned?: boolean;
   channel?: ArticleChannel;
   regions?: string[];
   activityTypes?: string[];
@@ -124,5 +125,5 @@ export function formatArticleDate(
 }
 
 export function articleHref(article: Article): string {
-  return article.externalUrl || `/news/${encodeURIComponent(article.slug)}`;
+  return `/news/${encodeURIComponent(article.slug)}`;
 }

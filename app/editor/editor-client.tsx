@@ -15,8 +15,10 @@ import {
   Newspaper,
   PartyPopper,
   Plane,
+  Pin,
   Plus,
   Save,
+  Sparkles,
   Tags,
   Trash2,
   UploadCloud,
@@ -50,6 +52,7 @@ import {
   formatArticleDate,
   getArticleChannel,
 } from "@/lib/article-types";
+import { publicProfiles } from "@/lib/people";
 
 type TranslationState = Record<ArticleLanguage, string>;
 type Notice = { kind: "success" | "error"; text: string } | null;
@@ -100,6 +103,90 @@ function parseTagText(value: string): string[] {
     if (tags.length === 16) break;
   }
   return tags;
+}
+
+type TagSuggestion = {
+  regions: string[];
+  activityTypes: string[];
+  people: string[];
+};
+
+const regionRules = [
+  ["بيروت", ["بيروت", "beirut", "beyrouth"]],
+  ["بعبدا", ["بعبدا", "baabda"]],
+  ["المتن", ["المتن", "metn"]],
+  ["عاليه", ["عاليه", "aley"]],
+  ["الشوف", ["الشوف", "chouf"]],
+  ["كسروان", ["كسروان", "keserwan", "kesrouan"]],
+  ["جبيل", ["جبيل", "jbeil", "byblos"]],
+  ["بشري", ["بشري", "bsharri", "bcharre", "bécharré"]],
+  ["الكورة", ["الكورة", "koura"]],
+  ["البترون", ["البترون", "batroun"]],
+  ["طرابلس", ["طرابلس", "tripoli"]],
+  ["عكار", ["عكار", "akkar"]],
+  ["زحلة", ["زحلة", "zahle", "zahlé"]],
+  ["البقاع", ["البقاع", "bekaa", "békaa"]],
+  ["بعلبك ـ الهرمل", ["بعلبك", "الهرمل", "baalbek", "hermel"]],
+  ["جزين", ["جزين", "jezzine"]],
+  ["صيدا", ["صيدا", "saida", "sidon"]],
+  ["الجنوب", ["الجنوب", "south lebanon", "liban-sud"]],
+  ["الشمال", ["الشمال", "north lebanon", "liban-nord"]],
+  ["الولايات المتحدة", ["الولايات المتحدة", "أميركا", "اميركا", "united states", "usa"]],
+  ["كندا", ["كندا", "canada"]],
+  ["أستراليا", ["أستراليا", "استراليا", "australia"]],
+  ["فرنسا", ["فرنسا", "france"]],
+  ["أوروبا", ["أوروبا", "اوروبا", "europe"]],
+  ["الخليج", ["الخليج", "gulf", "golfe"]],
+] as const;
+
+const activityRules = [
+  ["بيان", ["بيان", "statement", "communiqué", "communique"]],
+  ["موقف سياسي", ["موقف", "تصريح", "position", "déclaration"]],
+  ["اجتماع", ["اجتماع", "لقاء", "meeting", "réunion", "rencontre"]],
+  ["مؤتمر أو ندوة", ["مؤتمر", "ندوة", "conference", "conférence", "seminar", "séminaire"]],
+  ["زيارة أو جولة", ["زيارة", "جولة", "visit", "tour", "visite", "tournée"]],
+  ["قداس", ["قداس", "mass", "messe"]],
+  ["احتفال", ["احتفال", "مهرجان", "ceremony", "celebration", "cérémonie"]],
+  ["انتخابات", ["انتخاب", "انتخابات", "election", "élection"]],
+  ["عمل نيابي", ["مجلس النواب", "لجنة نيابية", "اقتراح قانون", "parliament", "legislation", "parlement"]],
+  ["حملة", ["حملة", "campaign", "campagne"]],
+  ["مقابلة إعلامية", ["مقابلة", "حديث تلفزيوني", "interview", "entretien"]],
+  ["مؤتمر صحافي", ["مؤتمر صحافي", "مؤتمر صحفي", "press conference", "conférence de presse"]],
+] as const;
+
+function normalizedSearchText(value: string): string {
+  return value.normalize("NFKC").toLocaleLowerCase("ar-LB");
+}
+
+function matchedLabels(
+  haystack: string,
+  rules: ReadonlyArray<readonly [string, readonly string[]]>,
+): string[] {
+  return rules
+    .filter(([, terms]) => terms.some((term) => haystack.includes(normalizedSearchText(term))))
+    .map(([label]) => label);
+}
+
+function suggestTags(title: TranslationState, body: TranslationState): TagSuggestion {
+  const haystack = normalizedSearchText(
+    `${title.ar} ${title.en} ${title.fr} ${body.ar} ${body.en} ${body.fr}`,
+  );
+  const people = publicProfiles
+    .filter((profile) => profile.aliases.some((alias) => haystack.includes(normalizedSearchText(alias))))
+    .map((profile) => profile.name.ar);
+  const samirAliases = ["سمير جعجع", "samir geagea", "samir geagea", "samir jaajaa"];
+  if (samirAliases.some((alias) => haystack.includes(normalizedSearchText(alias)))) {
+    people.unshift("سمير جعجع");
+  }
+  return {
+    regions: matchedLabels(haystack, regionRules),
+    activityTypes: matchedLabels(haystack, activityRules),
+    people: [...new Set(people)],
+  };
+}
+
+function mergeTagText(current: string, suggestions: string[]): string {
+  return [...new Set([...parseTagText(current), ...suggestions])].slice(0, 16).join(", ");
 }
 
 function TagField({
@@ -291,6 +378,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const [regions, setRegions] = useState("");
   const [activityTypes, setActivityTypes] = useState("");
   const [people, setPeople] = useState("");
+  const [pinned, setPinned] = useState(false);
+  const [tagAssistantMessage, setTagAssistantMessage] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [editing, setEditing] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -325,6 +414,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setRegions("");
     setActivityTypes("");
     setPeople("");
+    setPinned(false);
+    setTagAssistantMessage("");
     setImage(null);
     setFileKey((value) => value + 1);
   };
@@ -337,6 +428,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setRegions((article.regions || []).join(", "));
     setActivityTypes((article.activityTypes || []).join(", "));
     setPeople((article.people || []).join(", "));
+    setPinned(article.pinned === true);
+    setTagAssistantMessage("");
     setImage(null);
     setFileKey((value) => value + 1);
     setNotice(null);
@@ -374,6 +467,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
       form.set("regions", JSON.stringify(parseTagText(regions)));
       form.set("activityTypes", JSON.stringify(parseTagText(activityTypes)));
       form.set("people", JSON.stringify(parseTagText(people)));
+      form.set("pinned", String(pinned));
       const response = await fetch(
         editing ? `/api/articles/${encodeURIComponent(editing.id)}` : "/api/articles",
         { method: editing ? "PUT" : "POST", body: form },
@@ -382,7 +476,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
       if (!response.ok) throw new Error(data.error || "The article could not be saved.");
       const wasEditing = Boolean(editing);
       clearForm();
-      setNotice({ kind: "success", text: wasEditing ? "The article was updated." : "The article was published and is now the newest story." });
+      setNotice({ kind: "success", text: wasEditing ? "The article was updated." : "The article was published in the selected section." });
       await loadArticles();
     } catch (caught) {
       setNotice({ kind: "error", text: caught instanceof Error ? caught.message : "The article could not be saved." });
@@ -418,6 +512,19 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     language: ArticleLanguage,
     value: string,
   ) => setter((current) => ({ ...current, [language]: value }));
+
+  const analyzeArticleTags = () => {
+    const suggestions = suggestTags(title, body);
+    const total = suggestions.regions.length + suggestions.activityTypes.length + suggestions.people.length;
+    setRegions((current) => mergeTagText(current, suggestions.regions));
+    setActivityTypes((current) => mergeTagText(current, suggestions.activityTypes));
+    setPeople((current) => mergeTagText(current, suggestions.people));
+    setTagAssistantMessage(
+      total
+        ? `${total} suggestion${total === 1 ? "" : "s"} added. Review or remove any tag before publishing.`
+        : "No clear tags were found. You can still add them manually.",
+    );
+  };
 
   return (
     <ManagementFrame>
@@ -476,6 +583,14 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
               </RadioGroup>
             </fieldset>
 
+            <label className={`flex cursor-pointer items-start gap-4 rounded-[20px] border p-4 transition ${pinned ? "border-[#df1f2d]/35 bg-red-50" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}>
+              <input type="checkbox" checked={pinned} onChange={(event) => setPinned(event.target.checked)} className="mt-1 h-4 w-4 accent-[#df1f2d]" />
+              <span className="min-w-0">
+                <span className="flex items-center gap-2 text-[13px] font-extrabold"><Pin size={15} className="text-[#df1f2d]" />Pin this story</span>
+                <span className="mt-1 block text-[11px] leading-5 text-black/45">Keep it at the top of its selected section even when newer stories are published.</span>
+              </span>
+            </label>
+
             <div>
               <Label htmlFor="article-image" className="mb-3 block font-extrabold">Cover photograph {editing ? "(optional)" : "*"}</Label>
               <label htmlFor="article-image" className="group relative grid aspect-[16/7.5] cursor-pointer place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#df1f2d]/50">
@@ -498,15 +613,19 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
               ))}
             </Tabs>
 
-            <fieldset>
-              <legend className="mb-1 flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#df1f2d]" />Searchable tags</legend>
-              <p className="mb-4 text-[12px] leading-6 text-black/45">Separate multiple tags with a comma. Visitors can click any tag to see related coverage.</p>
+            <section aria-labelledby="article-tags-heading">
+              <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
+                <h2 id="article-tags-heading" className="flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#df1f2d]" />Searchable tags</h2>
+                <Button type="button" variant="outline" size="sm" onClick={analyzeArticleTags} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white"><Sparkles size={14} />Analyze & suggest tags</Button>
+              </div>
+              <p className="mb-4 text-[12px] leading-6 text-black/45">The assistant detects regions, activity types and public figures from the title and article. Every suggestion remains editable.</p>
+              {tagAssistantMessage && <p role="status" className="mb-4 rounded-xl bg-[#191919] px-4 py-3 text-[11px] font-bold text-white/72">{tagAssistantMessage}</p>}
               <div className="grid gap-3">
                 <TagField id="regions" label="Regions" hint="Districts, cities or overseas regions covered by the story." placeholder="Beirut, Keserwan, Zahle…" value={regions} onChange={setRegions} icon={<MapPin size={16} />} />
                 <TagField id="activity-types" label="Activity types" hint="The nature of the event or activity." placeholder="Meeting, tour, conference, Mass…" value={activityTypes} onChange={setActivityTypes} icon={<Tags size={16} />} />
                 <TagField id="people" label="MPs, ministers and public figures" hint="Add every person whose related stories should be grouped together." placeholder="Samir Geagea, Sethrida Geagea…" value={people} onChange={setPeople} icon={<UserRound size={16} />} />
               </div>
-            </fieldset>
+            </section>
 
             <Button type="submit" disabled={submitting || !publishingConfigured} className="h-14 w-full rounded-2xl bg-[#df1f2d] text-[15px] font-extrabold shadow-[0_12px_30px_rgba(223,31,45,.2)] hover:bg-[#c51825] sm:w-auto sm:px-9">
               {submitting ? <Loader2 className="animate-spin" /> : editing ? <Save /> : <UploadCloud />} {editing ? "Save changes" : "Publish article"}
@@ -515,11 +634,11 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
         </section>
 
         <section className="rounded-[30px] bg-[#191919] p-5 text-white shadow-[0_20px_60px_rgba(0,0,0,.12)] sm:p-7">
-          <div className="flex items-center justify-between gap-4"><div><div className="text-[11px] font-bold text-[#ff6570]">NEWEST FIRST</div><h2 className="mt-1 text-2xl font-extrabold">Published articles</h2></div><Button type="button" onClick={clearForm} className="rounded-full bg-white text-[#191919] hover:bg-[#df1f2d] hover:text-white"><Plus /> New</Button></div>
+          <div className="flex items-center justify-between gap-4"><div><div className="text-[11px] font-bold text-[#ff6570]">PINNED, THEN NEWEST</div><h2 className="mt-1 text-2xl font-extrabold">Published articles</h2></div><Button type="button" onClick={clearForm} className="rounded-full bg-white text-[#191919] hover:bg-[#df1f2d] hover:text-white"><Plus /> New</Button></div>
           <div className="mt-6 max-h-[900px] space-y-3 overflow-y-auto pr-1">
             {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : articles.map((article, index) => (
               <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#df1f2d] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
-                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{formatArticleDate(article.publishedAt, "ar")}{article.externalUrl && <span className="rounded-full bg-white/8 px-2 py-0.5">External</span>}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
                 {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].slice(0, 5).map((tag, tagIndex) => <span key={`${tag}-${tagIndex}`} className="rounded-full bg-white/[.07] px-2.5 py-1 text-[10px] font-bold text-white/50">{tag}</span>)}

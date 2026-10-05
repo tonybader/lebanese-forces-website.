@@ -20,6 +20,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const article = await findArticle(decodeURIComponent(slug));
-  if (!article || article.externalUrl) notFound();
+  if (!article) notFound();
   return <ArticleView article={article} />;
 }

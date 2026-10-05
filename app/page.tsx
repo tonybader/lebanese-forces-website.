@@ -55,6 +55,7 @@ import {
 } from "@/lib/article-types";
 import type { HomepageContent } from "@/lib/homepage-types";
 import { homepageText } from "@/lib/homepage-types";
+import { ministers, mps, profileText, type PublicProfile } from "@/lib/people";
 
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
@@ -83,7 +84,7 @@ const ui = {
     stats: [
       ["1976", "سنة التأسيس"],
       ["11", "عضواً منتخباً في الهيئة"],
-      ["16", "نائباً في البرلمان"],
+      ["19", "نائباً في البرلمان"],
       ["4", "وزراء حاليون"],
     ],
     latestKicker: "المشهد الآن",
@@ -177,7 +178,7 @@ const ui = {
     stats: [
       ["1976", "Founded"],
       ["11", "Elected committee members"],
-      ["16", "Members of Parliament"],
+      ["19", "Members of Parliament"],
       ["4", "Current ministers"],
     ],
     latestKicker: "Now",
@@ -271,7 +272,7 @@ const ui = {
     stats: [
       ["1976", "Année de fondation"],
       ["11", "Membres élus du comité"],
-      ["16", "Députés au Parlement"],
+      ["19", "Députés au Parlement"],
       ["4", "Ministres actuels"],
     ],
     latestKicker: "Maintenant",
@@ -529,48 +530,6 @@ const executiveRegions: { region: Localized; members: Localized[] }[] = [
   },
 ];
 
-const mps: { name: Localized; district: Localized }[] = [
-  { name: { ar: "ستريدا جعجع", en: "Sethrida Geagea", fr: "Sethrida Geagea" }, district: { ar: "بشري", en: "Bsharri", fr: "Bécharré" } },
-  { name: { ar: "جورج عدوان", en: "Georges Adwan", fr: "Georges Adwan" }, district: { ar: "الشوف", en: "Chouf", fr: "Chouf" } },
-  { name: { ar: "أنطوان حبشي", en: "Antoine Habchi", fr: "Antoine Habchi" }, district: { ar: "بعلبك الهرمل", en: "Baalbek–Hermel", fr: "Baalbek–Hermel" } },
-  { name: { ar: "ملحم الرياشي", en: "Melhem Riachy", fr: "Melhem Riachy" }, district: { ar: "المتن", en: "Metn", fr: "Metn" } },
-  { name: { ar: "رازي الحاج", en: "Razi El Hage", fr: "Razi El Hage" }, district: { ar: "المتن", en: "Metn", fr: "Metn" } },
-  { name: { ar: "نزيه متّى", en: "Nazih Matta", fr: "Nazih Matta" }, district: { ar: "عاليه", en: "Aley", fr: "Aley" } },
-  { name: { ar: "بيار بو عاصي", en: "Pierre Bou Assi", fr: "Pierre Bou Assi" }, district: { ar: "بعبدا", en: "Baabda", fr: "Baabda" } },
-  { name: { ar: "غادة أيوب", en: "Ghada Ayoub", fr: "Ghada Ayoub" }, district: { ar: "جزين", en: "Jezzine", fr: "Jezzine" } },
-  { name: { ar: "جورج عقيص", en: "Georges Okais", fr: "Georges Okais" }, district: { ar: "زحلة", en: "Zahle", fr: "Zahlé" } },
-  { name: { ar: "إلياس اسطفان", en: "Elias Stephan", fr: "Elias Stephan" }, district: { ar: "زحلة", en: "Zahle", fr: "Zahlé" } },
-  { name: { ar: "إلياس الخوري", en: "Elias Khoury", fr: "Elias Khoury" }, district: { ar: "طرابلس", en: "Tripoli", fr: "Tripoli" } },
-  { name: { ar: "غياث يزبك", en: "Ghayath Yazbeck", fr: "Ghayath Yazbeck" }, district: { ar: "البترون", en: "Batroun", fr: "Batroun" } },
-  { name: { ar: "فادي كرم", en: "Fadi Karam", fr: "Fadi Karam" }, district: { ar: "الكورة", en: "Koura", fr: "Koura" } },
-  { name: { ar: "غسان حاصباني", en: "Ghassan Hasbani", fr: "Ghassan Hasbani" }, district: { ar: "بيروت الأولى", en: "Beirut I", fr: "Beyrouth I" } },
-  { name: { ar: "زياد الحواط", en: "Ziad Hawat", fr: "Ziad Hawat" }, district: { ar: "جبيل", en: "Byblos", fr: "Jbeil" } },
-  { name: { ar: "شوقي الدكاش", en: "Chawki Daccache", fr: "Chawki Daccache" }, district: { ar: "كسروان", en: "Keserwan", fr: "Kesrouan" } },
-];
-
-const ministers: { name: Localized; portfolio: Localized }[] = [
-  {
-    name: { ar: "يوسف رجّي", en: "Youssef Raji", fr: "Youssef Raji" },
-    portfolio: { ar: "الخارجية والمغتربين", en: "Foreign Affairs and Emigrants", fr: "Affaires étrangères et Émigrés" },
-  },
-  {
-    name: { ar: "جو صدّي", en: "Joe Saddi", fr: "Joe Saddi" },
-    portfolio: { ar: "الطاقة والمياه", en: "Energy and Water", fr: "Énergie et Eau" },
-  },
-  {
-    name: { ar: "جو عيسى الخوري", en: "Joe Issa El Khoury", fr: "Joe Issa El Khoury" },
-    portfolio: { ar: "الصناعة", en: "Industry", fr: "Industrie" },
-  },
-  {
-    name: { ar: "كمال شحادة", en: "Kamal Shehadeh", fr: "Kamal Shehadeh" },
-    portfolio: {
-      ar: "المهجّرين ووزير دولة لشؤون التكنولوجيا والذكاء الاصطناعي",
-      en: "Displaced Affairs and Minister of State for Technology and AI",
-      fr: "Déplacés et ministre d’État chargé de la Technologie et de l’IA",
-    },
-  },
-];
-
 const publications = [
   {
     icon: FileText,
@@ -665,33 +624,29 @@ function SectionHeading({
 }
 
 function PersonCard({
-  name,
+  person,
+  lang,
   role,
-  detail,
   index,
 }: {
-  name: string;
+  person: PublicProfile;
+  lang: Lang;
   role: string;
-  detail?: string;
   index: number;
 }) {
-  const initials = name
-    .split(" ")
-    .slice(0, 2)
-    .map((part) => part.charAt(0))
-    .join("");
-
   return (
-    <article className="group flex min-h-[176px] flex-col rounded-[22px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_20px_50px_rgba(0,0,0,.09)]" data-reveal>
-      <div className="flex items-start justify-between gap-4">
-        <span className="grid h-11 w-11 place-items-center rounded-full bg-[#f4f4f1] text-sm font-extrabold text-[#df1f2d] transition group-hover:bg-[#df1f2d] group-hover:text-white">{initials}</span>
-        <span className="text-[11px] font-bold tabular-nums text-black/22">{String(index + 1).padStart(2, "0")}</span>
+    <a href={`/people/${person.slug}`} className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_22px_55px_rgba(0,0,0,.11)]" data-reveal>
+      <div className="relative aspect-[4/4.5] overflow-hidden bg-[#ecece8]">
+        <img src={person.imageUrl} alt={profileText(person.name, lang)} className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.035]" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
+        <span className="absolute end-4 top-4 rounded-full bg-black/42 px-2.5 py-1 text-[10px] font-bold tabular-nums text-white/75 backdrop-blur">{String(index + 1).padStart(2, "0")}</span>
       </div>
-      <div className="mt-auto pt-5">
-        <h3 className="text-[17px] font-extrabold leading-7">{name}</h3>
-        <p className="mt-1.5 text-[13px] font-normal leading-6 text-black/45">{detail || role}</p>
+      <div className="p-5">
+        <div className="text-[10px] font-extrabold text-[#df1f2d]">{role}</div>
+        <h3 className="mt-2 text-[17px] font-extrabold leading-7 transition group-hover:text-[#df1f2d]">{profileText(person.name, lang)}</h3>
+        <p className="mt-1.5 text-[12px] font-normal leading-6 text-black/45">{profileText(person.office, lang)}</p>
       </div>
-    </article>
+    </a>
   );
 }
 
@@ -760,24 +715,24 @@ function NewsChannelPanel({
 
       {lead ? (
         <div className="flex flex-1 flex-col">
-          <a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="group relative block aspect-[16/9] overflow-hidden bg-[#191919]">
+          <a href={articleHref(lead)} className="group relative block aspect-[16/9] overflow-hidden bg-[#191919]">
             <img src={lead.imageUrl} alt={articleText(lead.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
           </a>
           <div className="flex flex-1 flex-col p-6 sm:p-7">
             <div className="text-[11px] font-bold text-[#df1f2d]">{formatArticleDate(lead.publishedAt, lang)}</div>
-            <h4 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="transition hover:text-[#df1f2d]">{articleText(lead.title, lang)}</a></h4>
+            <h4 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(lead)} className="transition hover:text-[#df1f2d]">{articleText(lead.title, lang)}</a></h4>
             <div className="mt-4"><ArticleTagLinks article={lead} language={lang} compact /></div>
             {stories.slice(1, 3).length > 0 && (
               <div className="mt-6 space-y-3 border-t border-black/[.07] pt-5">
                 {stories.slice(1, 3).map((story) => (
-                  <a key={story.id} href={articleHref(story)} target={story.externalUrl ? "_blank" : undefined} rel={story.externalUrl ? "noreferrer" : undefined} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#df1f2d]">
+                  <a key={story.id} href={articleHref(story)} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#df1f2d]">
                     <span>{articleText(story.title, lang)}</span><ArrowUpLeft size={14} className="mt-1 shrink-0 transition group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
                   </a>
                 ))}
               </div>
             )}
-            <a href={articleHref(lead)} target={lead.externalUrl ? "_blank" : undefined} rel={lead.externalUrl ? "noreferrer" : undefined} className="mt-auto inline-flex items-center gap-2 pt-7 text-[12px] font-extrabold text-black/45 transition hover:text-[#df1f2d]">{readLabel}<ArrowUpLeft size={15} /></a>
+            <a href={articleHref(lead)} className="mt-auto inline-flex items-center gap-2 pt-7 text-[12px] font-extrabold text-black/45 transition hover:text-[#df1f2d]">{readLabel}<ArrowUpLeft size={15} /></a>
           </div>
         </div>
       ) : (
@@ -802,15 +757,15 @@ function DiasporaStoryCard({
 }) {
   return (
     <article className="group overflow-hidden rounded-[26px] border border-white/[.08] bg-white/[.055] transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-white/[.075]">
-      <a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined} className="relative block aspect-[16/9] overflow-hidden bg-black/20">
+      <a href={articleHref(article)} className="relative block aspect-[16/9] overflow-hidden bg-black/20">
         <img src={article.imageUrl} alt={articleText(article.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
       </a>
       <div className="p-6">
         <div className="text-[11px] font-bold text-[#ff7780]">{formatArticleDate(article.publishedAt, lang)}</div>
-        <h3 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined}>{articleText(article.title, lang)}</a></h3>
+        <h3 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(article)}>{articleText(article.title, lang)}</a></h3>
         <div className="mt-4"><ArticleTagLinks article={article} language={lang} dark compact /></div>
-        <a href={articleHref(article)} target={article.externalUrl ? "_blank" : undefined} rel={article.externalUrl ? "noreferrer" : undefined} className="mt-6 inline-flex items-center gap-2 text-[12px] font-extrabold text-white/55 transition group-hover:text-white">{readLabel}<ArrowUpLeft size={15} /></a>
+        <a href={articleHref(article)} className="mt-6 inline-flex items-center gap-2 text-[12px] font-extrabold text-white/55 transition group-hover:text-white">{readLabel}<ArrowUpLeft size={15} /></a>
       </div>
     </article>
   );
@@ -828,7 +783,7 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [articles, setArticles] = useState<Article[]>(
     () => [...(seedArticleData as Article[])].sort(
-      (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
+      (left, right) => Number(right.pinned === true) - Number(left.pinned === true) || new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
     ),
   );
   const [homepage, setHomepage] = useState<HomepageContent>(
@@ -877,6 +832,9 @@ export default function Home() {
       diaspora: [],
     };
     articles.forEach((article) => grouped[getArticleChannel(article)].push(article));
+    (["statements", "positions", "party", "diaspora"] as ArticleChannel[]).forEach((channel) => grouped[channel].sort(
+      (left, right) => Number(right.pinned === true) - Number(left.pinned === true) || new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
+    ));
     return grouped;
   }, [articles]);
 
@@ -1303,14 +1261,14 @@ export default function Home() {
               <TabsContent value="parliament" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {mps.map((person, index) => (
-                    <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.mp} detail={text(person.district, lang)} index={index} />
+                    <PersonCard key={person.slug} person={person} lang={lang} role={t.mp} index={index} />
                   ))}
                 </div>
               </TabsContent>
               <TabsContent value="cabinet" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {ministers.map((person, index) => (
-                    <PersonCard key={text(person.name, lang)} name={text(person.name, lang)} role={t.minister} detail={text(person.portfolio, lang)} index={index} />
+                    <PersonCard key={person.slug} person={person} lang={lang} role={t.minister} index={index} />
                   ))}
                 </div>
               </TabsContent>

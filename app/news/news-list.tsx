@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Globe2,
   SlidersHorizontal,
+  Pin,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -176,19 +177,19 @@ export function NewsList({
             {visibleArticles.map((article, index) => {
               const featured = index === 0;
               const href = articleHref(article);
-              const target = article.externalUrl ? "_blank" : undefined;
               return (
                 <article key={article.id} className={`group overflow-hidden rounded-[28px] border border-black/[.07] bg-white shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_24px_65px_rgba(0,0,0,.1)] ${featured ? "md:col-span-2 xl:col-span-2 xl:grid xl:grid-cols-[1.08fr_.92fr]" : ""}`}>
-                  <a href={href} target={target} rel={target ? "noreferrer" : undefined} className={`relative block overflow-hidden bg-[#191919] ${featured ? "min-h-[330px]" : "aspect-[16/10]"}`}>
+                  <a href={href} className={`relative block overflow-hidden bg-[#191919] ${featured ? "min-h-[330px]" : "aspect-[16/10]"}`}>
                     <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
+                    {article.pinned && <span className="absolute start-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#df1f2d] px-3 py-1.5 text-[10px] font-extrabold text-white shadow-lg"><Pin size={11} fill="currentColor" />{language === "ar" ? "مثبّت" : language === "fr" ? "Épinglé" : "Pinned"}</span>}
                   </a>
                   <div className={`flex flex-col ${featured ? "p-7 sm:p-9 lg:p-11" : "p-6"}`}>
                     <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#df1f2d]"><CalendarDays size={14} /><a href={articleChannelHref(getArticleChannel(article))} className="hover:underline">{articleChannelText(getArticleChannel(article), language)}</a><span className="text-black/15">·</span>{formatArticleDate(article.publishedAt, language)}</div>
-                    <h2 className={`section-title mt-4 font-extrabold leading-[1.45] ${featured ? "text-[clamp(1.9rem,4vw,3.4rem)]" : "text-[19px]"}`}><a href={href} target={target} rel={target ? "noreferrer" : undefined}>{articleText(article.title, language)}</a></h2>
+                    <h2 className={`section-title mt-4 font-extrabold leading-[1.45] ${featured ? "text-[clamp(1.9rem,4vw,3.4rem)]" : "text-[19px]"}`}><a href={href}>{articleText(article.title, language)}</a></h2>
                     <p className={`mt-3 line-clamp-3 text-black/48 ${featured ? "text-[15px] leading-8" : "text-[13px] leading-7"}`}>{articleText(article.body, language)}</p>
                     <div className="mt-5"><ArticleTagLinks article={article} language={language} compact={!featured} /></div>
-                    <a href={href} target={target} rel={target ? "noreferrer" : undefined} className="mt-auto flex items-center gap-2 pt-7 text-[13px] font-extrabold text-black/55 transition group-hover:text-[#df1f2d]">{t.read}<ArrowUpLeft size={16} /></a>
+                    <a href={href} className="mt-auto flex items-center gap-2 pt-7 text-[13px] font-extrabold text-black/55 transition group-hover:text-[#df1f2d]">{t.read}<ArrowUpLeft size={16} /></a>
                   </div>
                 </article>
               );
