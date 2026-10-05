@@ -217,71 +217,6 @@ function mergeTagText(current: string, suggestions: string[]): string {
   return [...new Set([...parseTagText(current), ...suggestions])].slice(0, 16).join(", ");
 }
 
-const titleStopWords: Record<ArticleLanguage, Set<string>> = {
-  ar: new Set(["إلى", "الى", "في", "من", "عن", "على", "مع", "أن", "ان", "هذا", "هذه", "التي", "الذي", "بعد", "قبل", "بين", "خلال", "وقد", "كما", "لكن"]),
-  en: new Set(["the", "and", "for", "with", "from", "that", "this", "was", "were", "have", "has", "into", "after", "before", "about", "their", "they"]),
-  fr: new Set(["les", "des", "une", "dans", "pour", "avec", "sur", "que", "qui", "cette", "ces", "par", "aux", "après", "avant", "leur", "leurs"]),
-};
-
-function headlineWords(value: string, language: ArticleLanguage): string[] {
-  return value
-    .normalize("NFKC")
-    .toLocaleLowerCase(language === "ar" ? "ar-LB" : language)
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .split(/\s+/)
-    .filter((word) => word.length > 2 && !titleStopWords[language].has(word));
-}
-
-function trimHeadline(value: string, language: ArticleLanguage): string {
-  const wordLimit = language === "ar" ? 16 : 15;
-  const characterLimit = 130;
-  const words = value
-    .replace(/^[\s\-–—:،؛]+|[\s.!?؟،؛:]+$/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(" ");
-  let result = words.slice(0, wordLimit).join(" ");
-  if (result.length > characterLimit) {
-    result = result.slice(0, characterLimit + 1).replace(/\s+\S*$/, "");
-  }
-  return result.replace(/[\s.!?؟،؛:]+$/g, "").trim();
-}
-
-function suggestArticleTitle(value: string, language: ArticleLanguage): string {
-  const cleaned = value
-    .normalize("NFKC")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/https?:\/\/\S+|\S+@\S+/g, " ")
-    .replace(/\r/g, "")
-    .replace(/[\t ]+/g, " ")
-    .trim();
-  if (cleaned.length < 12) return "";
-
-  const candidates = cleaned
-    .split(/(?:\n{1,}|(?<=[.!?؟؛])\s+)/u)
-    .flatMap((sentence) => sentence.length > 260 ? sentence.split(/[,،;؛]\s*/) : [sentence])
-    .map((sentence) => sentence.replace(/^[-•*\d.)\s]+/, "").trim())
-    .filter((sentence) => sentence.length >= 18 && !/^(?:للمزيد|تابعونا|المصدر|source|read more|pour en savoir plus)\b/i.test(sentence))
-    .slice(0, 18);
-  if (!candidates.length) return trimHeadline(cleaned, language);
-
-  const frequencies = new Map<string, number>();
-  for (const word of headlineWords(candidates.join(" "), language)) {
-    frequencies.set(word, (frequencies.get(word) || 0) + 1);
-  }
-
-  const ranked = candidates.map((sentence, index) => {
-    const words = headlineWords(sentence, language);
-    const keywordScore = words.reduce((score, word) => score + Math.min(frequencies.get(word) || 0, 4), 0) / Math.max(words.length, 1);
-    const positionScore = Math.max(0, 7 - index) * 0.45;
-    const lengthScore = sentence.length >= 45 && sentence.length <= 190 ? 3 : sentence.length < 260 ? 1 : -2;
-    const boilerplatePenalty = /(?:www\.|copyright|حقوق النشر|اتصل بنا|contact us)/i.test(sentence) ? 20 : 0;
-    return { sentence, score: keywordScore + positionScore + lengthScore - boilerplatePenalty };
-  });
-  ranked.sort((first, second) => second.score - first.score);
-  return trimHeadline(ranked[0]?.sentence || cleaned, language);
-}
-
 function TagField({
   id,
   label,
@@ -474,6 +409,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const [pinned, setPinned] = useState(false);
   const [tagAssistantMessage, setTagAssistantMessage] = useState("");
   const [titleAssistantMessage, setTitleAssistantMessage] = useState<{ language: ArticleLanguage; text: string } | null>(null);
+  const [titleSuggestionLoading, setTitleSuggestionLoading] = useState<ArticleLanguage | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [editing, setEditing] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -622,20 +558,42 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     );
   };
 
-  const analyzeArticleTitle = (language: ArticleLanguage) => {
-    const suggestion = suggestArticleTitle(body[language], language);
-    if (!suggestion) {
+  const analyzeArticleTitle = async (language: ArticleLanguage) => {
+    if (body[language].trim().length < 20) {
       setTitleAssistantMessage({
         language,
         text: "Add a little more article text before asking for a title.",
       });
       return;
     }
-    updateTranslation(setTitle, language, suggestion);
-    setTitleAssistantMessage({
-      language,
-      text: "Suggested from the article text. Review and edit it before publishing.",
-    });
+    setTitleSuggestionLoading(language);
+    setTitleAssistantMessage({ language, text: "Analyzing the main actor, action and news angle…" });
+    try {
+      const response = await fetch("/api/editor/suggest-title", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          body: body[language],
+          language,
+          channel,
+          people: parseTagText(people),
+        }),
+      });
+      const result = (await response.json()) as { title?: string; error?: string };
+      if (!response.ok || !result.title) throw new Error(result.error || "A reliable title could not be suggested.");
+      updateTranslation(setTitle, language, result.title);
+      setTitleAssistantMessage({
+        language,
+        text: "A newsroom-style headline was drafted from the article. Review it before publishing.",
+      });
+    } catch (caught) {
+      setTitleAssistantMessage({
+        language,
+        text: caught instanceof Error ? caught.message : "A reliable title could not be suggested.",
+      });
+    } finally {
+      setTitleSuggestionLoading(null);
+    }
   };
 
   return (
@@ -722,7 +680,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
                   <div className="space-y-2.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <Label htmlFor={`title-${language}`} className="font-extrabold">{language === "ar" ? "العنوان" : language === "en" ? "Title" : "Titre"}</Label>
-                      <Button type="button" variant="outline" size="sm" onClick={() => analyzeArticleTitle(language)} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white"><Sparkles size={14} />Suggest title</Button>
+                      <Button type="button" variant="outline" size="sm" disabled={titleSuggestionLoading !== null} onClick={() => void analyzeArticleTitle(language)} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white">{titleSuggestionLoading === language ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Suggest title</Button>
                     </div>
                     <Input id={`title-${language}`} value={title[language]} onChange={(event) => updateTranslation(setTitle, language, event.target.value)} maxLength={240} required={language === "ar"} className="h-13 rounded-2xl px-4 text-[16px]" placeholder={language === "ar" ? "عنوان واضح ومختصر" : "Optional translation"} />
                     {titleAssistantMessage?.language === language && <p role="status" className="rounded-xl bg-red-50 px-3 py-2 text-[11px] font-bold leading-5 text-[#a21520]">{titleAssistantMessage.text}</p>}
