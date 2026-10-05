@@ -1288,7 +1288,7 @@ export default function Home() {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <Tabs defaultValue="executive" dir={rtl ? "rtl" : "ltr"} className="mt-7">
-              <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]" variant="line">
+              <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]">
                 <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
                 <TabsTrigger value="parliament" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
                 <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
