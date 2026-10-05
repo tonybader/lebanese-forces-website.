@@ -5,6 +5,7 @@ export type HeadlineInput = {
   language: ArticleLanguage;
   channel: ArticleChannel;
   people?: string[];
+  regions?: string[];
 };
 
 const wordLimits: Record<ArticleLanguage, number> = { ar: 14, en: 16, fr: 16 };
@@ -17,6 +18,19 @@ function cleanArticleText(value: string): string {
     .replace(/\r/g, "")
     .replace(/[\t ]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function searchableArabic(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, "")
+    .replace(/ـ/g, "")
+    .replace(/[أإآٱ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ؤ/g, "و")
+    .replace(/ئ/g, "ي")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -71,6 +85,48 @@ function extractArabicReplyTarget(text: string): string {
   return match?.replace(/\s+/g, " ").trim() || "";
 }
 
+function cleanArabicRegion(value: string): string {
+  return searchableArabic(value)
+    .replace(/^(?:منسقية\s+)?(?:منطقة|قضاء|اقليم)\s+/, "")
+    .replace(/\s+(?:في|ب)?\s*القوات اللبنانية.*$/, "")
+    .replace(/[،,:;؛.].*$/, "")
+    .trim();
+}
+
+function extractArabicRegion(text: string, regions: string[]): string {
+  const taggedRegion = regions.map(cleanArabicRegion).find(Boolean);
+  if (taggedRegion) return taggedRegion;
+
+  const searchable = searchableArabic(text);
+  const regionalChapter = searchable.match(
+    /(?:منسقية\s+)?منطقة\s+([\p{L}][\p{L}\s-]{1,45}?)(?=\s+(?:في\s+القوات اللبنانية|بالقوات اللبنانية|بالتعاون|،|,|:|اقامت|نظمت|نظم|احيت|احيا))/u,
+  )?.[1];
+  if (regionalChapter) return cleanArabicRegion(regionalChapter);
+
+  const coordinator = searchable.match(
+    /(?:منسق|منسقة)\s+(?:منطقة\s+)?([\p{L}][\p{L}\s-]{1,35}?)(?=\s+(?:في\s+القوات اللبنانية|بالقوات اللبنانية|،|,|:))/u,
+  )?.[1];
+  return coordinator ? cleanArabicRegion(coordinator) : "";
+}
+
+function conciseArabicEventHeadline(text: string, channel: ArticleChannel, regions: string[]): string {
+  if (channel !== "party" && channel !== "diaspora") return "";
+
+  const searchable = searchableArabic(text);
+  const region = extractArabicRegion(text, regions);
+
+  if (/قداس/.test(searchable) && /شهداء|شهيد/.test(searchable)) {
+    return region
+      ? `قداس شهداء منطقة ${region} في القوات اللبنانية`
+      : "قداس لشهداء القوات اللبنانية";
+  }
+
+  const eventTypes = ["قداس", "احتفال", "ندوة", "مؤتمر", "لقاء", "زيارة", "عشاء"];
+  const eventType = eventTypes.find((type) => searchable.includes(type));
+  if (!eventType || !region) return "";
+  return `${eventType} القوات اللبنانية في منطقة ${region}`;
+}
+
 function arabicTopic(text: string): string {
   const topics = [
     { label: "السلاح ودور الدولة", terms: ["السلاح", "الدولة", "قرار الحرب", "القرار الاستراتيجي"] },
@@ -114,7 +170,7 @@ function fallbackSentence(text: string, language: ArticleLanguage): string {
   return ranked[0]?.sentence || text;
 }
 
-function arabicHeadline(text: string, channel: ArticleChannel, people: string[]): string {
+function arabicHeadline(text: string, channel: ArticleChannel, people: string[], regions: string[]): string {
   const actor = extractArabicActor(text, people);
   const replyTarget = extractArabicReplyTarget(text);
   const topic = arabicTopic(text);
@@ -127,10 +183,8 @@ function arabicHeadline(text: string, channel: ArticleChannel, people: string[])
     return `${actor} يردّ على ${replyTarget}${topic ? ` بشأن ${topic}` : ""}`;
   }
 
-  const eventMatch = text.match(
-    /((?:نظّم|نظم|نظّمت|نظمت|أقام|أقامت|افتتح|افتتحت|زار|زارت|التقى|التقت|شارك|شاركت)\s+[^.!؟\n]{12,150})/u,
-  )?.[1];
-  if ((channel === "party" || channel === "diaspora") && eventMatch) return eventMatch;
+  const eventHeadline = conciseArabicEventHeadline(text, channel, regions);
+  if (eventHeadline) return eventHeadline;
 
   const strongest = fallbackSentence(text, "ar")
     .replace(/^(?:وقال|وأكّد|وأكد|وشدّد|وشدد|واعتبر|وأوضح|ولفت)\s+/, "")
@@ -144,7 +198,7 @@ export function generateFallbackHeadline(input: HeadlineInput): string {
   const text = cleanArticleText(input.body);
   if (text.length < 12) return "";
   if (input.language === "ar") {
-    return sanitizeHeadline(arabicHeadline(text, input.channel, input.people || []), "ar");
+    return sanitizeHeadline(arabicHeadline(text, input.channel, input.people || [], input.regions || []), "ar");
   }
   const actor = input.people?.[0]?.trim() || "";
   const sentence = fallbackSentence(text, input.language)

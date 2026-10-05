@@ -577,6 +577,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           language,
           channel,
           people: parseTagText(people),
+          regions: parseTagText(regions),
         }),
       });
       const result = (await response.json()) as { title?: string; error?: string };

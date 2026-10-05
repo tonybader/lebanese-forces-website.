@@ -350,10 +350,12 @@ const ui = {
 const newsChannelPresentation: Record<ArticleChannel, {
   title: Localized;
   description: Localized;
+  moreTitle: Localized;
   icon: typeof Megaphone;
 }> = {
   statements: {
     title: { ar: "آخر البيانات", en: "Latest statements", fr: "Derniers communiqués" },
+    moreTitle: { ar: "بيانات أُخرى", en: "More statements", fr: "Autres communiqués" },
     description: {
       ar: "أحدث بيانات القوات اللبنانية أو رئيس الحزب.",
       en: "The latest statement from the Lebanese Forces or the party president.",
@@ -363,6 +365,7 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
   positions: {
     title: { ar: "آخر مواقف النواب والوزراء", en: "Latest MPs & ministers’ positions", fr: "Dernières positions des députés et ministres" },
+    moreTitle: { ar: "مواقف أُخرى", en: "More positions", fr: "Autres prises de position" },
     description: {
       ar: "أحدث المواقف والتصريحات الصادرة عن نواب ووزراء القوات.",
       en: "The latest positions and remarks from Lebanese Forces MPs and ministers.",
@@ -372,6 +375,7 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
   party: {
     title: { ar: "آخر أخبار ونشاطات الحزب", en: "Latest party news & activities", fr: "Dernières actualités et activités du parti" },
+    moreTitle: { ar: "أخبار ونشاطات أُخرى", en: "More party news & activities", fr: "Autres actualités et activités" },
     description: {
       ar: "اجتماعات، جولات ونشاطات حزبية من مختلف المناطق.",
       en: "Meetings, visits and party activities from across Lebanon.",
@@ -381,6 +385,7 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
   diaspora: {
     title: { ar: "نشاطات الانتشار", en: "Diaspora activities", fr: "Activités de la diaspora" },
+    moreTitle: { ar: "نشاطات اغترابية أُخرى", en: "More diaspora activities", fr: "Autres activités de la diaspora" },
     description: {
       ar: "أخبار ونشاطات مراكز القوات اللبنانية حول العالم.",
       en: "News and activities from Lebanese Forces chapters around the world.",
@@ -725,6 +730,10 @@ function NewsChannelPanel({
             <div className="mt-4"><ArticleTagLinks article={lead} language={lang} compact /></div>
             {stories.slice(1, 3).length > 0 && (
               <div className="mt-6 space-y-3 border-t border-black/[.07] pt-5">
+                <div className="mb-4 flex items-center gap-2 text-[11px] font-extrabold text-black/38">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#df1f2d]" />
+                  {text(presentation.moreTitle, lang)}
+                </div>
                 {stories.slice(1, 3).map((story) => (
                   <a key={story.id} href={articleHref(story)} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#df1f2d]">
                     <span>{articleText(story.title, lang)}</span><ArrowUpLeft size={14} className="mt-1 shrink-0 transition group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />

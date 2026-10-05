@@ -18,6 +18,7 @@ type SuggestTitleBody = {
   language?: ArticleLanguage;
   channel?: ArticleChannel;
   people?: string[];
+  regions?: string[];
 };
 
 export async function POST(request: Request) {
@@ -36,11 +37,14 @@ export async function POST(request: Request) {
   const people = Array.isArray(payload.people)
     ? payload.people.filter((person): person is string => typeof person === "string").map((person) => person.trim()).filter(Boolean).slice(0, 8)
     : [];
+  const regions = Array.isArray(payload.regions)
+    ? payload.regions.filter((region): region is string => typeof region === "string").map((region) => region.trim()).filter(Boolean).slice(0, 8)
+    : [];
   if (body.length < 20) {
     return NextResponse.json({ error: "Add more article text before suggesting a title." }, { status: 400 });
   }
 
-  const input = { body, language, channel, people };
+  const input = { body, language, channel, people, regions };
   const title = generateFallbackHeadline(input);
   if (!title) {
     return NextResponse.json({ error: "A reliable title could not be generated from this text." }, { status: 422 });
