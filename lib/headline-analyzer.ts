@@ -113,6 +113,39 @@ function extractArabicRegion(text: string, regions: string[]): string {
   return coordinator ? cleanArabicRegion(coordinator) : "";
 }
 
+function polishArabicName(value: string): string {
+  return value
+    .replace(/^(?:المنسق|النائب|الوزير|الدكتور|الاستاذ)\s+/, "")
+    .replace(/(^|\s)ابي(?=\s|$)/g, "$1أبي")
+    .replace(/(^|\s)ابو(?=\s|$)/g, "$1أبو")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function conciseArabicOrganizationalHeadline(
+  text: string,
+  channel: ArticleChannel,
+  regions: string[],
+): string {
+  if (channel !== "party" && channel !== "diaspora") return "";
+
+  const searchable = searchableArabic(text);
+  if (!/تسلم\s+وتسليم/.test(searchable)) return "";
+
+  const region = extractArabicRegion(text, regions);
+  const names = searchable.match(
+    /بين\s+(?:المنسق\s+)?السابق\s+([\p{L}\s]{2,35}?)\s+وخلفه\s+(?:المنسق\s+)?([\p{L}\s]{2,35}?)(?=\s+(?:وذلك|في\s+مقر|،|,|\.|$))/u,
+  );
+  const previousCoordinator = names?.[1] ? polishArabicName(names[1]) : "";
+  const newCoordinator = names?.[2] ? polishArabicName(names[2]) : "";
+  const location = region ? ` في منسقية ${region}` : "";
+
+  if (previousCoordinator && newCoordinator) {
+    return `تسلّم وتسليم${location} بين ${previousCoordinator} و${newCoordinator}`;
+  }
+  return region ? `تسلّم وتسليم في منسقية ${region}` : "حفل تسلّم وتسليم حزبي";
+}
+
 function conciseArabicEventHeadline(text: string, channel: ArticleChannel, regions: string[]): string {
   if (channel !== "party" && channel !== "diaspora") return "";
 
@@ -133,6 +166,7 @@ function conciseArabicEventHeadline(text: string, channel: ArticleChannel, regio
 
   const eventTypes = [
     { match: "قداس", label: "قداس" },
+    { match: "حفل", label: "حفل" },
     { match: "احتفال", label: "احتفال" },
     { match: "ندوة", label: "ندوة" },
     { match: "موتمر", label: "مؤتمر" },
@@ -299,8 +333,11 @@ function arabicTopic(text: string): string {
 function splitSentences(text: string): string[] {
   return text
     .split(/(?:\n+|(?<=[.!?؟؛])\s+)/u)
-    .map((sentence) => sentence.replace(/^[-•*\d.)\s]+/, "").replace(/\s+/g, " ").trim())
-    .filter((sentence) => sentence.length >= 18 && sentence.length <= 320)
+    .map((sentence) => {
+      const cleaned = sentence.replace(/^[-•*\d.)\s]+/, "").replace(/\s+/g, " ").trim();
+      return cleaned.length > 320 ? cleaned.slice(0, 321).replace(/\s+\S*$/, "") : cleaned;
+    })
+    .filter((sentence) => sentence.length >= 18)
     .slice(0, 24);
 }
 
@@ -324,6 +361,9 @@ function fallbackSentence(text: string, language: ArticleLanguage): string {
 }
 
 function arabicHeadline(text: string, channel: ArticleChannel, people: string[], regions: string[]): string {
+  const organizationalHeadline = conciseArabicOrganizationalHeadline(text, channel, regions);
+  if (organizationalHeadline) return organizationalHeadline;
+
   const searchable = searchableArabic(text);
   const actor = extractArabicActor(text, people) || (searchable.includes("القوات اللبنانية") ? "القوات اللبنانية" : "");
   const replyTarget = extractArabicReplyTarget(text);
