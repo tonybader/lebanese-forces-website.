@@ -16,6 +16,7 @@ const copy: Record<Language, {
   paragraphs: string[];
   timelineTitle: string;
   source: string;
+  socials: string;
 }> = {
   ar: {
     back: "العودة إلى الرئيسية",
@@ -32,6 +33,7 @@ const copy: Record<Language, {
     ],
     timelineTitle: "محطات رئيسية",
     source: "المرجع الرسمي للسيرة",
+    socials: "الحسابات الرسمية",
   },
   en: {
     back: "Back to homepage",
@@ -48,6 +50,7 @@ const copy: Record<Language, {
     ],
     timelineTitle: "Defining milestones",
     source: "Official biography reference",
+    socials: "Official accounts",
   },
   fr: {
     back: "Retour à l’accueil",
@@ -64,6 +67,7 @@ const copy: Record<Language, {
     ],
     timelineTitle: "Étapes marquantes",
     source: "Référence biographique officielle",
+    socials: "Comptes officiels",
   },
 };
 
@@ -134,6 +138,14 @@ export function BiographyView({ imageUrl }: { imageUrl: string }) {
             <h1 className="section-title mt-5 text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[1.1]">{t.title}</h1>
             <p className="mt-4 text-[17px] font-bold text-white/62">{t.role}</p>
             <p className="mt-8 max-w-3xl text-[16px] leading-9 text-white/68 sm:text-[18px]">{t.intro}</p>
+            <div className="mt-8">
+              <div className="text-[10px] font-extrabold uppercase tracking-[.13em] text-white/38">{t.socials}</div>
+              <div className="mt-3 flex gap-2">
+                <a href="https://x.com/DrSamirGeagea" target="_blank" rel="noreferrer" aria-label="X" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">𝕏</a>
+                <a href="https://www.instagram.com/samirgeageaofficial/" target="_blank" rel="noreferrer" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">◎</a>
+                <a href="https://www.facebook.com/DrSamirGeagea/" target="_blank" rel="noreferrer" aria-label="Facebook" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">f</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

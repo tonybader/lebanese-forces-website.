@@ -186,7 +186,7 @@ export function NewsList({
                   </a>
                   <div className={`flex flex-col ${featured ? "p-7 sm:p-9 lg:p-11" : "p-6"}`}>
                     <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#df1f2d]"><CalendarDays size={14} /><a href={articleChannelHref(getArticleChannel(article))} className="hover:underline">{articleChannelText(getArticleChannel(article), language)}</a><span className="text-black/15">·</span>{formatArticleDate(article.publishedAt, language)}</div>
-                    <h2 className={`section-title mt-4 font-extrabold leading-[1.45] ${featured ? "text-[clamp(1.9rem,4vw,3.4rem)]" : "text-[19px]"}`}><a href={href}>{articleText(article.title, language)}</a></h2>
+                    <h2 className={`section-title mt-4 font-extrabold leading-[1.45] ${featured ? "text-[clamp(1.65rem,3vw,2.65rem)]" : "text-[18px]"}`}><a href={href}>{articleText(article.title, language)}</a></h2>
                     <p className={`mt-3 line-clamp-3 text-black/48 ${featured ? "text-[15px] leading-8" : "text-[13px] leading-7"}`}>{articleText(article.body, language)}</p>
                     <div className="mt-5"><ArticleTagLinks article={article} language={language} compact={!featured} /></div>
                     <a href={href} className="mt-auto flex items-center gap-2 pt-7 text-[13px] font-extrabold text-black/55 transition group-hover:text-[#df1f2d]">{t.read}<ArrowUpLeft size={16} /></a>

@@ -17,6 +17,7 @@ const copy = {
     minister: "الكتلة الوزارية",
     bio: "نبذة وسيرة",
     source: "المرجع الرسمي",
+    socials: "الحسابات الرسمية",
   },
   en: {
     home: "Home",
@@ -25,6 +26,7 @@ const copy = {
     minister: "Ministerial bloc",
     bio: "Profile and background",
     source: "Official reference",
+    socials: "Official accounts",
   },
   fr: {
     home: "Accueil",
@@ -33,6 +35,7 @@ const copy = {
     minister: "Bloc ministériel",
     bio: "Profil et parcours",
     source: "Référence officielle",
+    socials: "Comptes officiels",
   },
 };
 
@@ -82,6 +85,16 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
                   </div>
                   <h1 className="section-title mt-5 text-[clamp(2.7rem,6vw,5.8rem)] font-extrabold leading-[1.12] tracking-[-.045em]">{profileText(profile.name, language)}</h1>
                   <p className="mt-4 text-[16px] font-bold leading-8 text-white/64">{profileText(profile.office, language)}</p>
+                  {profile.socials && (
+                    <div className="mt-6">
+                      <div className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/38">{t.socials}</div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {profile.socials.x && <a href={profile.socials.x} target="_blank" rel="noreferrer" aria-label="X" className="grid h-10 w-10 place-items-center rounded-full border border-white/12 bg-white/[.06] text-sm font-extrabold transition hover:bg-white hover:text-[#191919]">𝕏</a>}
+                        {profile.socials.instagram && <a href={profile.socials.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="grid h-10 w-10 place-items-center rounded-full border border-white/12 bg-white/[.06] text-sm font-extrabold transition hover:bg-white hover:text-[#191919]">◎</a>}
+                        {profile.socials.facebook && <a href={profile.socials.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="grid h-10 w-10 place-items-center rounded-full border border-white/12 bg-white/[.06] text-sm font-extrabold transition hover:bg-white hover:text-[#191919]">f</a>}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="mt-10 border-t border-white/[.09] pt-8">
                     <h2 className="text-[13px] font-extrabold text-white/45">{t.bio}</h2>

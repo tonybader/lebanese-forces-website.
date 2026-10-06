@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   ArrowUpLeft,
   BookOpen,
-  Building2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -13,7 +12,6 @@ import {
   FileText,
   Globe2,
   ImageIcon,
-  Landmark,
   MapPin,
   Megaphone,
   Menu,
@@ -29,6 +27,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ArticleTagLinks } from "@/components/article-tag-links";
+import { ContactForm } from "@/components/contact-form";
 import {
   Collapsible,
   CollapsibleContent,
@@ -44,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import seedArticleData from "@/data/articles.json";
 import seedHomepageData from "@/data/homepage.json";
+import seedMediaData from "@/data/media.json";
 import type { Article, ArticleChannel } from "@/lib/article-types";
 import {
   articleChannelHref,
@@ -55,6 +55,8 @@ import {
 } from "@/lib/article-types";
 import type { HomepageContent } from "@/lib/homepage-types";
 import { homepageText } from "@/lib/homepage-types";
+import type { MediaContent } from "@/lib/media-types";
+import { mediaText } from "@/lib/media-types";
 import { ministers, mps, profileText, type PublicProfile } from "@/lib/people";
 
 type Lang = "ar" | "en" | "fr";
@@ -73,6 +75,7 @@ const ui = {
       ["diaspora", "الانتشار"],
       ["publications", "المنشورات"],
       ["media", "الميديا"],
+      ["contact", "تواصل معنا"],
     ],
     eyebrow: "القوات اللبنانية",
     title: "تاريخٌ من المقاومة.\nمشروعٌ من أجل الدولة.",
@@ -167,6 +170,7 @@ const ui = {
       ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Media"],
+      ["contact", "Contact"],
     ],
     eyebrow: "Lebanese Forces",
     title: "A history of resistance.\nA project for the state.",
@@ -261,6 +265,7 @@ const ui = {
       ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Médias"],
+      ["contact", "Contact"],
     ],
     eyebrow: "Forces Libanaises",
     title: "Une histoire de résistance.\nUn projet pour l’État.",
@@ -347,6 +352,36 @@ const ui = {
   },
 } as const;
 
+const sectionCopy = {
+  ar: {
+    legislative: "الزاوية التشريعية",
+    legislativeText: "أسئلة واقتراحات قوانين مقدّمة ضمن العمل النيابي.",
+    papers: "أوراق ووثائق",
+    papersText: "دراسات وأوراق سياسية وفكرية متاحة للقراءة والتنزيل.",
+    contactKicker: "شاركنا رأيك",
+    contactTitle: "تواصل معنا",
+    contactText: "اقتراحاتك وأسئلتك تهمّنا. أرسل رسالة مباشرة إلى فريق الموقع.",
+  },
+  en: {
+    legislative: "Legislative corner",
+    legislativeText: "Parliamentary questions and proposed laws submitted through legislative work.",
+    papers: "Papers & documents",
+    papersText: "Political and policy papers available to read and download.",
+    contactKicker: "Your voice matters",
+    contactTitle: "Contact us",
+    contactText: "Share a suggestion or question directly with the website team.",
+  },
+  fr: {
+    legislative: "Coin législatif",
+    legislativeText: "Questions parlementaires et propositions de loi issues du travail législatif.",
+    papers: "Études et documents",
+    papersText: "Études et documents politiques à consulter et télécharger.",
+    contactKicker: "Votre voix compte",
+    contactTitle: "Contactez-nous",
+    contactText: "Partagez une suggestion ou une question directement avec l’équipe du site.",
+  },
+} as const;
+
 const newsChannelPresentation: Record<ArticleChannel, {
   title: Localized;
   description: Localized;
@@ -395,9 +430,10 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
 };
 
-const timeline: { year: string; title: Localized; body: Localized }[] = [
+const timeline: { year: string; title: Localized; body: Localized; imageUrl: string }[] = [
   {
     year: "1976",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/4-1976-LF.jpg",
     title: { ar: "التأسيس", en: "Founding", fr: "Fondation" },
     body: {
       ar: "إنشاء صيغة توحيدية لأحزاب الجبهة اللبنانية حملت اسم «القوات اللبنانية» بقيادة الشيخ بشير الجميّل.",
@@ -407,6 +443,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1978",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/6-1978-Achrafieh.jpg",
     title: { ar: "حرب المئة يوم", en: "Hundred Days’ War", fr: "Guerre des Cent Jours" },
     body: {
       ar: "اندلاع حرب المئة يوم في الأشرفية بعد توقيف بشير الجميّل على حاجز للجيش السوري.",
@@ -416,6 +453,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1981",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/8-1981-Zahleh.jpg",
     title: { ar: "معركة زحلة", en: "Battle of Zahle", fr: "Bataille de Zahlé" },
     body: {
       ar: "واجهت زحلة حصاراً وقصفاً قاسياً، وشكّلت المعركة محطة أساسية في مقاومة الوجود السوري.",
@@ -425,6 +463,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1982",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/9-1982-elections.jpg",
     title: { ar: "بشير رئيساً", en: "Bachir elected president", fr: "Bachir élu président" },
     body: {
       ar: "انتُخب بشير الجميّل رئيساً للجمهورية في 23 آب، ثم اغتيل في 14 أيلول قبل تسلّمه مهامه.",
@@ -434,6 +473,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1986",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/14-1985-tripartite.jpg",
     title: { ar: "قيادة سمير جعجع", en: "Geagea’s leadership", fr: "Direction de Samir Geagea" },
     body: {
       ar: "تسلّم سمير جعجع قيادة القوات اللبنانية بعد إسقاط الاتفاق الثلاثي، وأطلق ورشة تنظيمية وسياسية وإعلامية واسعة.",
@@ -443,6 +483,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1989",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/16-1989-taef.jpg",
     title: { ar: "اتفاق الطائف", en: "Taif Agreement", fr: "Accord de Taëf" },
     body: {
       ar: "وافقت القوات على اتفاق الطائف، ثم حلّت جناحها العسكري طوعاً وانتقلت إلى العمل السياسي.",
@@ -452,6 +493,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "1994",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/20and21-1994-arrest.jpg",
     title: { ar: "الحل والاعتقال", en: "Dissolution and arrest", fr: "Dissolution et arrestation" },
     body: {
       ar: "حُلّ الحزب في 23 آذار واعتُقل سمير جعجع في 21 نيسان، لتبدأ مرحلة أحد عشر عاماً من المقاومة السياسية.",
@@ -461,6 +503,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "2005",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/26-2005-14-march.jpg",
     title: { ar: "ثورة الأرز والحرية", en: "Cedar Revolution and freedom", fr: "Révolution du Cèdre et liberté" },
     body: {
       ar: "شارك الحزب في ثورة الأرز، انسحب الجيش السوري من لبنان، وأقرّ مجلس النواب قانون العفو الذي أعاد جعجع إلى الحرية.",
@@ -470,6 +513,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "2012",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/29--2012-manifesto.jpg",
     title: { ar: "الشرعة والنظام", en: "Charter and internal system", fr: "Charte et règlement" },
     body: {
       ar: "إعلان شرعة الحزب واعتماد نظام داخلي متطوّر، مع فتح باب الانتساب وتكريس المسار المؤسساتي.",
@@ -479,6 +523,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "2023",
+    imageUrl: "https://www.lstatic.org/UserFiles/images/2017/default/elections%2814%29.jpg",
     title: { ar: "انتخابات حزبية مباشرة", en: "Direct party elections", fr: "Élections internes directes" },
     body: {
       ar: "أُجريت أول انتخابات حزبية مباشرة لاختيار رئيس الحزب ونائبه وأعضاء الهيئة التنفيذية.",
@@ -488,6 +533,7 @@ const timeline: { year: string; title: Localized; body: Localized }[] = [
   },
   {
     year: "2025",
+    imageUrl: "https://d39raawggeifpx.cloudfront.net/styles/16_9_desktop/s3/articleimages/16011c51-d85f-40e6-a5f8-a7cee0d5994d.JPG",
     title: { ar: "عودة إلى الحكومة", en: "Return to government", fr: "Retour au gouvernement" },
     body: {
       ar: "تمثّلت القوات اللبنانية بأربعة وزراء في حكومة الرئيس نواف سلام ضمن حقائب سيادية وخدماتية واقتصادية.",
@@ -535,7 +581,7 @@ const executiveRegions: { region: Localized; members: Localized[] }[] = [
   },
 ];
 
-const publications = [
+const partyReferences = [
   {
     icon: FileText,
     title: { ar: "النظام الداخلي", en: "Internal Regulations", fr: "Règlement intérieur" },
@@ -549,59 +595,6 @@ const publications = [
     detail: { ar: "22 صفحة", en: "22 pages", fr: "22 pages" },
     href: "https://www.lstatic.org/PDF/choraa.pdf",
     pdf: true,
-  },
-  {
-    icon: Landmark,
-    title: { ar: "أوراق ووثائق", en: "Papers and Documents", fr: "Documents et archives" },
-    detail: { ar: "الأرشيف السياسي", en: "Political archive", fr: "Archives politiques" },
-    href: "https://www.lebanese-forces.com/category/archives/documents/",
-    pdf: false,
-  },
-  {
-    icon: Building2,
-    title: { ar: "Economic Brief", en: "Economic Brief", fr: "Economic Brief" },
-    detail: { ar: "تحليلات اقتصادية", en: "Economic analysis", fr: "Analyses économiques" },
-    href: "https://www.lebanese-forces.com/category/economic-brief/",
-    pdf: false,
-  },
-];
-
-const tracks = [
-  {
-    title: { ar: "نشيد القوات اللبنانية", en: "Lebanese Forces Anthem", fr: "Hymne des Forces Libanaises" },
-    src: "https://www.lstatic.org/music/lebanese-forces-anthem.mp3",
-  },
-  {
-    title: { ar: "نشيد الشهداء", en: "Martyrs’ Anthem", fr: "Hymne des martyrs" },
-    src: "https://www.lstatic.org/music/nashid-alshouhada.mp3",
-  },
-  {
-    title: { ar: "مشوار الحرية", en: "Journey of Freedom", fr: "Le chemin de la liberté" },
-    src: "https://www.lstatic.org/music/meshwar-alhoriyi.mp3",
-  },
-];
-
-const photos = [
-  {
-    src: "https://lebaneseforces.org/bachir-gemayel.jpg",
-    title: { ar: "الرئيس الشهيد بشير الجميّل", en: "President-elect Bachir Gemayel", fr: "Le président élu Béchir Gemayel" },
-    credit: "Lebanese Forces historical archive",
-    href: "https://lebaneseforces.org/",
-    fit: "cover" as const,
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/0/09/Secretary_Pompeo_Meets_With_Samir_Geagea.jpg",
-    title: { ar: "رئيس الحزب الدكتور سمير جعجع", en: "Party president Dr Samir Geagea", fr: "Le président du parti Dr Samir Geagea" },
-    credit: "U.S. Department of State · Public domain",
-    href: "https://commons.wikimedia.org/wiki/File:Secretary_Pompeo_Meets_With_Samir_Geagea.jpg",
-    fit: "cover" as const,
-  },
-  {
-    src: "/lf-logo.png",
-    title: { ar: "شعار القوات اللبنانية", en: "Lebanese Forces emblem", fr: "Emblème des Forces Libanaises" },
-    credit: "Lebanese Forces brand identity",
-    href: "/",
-    fit: "contain" as const,
   },
 ];
 
@@ -640,18 +633,27 @@ function PersonCard({
   index: number;
 }) {
   return (
-    <a href={`/people/${person.slug}`} className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_22px_55px_rgba(0,0,0,.11)]" data-reveal>
-      <div className="relative aspect-[4/4.5] overflow-hidden bg-[#ecece8]">
-        <img src={person.imageUrl} alt={profileText(person.name, lang)} className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.035]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
-        <span className="absolute end-4 top-4 rounded-full bg-black/42 px-2.5 py-1 text-[10px] font-bold tabular-nums text-white/75 backdrop-blur">{String(index + 1).padStart(2, "0")}</span>
-      </div>
+    <article className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_22px_55px_rgba(0,0,0,.11)]" data-reveal>
+      <a href={`/people/${person.slug}`} className="block">
+        <div className="relative aspect-[4/4.5] overflow-hidden bg-[#ecece8]">
+          <img src={person.imageUrl} alt={profileText(person.name, lang)} className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.035]" />
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
+          <span className="absolute end-4 top-4 rounded-full bg-black/42 px-2.5 py-1 text-[10px] font-bold tabular-nums text-white/75 backdrop-blur">{String(index + 1).padStart(2, "0")}</span>
+        </div>
+      </a>
       <div className="p-5">
         <div className="text-[10px] font-extrabold text-[#df1f2d]">{role}</div>
-        <h3 className="mt-2 text-[17px] font-extrabold leading-7 transition group-hover:text-[#df1f2d]">{profileText(person.name, lang)}</h3>
+        <h3 className="mt-2 text-[17px] font-extrabold leading-7 transition group-hover:text-[#df1f2d]"><a href={`/people/${person.slug}`}>{profileText(person.name, lang)}</a></h3>
         <p className="mt-1.5 text-[12px] font-normal leading-6 text-black/45">{profileText(person.office, lang)}</p>
+        {person.socials && (
+          <div className="mt-4 flex gap-1.5 border-t border-black/[.06] pt-3">
+            {person.socials.x && <a href={person.socials.x} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on X`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[11px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white">𝕏</a>}
+            {person.socials.instagram && <a href={person.socials.instagram} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on Instagram`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[13px] font-extrabold text-black/48 transition hover:bg-[#df1f2d] hover:text-white">◎</a>}
+            {person.socials.facebook && <a href={person.socials.facebook} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on Facebook`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[12px] font-extrabold text-black/48 transition hover:bg-[#1877f2] hover:text-white">f</a>}
+          </div>
+        )}
       </div>
-    </a>
+    </article>
   );
 }
 
@@ -798,6 +800,7 @@ export default function Home() {
   const [homepage, setHomepage] = useState<HomepageContent>(
     seedHomepageData as HomepageContent,
   );
+  const [media, setMedia] = useState<MediaContent>(seedMediaData as MediaContent);
   const t = {
     ...ui[lang],
     eyebrow: homepageText(homepage.hero.eyebrow, lang),
@@ -829,6 +832,10 @@ export default function Home() {
     footerLine: homepageText(homepage.footer.line, lang),
   };
   const rtl = lang === "ar";
+  const tracks = media.songs;
+  const photos = media.photos;
+  const legislativeDocuments = media.documents.filter((document) => document.section === "legislative");
+  const paperDocuments = media.documents.filter((document) => document.section === "papers");
   const currentTimeline = useMemo(
     () => timeline.find((item) => item.year === activeYear) || timeline[0],
     [activeYear],
@@ -861,18 +868,21 @@ export default function Home() {
           headers: { "Cache-Control": "no-cache" },
         };
         const fresh = Date.now();
-        const [articlesResponse, homepageResponse] = await Promise.all([
+        const [articlesResponse, homepageResponse, mediaResponse] = await Promise.all([
           fetch(`/api/articles?fresh=${fresh}`, requestOptions),
           fetch(`/api/homepage?fresh=${fresh}`, requestOptions),
+          fetch(`/api/media?fresh=${fresh}`, requestOptions),
         ]);
-        if (!articlesResponse.ok || !homepageResponse.ok) return;
-        const [articleData, homepageData] = await Promise.all([
+        if (!articlesResponse.ok || !homepageResponse.ok || !mediaResponse.ok) return;
+        const [articleData, homepageData, mediaData] = await Promise.all([
           articlesResponse.json() as Promise<{ articles?: Article[] }>,
           homepageResponse.json() as Promise<{ content?: HomepageContent }>,
+          mediaResponse.json() as Promise<{ content?: MediaContent }>,
         ]);
         if (!active) return;
         if (articleData.articles) setArticles(articleData.articles);
         if (homepageData.content) setHomepage(homepageData.content);
+        if (mediaData.content) setMedia(mediaData.content);
       } catch {
         // Keep the last known content if the network is temporarily unavailable.
       }
@@ -961,7 +971,7 @@ export default function Home() {
           </button>
 
           <nav className="mx-auto hidden items-center gap-5 xl:flex" aria-label="Main navigation">
-            {t.nav.map(([id, label], index) => (
+            {t.nav.map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => goTo(id)}
@@ -1177,8 +1187,9 @@ export default function Home() {
           </div>
           <div className="relative grid min-h-[400px] items-stretch lg:grid-cols-[.54fr_1.46fr]" aria-live="polite">
             <div className="relative flex flex-col justify-between overflow-hidden bg-[#191919] p-8 text-white lg:p-11">
-              <div className="absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-[#df1f2d]/20 blur-3xl" />
-              <span className="relative text-[clamp(4.2rem,10vw,8.5rem)] font-extrabold leading-none tracking-[-.06em] text-[#ed2a38]">{currentTimeline.year}</span>
+              <img key={currentTimeline.imageUrl} src={currentTimeline.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover opacity-60 transition duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/48 to-black/18" />
+              <span className="relative text-[clamp(4.2rem,10vw,8.5rem)] font-extrabold leading-none tracking-[-.06em] text-white drop-shadow-2xl">{currentTimeline.year}</span>
               <span className="arabic-safe relative mt-12 text-[11px] font-bold uppercase tracking-[.12em] text-white/35">{t.historyKicker}</span>
             </div>
             <div key={currentTimeline.year} className="timeline-enter flex flex-col justify-center p-8 lg:p-14">
@@ -1242,7 +1253,24 @@ export default function Home() {
 
       <section id="leadership" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <SectionHeading kicker={t.leadershipKicker} title={t.leadershipTitle} description={t.leadershipText} />
-        <Collapsible open={leadershipOpen} onOpenChange={setLeadershipOpen} className="mt-10">
+        <div className="mt-10 grid gap-3 sm:grid-cols-3" data-reveal>
+          {[
+            { label: t.tabs[0], count: ministers.length, people: ministers },
+            { label: t.tabs[1], count: mps.length, people: mps },
+            { label: t.tabs[2], count: 11, people: [] },
+          ].map((preview, previewIndex) => (
+            <button key={preview.label} type="button" onClick={() => setLeadershipOpen(true)} className="group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border border-black/[.07] bg-white p-5 text-start shadow-[0_8px_30px_rgba(0,0,0,.035)] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg">
+              <span><span className="block text-[28px] font-extrabold tabular-nums text-[#df1f2d]">{preview.count}</span><span className="mt-1 block text-[13px] font-extrabold">{preview.label}</span></span>
+              {preview.people.length ? (
+                <span className="flex -space-x-3 rtl:space-x-reverse">{preview.people.slice(0, 3).map((person) => <img key={person.slug} src={person.imageUrl} alt="" className="h-12 w-12 rounded-full border-2 border-white object-cover object-top shadow-sm" />)}</span>
+              ) : (
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d]"><Users size={21} /></span>
+              )}
+              <span className="sr-only">{previewIndex + 1}</span>
+            </button>
+          ))}
+        </div>
+        <Collapsible open={leadershipOpen} onOpenChange={setLeadershipOpen} className="mt-4">
           <CollapsibleTrigger className="group flex w-full items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white px-5 py-5 text-start shadow-[0_10px_35px_rgba(0,0,0,.045)] transition hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:px-7">
             <span className="flex items-center gap-4">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#191919] text-white transition group-hover:bg-[#df1f2d]"><Users size={20} /></span>
@@ -1289,11 +1317,11 @@ export default function Home() {
 
       <section id="publications" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <SectionHeading kicker={t.publicationsKicker} title={t.publicationsTitle} description={t.publicationsText} />
-        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
-          {publications.map((item, index) => {
+        <div className="mt-12 grid gap-3 sm:grid-cols-2" data-reveal>
+          {partyReferences.map((item, index) => {
             const Icon = item.icon;
             return (
-              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="group flex min-h-[310px] flex-col rounded-[26px] border border-black/[.07] bg-white p-7 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#191919] hover:bg-[#191919] hover:text-white hover:shadow-[0_22px_55px_rgba(0,0,0,.13)] lg:p-8">
+              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="group flex min-h-[220px] flex-col rounded-[26px] border border-black/[.07] bg-white p-7 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#191919] hover:bg-[#191919] hover:text-white hover:shadow-[0_22px_55px_rgba(0,0,0,.13)] lg:p-8">
                 <div className="flex items-start justify-between">
                   <span className="grid h-12 w-12 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d] transition group-hover:bg-[#df1f2d] group-hover:text-white"><Icon size={20} /></span>
                   <span className="text-xs font-bold text-black/22 group-hover:text-white/25">0{index + 1}</span>
@@ -1302,14 +1330,33 @@ export default function Home() {
                   <h3 className="text-[21px] font-extrabold leading-8">{text(item.title, lang)}</h3>
                   <div className="mt-2 text-[13px] font-normal text-black/42 group-hover:text-white/42">{text(item.detail, lang)}</div>
                   <div className="mt-6 flex items-center justify-between border-t border-black/[.07] pt-5 text-[13px] font-bold group-hover:border-white/12">
-                    <span>{item.pdf ? t.download : t.open}</span>
-                    {item.pdf ? <Download size={17} /> : <ExternalLink size={17} />}
+                    <span>{t.download}</span>
+                    <Download size={17} />
                   </div>
                 </div>
               </a>
             );
           })}
         </div>
+        {[
+          { key: "legislative", title: sectionCopy[lang].legislative, description: sectionCopy[lang].legislativeText, documents: legislativeDocuments },
+          { key: "papers", title: sectionCopy[lang].papers, description: sectionCopy[lang].papersText, documents: paperDocuments },
+        ].map((group) => (
+          <div key={group.key} className="mt-16">
+            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-black/[.08] pb-5">
+              <div><h3 className="section-title text-[clamp(1.8rem,3.5vw,3rem)] font-extrabold">{group.title}</h3><p className="mt-2 text-[13px] leading-6 text-black/45">{group.description}</p></div>
+              <span className="rounded-full bg-[#191919] px-3 py-1.5 text-[11px] font-extrabold text-white">{group.documents.length}</span>
+            </div>
+            <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+              {group.documents.map((document) => (
+                <a key={document.id} href={document.fileUrl} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_10px_34px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.1)]">
+                  <div className="aspect-[4/3] overflow-hidden bg-[#ecece8]"><img src={document.coverUrl} alt={mediaText(document.title, lang)} className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.025]" /></div>
+                  <div className="p-5"><h4 className="text-[16px] font-extrabold leading-7">{mediaText(document.title, lang)}</h4><p className="mt-2 line-clamp-2 text-[12px] leading-6 text-black/45">{mediaText(document.description, lang)}</p><div className="mt-5 flex items-center justify-between border-t border-black/[.07] pt-4 text-[12px] font-extrabold text-[#df1f2d]"><span>{t.download}</span><Download size={15} /></div></div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       <section id="media" className="relative overflow-hidden bg-[#191919] text-white">
@@ -1325,25 +1372,19 @@ export default function Home() {
               <p className="mt-2 text-[13px] font-normal text-white/58">{t.songHint}</p>
               <div className="mt-8 space-y-2">
                 {tracks.map((track, index) => (
-                  <button key={track.src} onClick={() => setActiveTrack(index)} className={"flex w-full items-center justify-between rounded-2xl p-4 text-start transition duration-300 " + (activeTrack === index ? "bg-white text-[#171717] shadow-lg" : "bg-black/12 text-white hover:bg-black/20")}>
+                  <button key={track.id} onClick={() => setActiveTrack(index)} className={"flex w-full items-center justify-between rounded-2xl p-4 text-start transition duration-300 " + (activeTrack === index ? "bg-white text-[#171717] shadow-lg" : "bg-black/12 text-white hover:bg-black/20")}>
                     <span className="flex items-center gap-3">
                       <span className={"grid h-9 w-9 place-items-center rounded-full " + (activeTrack === index ? "bg-[#171717] text-white" : "bg-white/13")}><Play size={13} fill="currentColor" /></span>
-                      <span className="text-[13px] font-bold">{text(track.title, lang)}</span>
+                      <span className="text-[13px] font-bold">{mediaText(track.title, lang)}</span>
                     </span>
                     <span className="text-[11px] font-bold opacity-40">0{index + 1}</span>
                   </button>
                 ))}
               </div>
-              <audio key={tracks[activeTrack].src} controls preload="none" className="mt-7 w-full">
-                <source src={tracks[activeTrack].src} type="audio/mpeg" />
-              </audio>
-              <a href="https://www.lebanese-forces.com/media/" target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-[12px] font-bold text-white/70 hover:text-white">
-                {t.open}
-                <ExternalLink size={14} />
-              </a>
+              {tracks[activeTrack] && <audio key={tracks[activeTrack].audioUrl} controls preload="none" className="mt-7 w-full"><source src={tracks[activeTrack].audioUrl} type="audio/mpeg" /></audio>}
             </div>
 
-            <a href="https://www.lebanese-forces.com/category/videos/" target="_blank" rel="noreferrer" className="group relative min-h-[430px] overflow-hidden rounded-[30px] border border-white/[.07] bg-white/[.045] p-7 transition duration-300 hover:border-white/15 hover:bg-white/[.065] lg:p-9">
+            <a href={media.officialYouTubeUrl} target="_blank" rel="noreferrer" className="group relative min-h-[430px] overflow-hidden rounded-[30px] border border-white/[.07] bg-white/[.045] p-7 transition duration-300 hover:border-white/15 hover:bg-white/[.065] lg:p-9">
               <div className="absolute -end-24 -top-24 h-80 w-80 rounded-full bg-[#df1f2d]/35 blur-2xl transition duration-700 group-hover:scale-110" />
               <div className="relative flex h-full flex-col">
                 <div className="flex items-center justify-between">
@@ -1361,20 +1402,26 @@ export default function Home() {
 
           <div className="mt-16 flex items-end justify-between gap-5">
             <h3 className="text-3xl font-extrabold">{t.photos}</h3>
-            <a href="https://www.lebanese-forces.com/lebanese-forces-photo-gallery/" target="_blank" rel="noreferrer" className="hidden items-center gap-2 text-[13px] font-bold text-white/60 hover:text-white sm:flex">{t.photoArchive}<ExternalLink size={15} /></a>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-3" data-reveal>
             {photos.map((photo, index) => (
-              <button key={photo.src} onClick={() => setSelectedPhoto(index)} className="group relative aspect-[4/3] overflow-hidden rounded-[24px] bg-white/5 text-start shadow-[0_16px_45px_rgba(0,0,0,.18)] ring-1 ring-white/[.06]">
-                <img src={photo.src} alt={text(photo.title, lang)} className={`h-full w-full transition duration-700 group-hover:scale-105 ${photo.fit === "contain" ? "bg-white p-8 object-contain" : "object-cover grayscale group-hover:grayscale-0"}`} />
+              <button key={photo.id} onClick={() => setSelectedPhoto(index)} className="group relative aspect-[4/3] overflow-hidden rounded-[24px] bg-white/5 text-start shadow-[0_16px_45px_rgba(0,0,0,.18)] ring-1 ring-white/[.06]">
+                <img src={photo.imageUrl} alt={mediaText(photo.title, lang)} className={`h-full w-full transition duration-700 group-hover:scale-105 ${photo.fit === "contain" ? "bg-white p-8 object-contain" : "object-cover grayscale group-hover:grayscale-0"}`} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
                   <div className="mb-2 flex items-center gap-2 text-[11px] font-bold text-[#ff6570]"><ImageIcon size={13} />0{index + 1}</div>
-                  <div className="text-[15px] font-bold leading-6">{text(photo.title, lang)}</div>
+                  <div className="text-[15px] font-bold leading-6">{mediaText(photo.title, lang)}</div>
                 </div>
               </button>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="contact" className="soft-grid px-5 py-24 lg:px-8 lg:py-30">
+        <div className="mx-auto grid max-w-[1180px] items-start gap-10 lg:grid-cols-[.68fr_1.32fr]">
+          <SectionHeading kicker={sectionCopy[lang].contactKicker} title={sectionCopy[lang].contactTitle} description={sectionCopy[lang].contactText} />
+          <ContactForm lang={lang} />
         </div>
       </section>
 
@@ -1398,7 +1445,7 @@ export default function Home() {
                   { mark: "f", label: "Facebook", href: "https://www.facebook.com/LFPartyOfficial/" },
                   { mark: "◎", label: "Instagram", href: "https://www.instagram.com/lfpartyofficial/" },
                   { mark: "𝕏", label: "X", href: "https://x.com/LFPartyOfficial" },
-                  { mark: "▶", label: "YouTube", href: "https://www.youtube.com/@lebaneseforcesmedia" },
+                  { mark: "▶", label: "YouTube", href: media.officialYouTubeUrl },
                 ].map(({ mark, label, href }) => (
                   <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="grid h-12 w-12 place-items-center rounded-full border border-white/14 text-white/70 transition hover:-translate-y-0.5 hover:border-[#df1f2d] hover:bg-[#df1f2d] hover:text-white">
                     <span className="text-[16px] font-extrabold">{mark}</span>
@@ -1420,12 +1467,12 @@ export default function Home() {
           {selectedPhoto !== null && (
             <>
               <div className="max-h-[70vh] overflow-hidden bg-black">
-                <img src={photos[selectedPhoto].src} alt={text(photos[selectedPhoto].title, lang)} className={`max-h-[70vh] w-full object-contain ${photos[selectedPhoto].fit === "contain" ? "bg-white p-10" : ""}`} />
+                <img src={photos[selectedPhoto].imageUrl} alt={mediaText(photos[selectedPhoto].title, lang)} className={`max-h-[70vh] w-full object-contain ${photos[selectedPhoto].fit === "contain" ? "bg-white p-10" : ""}`} />
               </div>
               <DialogHeader className="p-6 text-start">
-                <DialogTitle className="text-xl font-extrabold">{text(photos[selectedPhoto].title, lang)}</DialogTitle>
+                <DialogTitle className="text-xl font-extrabold">{mediaText(photos[selectedPhoto].title, lang)}</DialogTitle>
                 <DialogDescription className="text-white/45">{photos[selectedPhoto].credit}</DialogDescription>
-                <a href={photos[selectedPhoto].href} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-2 text-[13px] font-bold text-[#ff6570]">{t.source}<ExternalLink size={14} /></a>
+                <a href={photos[selectedPhoto].sourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-2 text-[13px] font-bold text-[#ff6570]">{t.source}<ExternalLink size={14} /></a>
               </DialogHeader>
             </>
           )}

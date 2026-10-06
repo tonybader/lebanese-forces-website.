@@ -264,5 +264,818 @@
     "activityTypes": [],
     "people": [],
     "pinned": false
+  },
+  {
+    "id": "showcase-position-adwan-elections-2026",
+    "slug": "adwan-elections-under-current-law",
+    "publishedAt": "2026-10-06T11:30:00+03:00",
+    "title": {
+      "ar": "عدوان: الانتخابات في أسرع وقت وفق القانون النافذ",
+      "en": "Adwan: Hold elections promptly under the current law",
+      "fr": "Adwan : organiser rapidement les élections selon la loi en vigueur"
+    },
+    "body": {
+      "ar": "أكد النائب جورج عدوان بعد جلسة اللجان النيابية المشتركة أن موقف القوات اللبنانية واضح لجهة إجراء الانتخابات النيابية في أسرع وقت ممكن وفق القانون النافذ، ومعالجة العقبات التي تحول دون تطبيقه.\n\nوشدد على أن الأولوية الوطنية تبقى لتسليم السلاح إلى الجيش اللبناني، قبل فتح أي نقاش في قانون انتخاب جديد أو في مستقبل النظام السياسي.",
+      "en": "Georges Adwan said elections should be held promptly under the law currently in force, while obstacles to its implementation should be addressed. He added that consolidating arms under the Lebanese Army remains the national priority.",
+      "fr": "Georges Adwan a affirmé que les élections doivent se tenir rapidement selon la loi en vigueur, en levant les obstacles à son application. Il a ajouté que la remise des armes à l’armée demeure la priorité nationale."
+    },
+    "category": {
+      "ar": "مواقف النواب والوزراء",
+      "en": "MPs & ministers’ positions",
+      "fr": "Positions des députés et ministres"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/549~Georges-Adwan1.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب جورج عدوان",
+      "en": "MP Georges Adwan",
+      "fr": "Le député Georges Adwan"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/10/06/%D8%B9%D8%AF%D9%88%D8%A7%D9%86-129/",
+    "channel": "positions",
+    "regions": [],
+    "activityTypes": [
+      "عمل نيابي"
+    ],
+    "people": [
+      "جورج عدوان"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-position-saddi-cabinet-2026",
+    "slug": "saddi-suspends-cabinet-attendance-electricity",
+    "publishedAt": "2026-10-06T10:45:00+03:00",
+    "title": {
+      "ar": "الصدّي يعتكف عن جلسات الحكومة حتى إنصاف مؤسسة كهرباء لبنان",
+      "en": "Saddi suspends cabinet attendance pending action for Électricité du Liban",
+      "fr": "Saddi suspend sa participation au gouvernement en attendant une décision pour EDL"
+    },
+    "body": {
+      "ar": "أعلن وزير الطاقة والمياه جو الصدّي اعتكافه في هذه المرحلة عن حضور جلسات مجلس الوزراء إلى حين تحمّل الحكومة مسؤولياتها تجاه قطاع الكهرباء، وتسديد الإعفاءات والمتأخرات المستحقة لمؤسسة كهرباء لبنان.\n\nوأوضح أن خطوته تحمّل للمسؤولية وليست هروباً منها، مؤكداً استمرار العمل اليومي والورشة الإصلاحية، وأن حماية المواطنين من أعباء إضافية تتطلب معالجة مالية وهيكلية مستدامة للقطاع.",
+      "en": "Energy Minister Joe Saddi announced that he would temporarily refrain from attending cabinet sessions until the government addresses its obligations toward the electricity sector and Électricité du Liban. He said the reform programme and daily work would continue.",
+      "fr": "Le ministre de l’Énergie Joe Saddi a annoncé qu’il suspendait temporairement sa participation aux réunions du Conseil des ministres jusqu’à ce que le gouvernement assume ses obligations envers le secteur électrique et Électricité du Liban."
+    },
+    "category": {
+      "ar": "مواقف النواب والوزراء",
+      "en": "MPs & ministers’ positions",
+      "fr": "Positions des députés et ministres"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/lf-leaders/2018/Joe-Saddi.jpg",
+    "imageAlt": {
+      "ar": "وزير الطاقة والمياه جو الصدّي",
+      "en": "Energy Minister Joe Saddi",
+      "fr": "Le ministre de l’Énergie Joe Saddi"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/10/06/%D8%A7%D9%84%D8%B5%D8%AF%D9%8A-119/",
+    "channel": "positions",
+    "regions": [],
+    "activityTypes": [
+      "مؤتمر صحافي",
+      "إصلاح قطاع الكهرباء"
+    ],
+    "people": [
+      "جو الصدّي"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-diaspora-san-diego-2026",
+    "slug": "san-diego-annual-mass-2026",
+    "publishedAt": "2026-10-02T18:00:00-07:00",
+    "title": {
+      "ar": "مركز سان دييغو يحيي ذكرى شهداء القوات اللبنانية",
+      "en": "San Diego chapter commemorates Lebanese Forces martyrs",
+      "fr": "La section de San Diego commémore les martyrs des Forces Libanaises"
+    },
+    "body": {
+      "ar": "أقام مركز سان دييغو في القوات اللبنانية القداس السنوي لراحة أنفس شهداء القوات وإحياء ذكرى استشهاد الرئيس بشير الجميّل، في كنيسة مار أفرام المارونية.\n\nشارك في المناسبة أبناء الجالية اللبنانية وممثلون عن أحزاب وجمعيات لبنانية في كاليفورنيا، في تأكيد على استمرار الذاكرة والالتزام بقيم الحرية والسيادة.",
+      "en": "The San Diego chapter held its annual Mass for Lebanese Forces martyrs and President-elect Bachir Gemayel at Saint Ephrem Maronite Church, with members of the Lebanese community in attendance.",
+      "fr": "La section de San Diego a célébré sa messe annuelle à la mémoire des martyrs des Forces Libanaises et de Béchir Gemayel, en présence de membres de la communauté libanaise."
+    },
+    "category": {
+      "ar": "نشاطات الانتشار",
+      "en": "Diaspora activities",
+      "fr": "Activités de la diaspora"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/picture-of-the-day/bashir-al-gemayel7.jpg",
+    "imageAlt": {
+      "ar": "الرئيس الشهيد بشير الجميّل",
+      "en": "President-elect Bachir Gemayel",
+      "fr": "Le président élu Béchir Gemayel"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/10/02/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-790/",
+    "channel": "diaspora",
+    "regions": [
+      "الولايات المتحدة",
+      "سان دييغو"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "بشير الجميّل"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-diaspora-ghana-2026",
+    "slug": "ghana-martyrs-mass-2026",
+    "publishedAt": "2026-09-30T18:00:00+00:00",
+    "title": {
+      "ar": "مركز غانا يقيم القداس السنوي لشهداء المقاومة اللبنانية",
+      "en": "Ghana chapter holds annual Mass for Lebanese Resistance martyrs",
+      "fr": "La section du Ghana célèbre la messe annuelle des martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أقام مركز غانا في القوات اللبنانية القداس السنوي لشهداء المقاومة اللبنانية وذكرى استشهاد الرئيس بشير الجميّل في كنيسة مار مارون في أكرا.\n\nمثّل النائب أنطوان حبشي رئيس الحزب سمير جعجع، وشارك سفير لبنان وشخصيات من الجالية اللبنانية وممثلو جمعيات وأحزاب لبنانية.",
+      "en": "The Ghana chapter held its annual Mass in Accra for the martyrs of the Lebanese Resistance and Bachir Gemayel. MP Antoine Habchi represented party president Samir Geagea.",
+      "fr": "La section du Ghana a célébré à Accra sa messe annuelle pour les martyrs de la Résistance libanaise et Béchir Gemayel. Le député Antoine Habchi représentait le président du parti."
+    },
+    "category": {
+      "ar": "نشاطات الانتشار",
+      "en": "Diaspora activities",
+      "fr": "Activités de la diaspora"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/098507278145.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب أنطوان حبشي",
+      "en": "MP Antoine Habchi",
+      "fr": "Le député Antoine Habchi"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/30/%D9%84%D8%A8%D9%86%D8%A7%D9%86-2515/",
+    "channel": "diaspora",
+    "regions": [
+      "غانا",
+      "أكرا"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "أنطوان حبشي",
+      "سمير جعجع",
+      "بشير الجميّل"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-position-issa-khoury-project-lebanon-2026",
+    "slug": "issa-khoury-project-lebanon-industry-reconstruction",
+    "publishedAt": "2026-09-30T15:00:00+03:00",
+    "title": {
+      "ar": "عيسى الخوري: إعادة الإعمار فرصة لدعم الصناعة اللبنانية",
+      "en": "Issa El Khoury: Reconstruction is an opportunity for Lebanese industry",
+      "fr": "Issa El Khoury : la reconstruction est une occasion pour l’industrie libanaise"
+    },
+    "body": {
+      "ar": "مثّل وزير الصناعة جو عيسى الخوري رئيس الحكومة نواف سلام في افتتاح معرض Project Lebanon بمشاركة أكثر من مئتي عارض.\n\nوأكد أن مرحلة إعادة الإعمار يجب أن تتحول إلى فرصة لتعزيز الصناعة اللبنانية، وتوسيع دور الإنتاج المحلي في المشاريع المقبلة وخلق فرص عمل جديدة.",
+      "en": "Industry Minister Joe Issa El Khoury said reconstruction should become an opportunity to strengthen Lebanese manufacturing, expand local production and create jobs.",
+      "fr": "Le ministre de l’Industrie Joe Issa El Khoury a déclaré que la reconstruction doit devenir une occasion de renforcer la production libanaise et de créer des emplois."
+    },
+    "category": {
+      "ar": "مواقف النواب والوزراء",
+      "en": "MPs & ministers’ positions",
+      "fr": "Positions des députés et ministres"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/lf-leaders/2018/Joe-Issa-Khoury.jpg",
+    "imageAlt": {
+      "ar": "وزير الصناعة جو عيسى الخوري",
+      "en": "Industry Minister Joe Issa El Khoury",
+      "fr": "Le ministre de l’Industrie Joe Issa El Khoury"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/30/%D8%AC%D9%88-%D8%B9%D9%8A%D8%B3%D9%89-%D8%A7%D9%84%D8%AE%D9%88%D8%B1%D9%8A-26/",
+    "channel": "positions",
+    "regions": [
+      "بيروت"
+    ],
+    "activityTypes": [
+      "معرض",
+      "تنمية صناعية"
+    ],
+    "people": [
+      "جو عيسى الخوري"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-diaspora-new-jersey-2026",
+    "slug": "new-jersey-bachir-martyrs-mass-2026",
+    "publishedAt": "2026-09-29T18:00:00-04:00",
+    "title": {
+      "ar": "مركز نيوجرسي يحيي ذكرى بشير وشهداء المقاومة اللبنانية",
+      "en": "New Jersey chapter commemorates Bachir and Lebanese Resistance martyrs",
+      "fr": "La section du New Jersey commémore Béchir et les martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أقام مركز نيوجرسي قداساً إلهياً في كنيسة مار شربل في سمرسيت لراحة نفس الرئيس الشهيد بشير الجميّل وشهداء المقاومة اللبنانية.\n\nشارك في القداس أعضاء المركز ووفد من مركز نيويورك وعدد من القواتيين وأبناء الجالية اللبنانية.",
+      "en": "The New Jersey chapter held a Mass at Saint Sharbel Church in Somerset for Bachir Gemayel and the martyrs of the Lebanese Resistance.",
+      "fr": "La section du New Jersey a célébré une messe à l’église Saint-Charbel de Somerset pour Béchir Gemayel et les martyrs de la Résistance libanaise."
+    },
+    "category": {
+      "ar": "نشاطات الانتشار",
+      "en": "Diaspora activities",
+      "fr": "Activités de la diaspora"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/9-1982-elections.jpg",
+    "imageAlt": {
+      "ar": "بشير الجميّل في الأرشيف التاريخي",
+      "en": "Bachir Gemayel in the historical archive",
+      "fr": "Béchir Gemayel dans les archives historiques"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/29/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-786/",
+    "channel": "diaspora",
+    "regions": [
+      "الولايات المتحدة",
+      "نيوجرسي"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "بشير الجميّل"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-diaspora-dallas-2026",
+    "slug": "dallas-annual-mass-2026",
+    "publishedAt": "2026-09-29T17:00:00-05:00",
+    "title": {
+      "ar": "مركز دالاس يقيم القداس السنوي لشهداء المقاومة اللبنانية",
+      "en": "Dallas chapter holds annual Mass for Lebanese Resistance martyrs",
+      "fr": "La section de Dallas célèbre la messe annuelle des martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أقام مركز دالاس في القوات اللبنانية القداس الإلهي السنوي لراحة أنفس شهداء المقاومة اللبنانية وإحياء ذكرى استشهاد الرئيس بشير الجميّل، في كنيسة سيدة لبنان في لويسفيل.\n\nجمع اللقاء أبناء الجالية اللبنانية حول ذاكرة الشهداء والالتزام بلبنان الحر والسيد والمستقل.",
+      "en": "The Dallas chapter held its annual Mass at Our Lady of Lebanon Church in Lewisville for the martyrs of the Lebanese Resistance and Bachir Gemayel.",
+      "fr": "La section de Dallas a célébré sa messe annuelle à l’église Notre-Dame du Liban de Lewisville pour les martyrs de la Résistance libanaise et Béchir Gemayel."
+    },
+    "category": {
+      "ar": "نشاطات الانتشار",
+      "en": "Diaspora activities",
+      "fr": "Activités de la diaspora"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/26-2005-14-march.jpg",
+    "imageAlt": {
+      "ar": "أرشيف القوات اللبنانية",
+      "en": "Lebanese Forces archive",
+      "fr": "Archives des Forces Libanaises"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/29/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-785/",
+    "channel": "diaspora",
+    "regions": [
+      "الولايات المتحدة",
+      "دالاس"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "بشير الجميّل"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-geagea-qassem-2026",
+    "slug": "geagea-to-qassem-resistance-and-state",
+    "publishedAt": "2026-09-28T19:00:00+03:00",
+    "title": {
+      "ar": "جعجع لقاسم: المقاومة الفعلية تجمع أصدقاء لبنان حول دولته",
+      "en": "Geagea to Qassem: Real resistance rallies Lebanon’s friends around its state",
+      "fr": "Geagea à Qassem : la véritable résistance rassemble les amis du Liban autour de l’État"
+    },
+    "body": {
+      "ar": "ردّ رئيس حزب القوات اللبنانية سمير جعجع على مواقف الشيخ نعيم قاسم، مؤكداً أن رفض الاستسلام لا يكون بتقديم الحجج التي تتيح استمرار الاحتلال.\n\nوشدد على أن المقاومة الفعلية تقوم على تجميع أصدقاء لبنان حوله، وبناء دولة فعلية تعمل عبر مؤسساتها الشرعية على تحرير الأرض وحماية السيادة.",
+      "en": "Samir Geagea responded to Naim Qassem by saying that rejecting surrender cannot mean supplying arguments that prolong occupation. He said real resistance is built around an effective state and legitimate institutions.",
+      "fr": "Samir Geagea a répondu à Naïm Qassem en affirmant que le refus de la capitulation ne doit pas fournir des prétextes à la prolongation de l’occupation. La véritable résistance passe par un État effectif."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/geagea%284%29%289%29.jpg",
+    "imageAlt": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/28/%D8%AC%D8%B9%D8%AC%D8%B9-878/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "بيان",
+      "موقف سياسي"
+    ],
+    "people": [
+      "سمير جعجع"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-lebanon-debate-2026",
+    "slug": "lf-statement-lebanon-debate-2026",
+    "publishedAt": "2026-09-27T17:00:00+03:00",
+    "title": {
+      "ar": "القوات تردّ على رواية «ليبانون ديبايت» عن أحداث 1986",
+      "en": "Lebanese Forces responds to Lebanon Debate’s account of the 1986 events",
+      "fr": "Les Forces Libanaises répondent au récit de Lebanon Debate sur les événements de 1986"
+    },
+    "body": {
+      "ar": "أصدرت القوات اللبنانية بياناً ردّت فيه على رواية نشرها موقع «ليبانون ديبايت» حول أحداث 27 أيلول 1986.\n\nورأت أن تقديم تلك الأحداث على أنها اقتتال داخلي يتجاهل السياق السياسي والأمني لتلك المرحلة، مؤكدة ضرورة العودة إلى الوقائع والمصادر التاريخية المهنية.",
+      "en": "The Lebanese Forces issued a statement responding to Lebanon Debate’s account of the events of 27 September 1986, saying the account ignored their wider political and security context.",
+      "fr": "Les Forces Libanaises ont publié un communiqué répondant au récit de Lebanon Debate sur les événements du 27 septembre 1986, estimant qu’il ignorait leur contexte politique et sécuritaire."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "/lf-logo.png",
+    "imageAlt": {
+      "ar": "شعار القوات اللبنانية",
+      "en": "Lebanese Forces emblem",
+      "fr": "Emblème des Forces Libanaises"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/27/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-780/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "بيان",
+      "رد إعلامي"
+    ],
+    "people": [],
+    "pinned": false
+  },
+  {
+    "id": "showcase-diaspora-halifax-2026",
+    "slug": "halifax-canada-martyrs-mass-2026",
+    "publishedAt": "2026-09-26T18:00:00-03:00",
+    "title": {
+      "ar": "مركز هاليفاكس يحيي ذكرى شهداء المقاومة اللبنانية",
+      "en": "Halifax chapter commemorates Lebanese Resistance martyrs",
+      "fr": "La section d’Halifax commémore les martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أقام مركز هاليفاكس في كندا قداساً إلهياً في كنيسة سيدة لبنان لراحة أنفس شهداء المقاومة اللبنانية وإحياء ذكرى استشهاد الرئيس بشير الجميّل.\n\nتناولت العظة معنى الشهادة والتضحية والرجاء، وارتباط الذاكرة بخدمة الوطن والمحافظة على قيمه.",
+      "en": "The Halifax chapter held a Mass at Our Lady of Lebanon Church for the martyrs of the Lebanese Resistance and Bachir Gemayel, reflecting on sacrifice, hope and service to the homeland.",
+      "fr": "La section d’Halifax a célébré une messe à Notre-Dame du Liban pour les martyrs de la Résistance libanaise et Béchir Gemayel, autour des thèmes du sacrifice, de l’espérance et du service de la patrie."
+    },
+    "category": {
+      "ar": "نشاطات الانتشار",
+      "en": "Diaspora activities",
+      "fr": "Activités de la diaspora"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/4-1976-LF.jpg",
+    "imageAlt": {
+      "ar": "أرشيف القوات اللبنانية",
+      "en": "Lebanese Forces archive",
+      "fr": "Archives des Forces Libanaises"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/26/%D9%84%D8%A8%D9%86%D8%A7%D9%86-2505/",
+    "channel": "diaspora",
+    "regions": [
+      "كندا",
+      "هاليفاكس"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "بشير الجميّل"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-party-deir-el-ahmar-2026",
+    "slug": "deir-el-ahmar-martyrs-mass-2026",
+    "publishedAt": "2026-09-02T18:00:00+03:00",
+    "title": {
+      "ar": "منطقة دير الأحمر تحيي قداس شهداء المقاومة اللبنانية",
+      "en": "Deir el-Ahmar district commemorates Lebanese Resistance martyrs",
+      "fr": "La région de Deir el-Ahmar commémore les martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أحيت منطقة دير الأحمر في القوات اللبنانية قداس شهداء المقاومة بمشاركة المطران حنّا رحمة والنائب أنطوان حبشي وأهالي الشهداء والسلطات المحلية.\n\nوأكدت الكلمات تماسك مجتمع المنطقة وتكامل دور الكنيسة والبلديات والمخاتير والأهالي في الحفاظ على الذاكرة وخدمة الناس.",
+      "en": "The Deir el-Ahmar district held a Mass for Lebanese Resistance martyrs with Bishop Hanna Rahme, MP Antoine Habchi, families of martyrs and local authorities.",
+      "fr": "La région de Deir el-Ahmar a célébré une messe pour les martyrs de la Résistance libanaise avec Mgr Hanna Rahmé, le député Antoine Habchi, les familles et les autorités locales."
+    },
+    "category": {
+      "ar": "أخبار ونشاطات الحزب",
+      "en": "Party news & activities",
+      "fr": "Actualités et activités du parti"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/098507278145.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب أنطوان حبشي",
+      "en": "MP Antoine Habchi",
+      "fr": "Le député Antoine Habchi"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/09/02/%D8%AF%D9%8A%D8%B1-%D8%A7%D9%84%D8%A3%D8%AD%D9%85%D8%B1-19/",
+    "channel": "party",
+    "regions": [
+      "البقاع",
+      "دير الأحمر"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "أنطوان حبشي"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-party-baabdat-dinner-2026",
+    "slug": "baabdat-community-dinner-2026",
+    "publishedAt": "2026-08-31T21:00:00+03:00",
+    "title": {
+      "ar": "مركز بعبدات يجمع أبناء البلدة في عشاء حزبي ببكفيا",
+      "en": "Baabdat chapter gathers the community at a party dinner in Bikfaya",
+      "fr": "La section de Baabdat réunit la communauté lors d’un dîner à Bikfaya"
+    },
+    "body": {
+      "ar": "أقام مركز بعبدات في منطقة المتن الشمالي عشاءً في بكفيا بحضور النائبين ملحم الرياشي ورازي الحاج، وعضوي الهيئة التنفيذية إدي أبي اللمع ومايا زغريني، إلى جانب السلطات المحلية وأبناء البلدة والجوار.\n\nشكّل اللقاء مساحة للتواصل بين المركز والمجتمع المحلي وتجديد الالتزام بالعمل الحزبي والإنمائي في المنطقة.",
+      "en": "The Baabdat chapter held a community dinner in Bikfaya attended by MPs Melhem Riachy and Razi El Hage, Executive Committee members and local officials.",
+      "fr": "La section de Baabdat a organisé un dîner communautaire à Bikfaya en présence des députés Melhem Riachy et Razi El Hage, de membres du Comité exécutif et d’élus locaux."
+    },
+    "category": {
+      "ar": "أخبار ونشاطات الحزب",
+      "en": "Party news & activities",
+      "fr": "Actualités et activités du parti"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/612968111690.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب ملحم الرياشي",
+      "en": "MP Melhem Riachy",
+      "fr": "Le député Melhem Riachy"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/08/31/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-759/",
+    "channel": "party",
+    "regions": [
+      "المتن",
+      "بعبدات",
+      "بكفيا"
+    ],
+    "activityTypes": [
+      "عشاء",
+      "لقاء حزبي"
+    ],
+    "people": [
+      "ملحم الرياشي",
+      "رازي الحاج"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-party-marjeyoun-remembrance-2026",
+    "slug": "marjeyoun-hasbaya-martyrs-remembrance-2026",
+    "publishedAt": "2026-08-31T18:30:00+03:00",
+    "title": {
+      "ar": "مرجعيون ـ حاصبيا تحيي ذكرى شهداء المقاومة اللبنانية",
+      "en": "Marjeyoun–Hasbaya commemorates Lebanese Resistance martyrs",
+      "fr": "Marjeyoun–Hasbaya commémore les martyrs de la Résistance libanaise"
+    },
+    "body": {
+      "ar": "أحيت منطقة مرجعيون ـ حاصبيا في القوات اللبنانية ذكرى شهداء المقاومة بقداس شارك فيه النائب جورج عقيص ممثلاً رئيس الحزب، إلى جانب فاعليات سياسية واجتماعية ورؤساء المراكز.\n\nركزت المناسبة على الوفاء لتضحيات الشهداء والتمسك بحضور الدولة ومؤسساتها في الجنوب.",
+      "en": "The Marjeyoun–Hasbaya district commemorated Lebanese Resistance martyrs at a Mass attended by MP Georges Okais on behalf of the party president and by local figures.",
+      "fr": "La région de Marjeyoun–Hasbaya a commémoré les martyrs de la Résistance libanaise lors d’une messe en présence du député Georges Okais et de personnalités locales."
+    },
+    "category": {
+      "ar": "أخبار ونشاطات الحزب",
+      "en": "Party news & activities",
+      "fr": "Actualités et activités du parti"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/180814040810557~george.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب جورج عقيص",
+      "en": "MP Georges Okais",
+      "fr": "Le député Georges Okais"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/08/31/%D9%84%D8%A8%D9%86%D8%A7%D9%86-2448/",
+    "channel": "party",
+    "regions": [
+      "الجنوب",
+      "مرجعيون",
+      "حاصبيا"
+    ],
+    "activityTypes": [
+      "قداس",
+      "إحياء ذكرى"
+    ],
+    "people": [
+      "جورج عقيص",
+      "سمير جعجع"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-party-marjeyoun-membership-2026",
+    "slug": "marjeyoun-hasbaya-membership-cards-2026",
+    "publishedAt": "2026-08-31T16:00:00+03:00",
+    "title": {
+      "ar": "توزيع بطاقات انتساب جديدة في مرجعيون ـ حاصبيا",
+      "en": "New membership cards presented in Marjeyoun–Hasbaya",
+      "fr": "De nouvelles cartes d’adhésion remises à Marjeyoun–Hasbaya"
+    },
+    "body": {
+      "ar": "أقيم في مركز جديدة مرجعيون حفل توزيع بطاقات الانتساب على منتسبين جدد بحضور النائب جورج عقيص ومسؤولين حزبيين ورؤساء المراكز.\n\nوشددت الكلمات على معنى الانتساب كالتزام طويل الأمد بقضية الدولة والكرامة، وعلى أهمية الثبات في المنطقة ومواصلة العمل مع أهلها.",
+      "en": "New members received their party cards at the Jdeidet Marjeyoun centre in the presence of MP Georges Okais and regional officials, with speakers stressing commitment and local continuity.",
+      "fr": "De nouveaux adhérents ont reçu leurs cartes au centre de Jdeidet Marjeyoun en présence du député Georges Okais et de responsables régionaux."
+    },
+    "category": {
+      "ar": "أخبار ونشاطات الحزب",
+      "en": "Party news & activities",
+      "fr": "Actualités et activités du parti"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/180814040810557~george.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب جورج عقيص",
+      "en": "MP Georges Okais",
+      "fr": "Le député Georges Okais"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/08/31/%D9%84%D8%A8%D9%86%D8%A7%D9%86-2447/",
+    "channel": "party",
+    "regions": [
+      "الجنوب",
+      "مرجعيون",
+      "حاصبيا"
+    ],
+    "activityTypes": [
+      "توزيع بطاقات انتساب",
+      "لقاء حزبي"
+    ],
+    "people": [
+      "جورج عقيص"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-position-okais-state-2026",
+    "slug": "okais-state-restores-presence-qlaiaa",
+    "publishedAt": "2026-08-30T16:00:00+03:00",
+    "title": {
+      "ar": "عقيص من القليعة: ندعم استعادة الدولة حضورها وحصر السلاح بيدها",
+      "en": "Okais from Qlayaa: We support restoring the state’s presence and monopoly on arms",
+      "fr": "Okais depuis Qlayaa : nous soutenons le retour de l’État et son monopole des armes"
+    },
+    "body": {
+      "ar": "أكد النائب جورج عقيص من بلدة القليعة أن الدولة بدأت تستعيد حضورها ودورها، وأن هذا المسار يحتاج إلى دعم ثابت من اللبنانيين.\n\nوشدد على التمسك بحصر السلاح في يد الدولة ومؤسساتها الشرعية، وببناء دولة قادرة على حماية أهل الجنوب وكل اللبنانيين.",
+      "en": "MP Georges Okais said in Qlayaa that the state is beginning to restore its presence and role. He called for support for the state’s exclusive authority over arms and its duty to protect the south.",
+      "fr": "Le député Georges Okais a déclaré à Qlayaa que l’État commence à retrouver sa présence et son rôle. Il a appelé à soutenir l’autorité exclusive de l’État sur les armes."
+    },
+    "category": {
+      "ar": "مواقف النواب والوزراء",
+      "en": "MPs & ministers’ positions",
+      "fr": "Positions des députés et ministres"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/180814040810557~george.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب جورج عقيص",
+      "en": "MP Georges Okais",
+      "fr": "Le député Georges Okais"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/08/30/%D8%B9%D9%82%D9%8A%D8%B5-111/",
+    "channel": "positions",
+    "regions": [
+      "الجنوب",
+      "القليعة"
+    ],
+    "activityTypes": [
+      "موقف سياسي"
+    ],
+    "people": [
+      "جورج عقيص"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-party-aley-membership-2026",
+    "slug": "aley-new-membership-cards-2026",
+    "publishedAt": "2026-06-20T18:00:00+03:00",
+    "title": {
+      "ar": "منطقة عاليه تسلّم بطاقات للمنتسبين الجدد",
+      "en": "Aley district welcomes new members with party cards",
+      "fr": "La région d’Aley accueille de nouveaux adhérents"
+    },
+    "body": {
+      "ar": "نظمت منطقة عاليه حفل تسليم بطاقات للمنتسبين الجدد بمشاركة النائب نزيه متّى ممثلاً رئيس الحزب، والأمين العام إميل مكرزل ومسؤولي المناطق والمراكز.\n\nركزت الكلمات على الانتساب بوصفه التزاماً بالقضية وخدمةً للمجتمع، وعلى العمل بروحية الجماعة بعيداً عن المنفعة الشخصية.",
+      "en": "The Aley district presented party cards to new members in the presence of MP Nazih Matta, representing the party president, Secretary-General Emile Moukarzel and regional officials.",
+      "fr": "La région d’Aley a remis leurs cartes à de nouveaux adhérents en présence du député Nazih Matta, représentant le président du parti, et de responsables régionaux."
+    },
+    "category": {
+      "ar": "أخبار ونشاطات الحزب",
+      "en": "Party news & activities",
+      "fr": "Actualités et activités du parti"
+    },
+    "imageUrl": "https://imagescdn.mtv.com.lb/articles/227125912629.jpg?quality=90&width=768",
+    "imageAlt": {
+      "ar": "النائب نزيه متّى",
+      "en": "MP Nazih Matta",
+      "fr": "Le député Nazih Matta"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/06/20/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-%D8%A7%D9%84%D9%84%D8%A8%D9%86%D8%A7%D9%86%D9%8A%D8%A9-84/",
+    "channel": "party",
+    "regions": [
+      "عاليه",
+      "جبل لبنان"
+    ],
+    "activityTypes": [
+      "توزيع بطاقات انتساب",
+      "لقاء حزبي"
+    ],
+    "people": [
+      "نزيه متّى"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-lebanon-state-2026",
+    "slug": "geagea-effective-state-stability-2026",
+    "publishedAt": "2026-05-09T17:00:00+03:00",
+    "title": {
+      "ar": "جعجع: الدولة الواحدة والمرجعية الواحدة أساس الخروج من الأزمة",
+      "en": "Geagea: One state and one authority are the basis for overcoming the crisis",
+      "fr": "Geagea : un seul État et une seule autorité pour sortir de la crise"
+    },
+    "body": {
+      "ar": "أكد رئيس حزب القوات اللبنانية سمير جعجع أن لبنان لا يستطيع الخروج من أزمته ما دامت جهات متعددة تتصرف كأن لكل منها مرجعيتها وقرارها.\n\nوشدد على أن الدولة يجب أن تكون صاحبة القرار الواحد والمرجعية الوحيدة في إدارة الشؤون الوطنية، وأن تثبيت الوضع الطبيعي للبلاد يحتاج إلى مؤسسات قادرة وإرادة سياسية واضحة.",
+      "en": "Samir Geagea said Lebanon cannot overcome its crisis while multiple actors behave as separate centres of authority. He called for one state and one legitimate national decision.",
+      "fr": "Samir Geagea a affirmé que le Liban ne peut sortir de sa crise tant que plusieurs acteurs se comportent comme des centres d’autorité séparés. Il a appelé à un seul État et une seule décision nationale."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/geagea%284%29%289%29.jpg",
+    "imageAlt": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/05/09/%D8%AC%D8%B9%D8%AC%D8%B9-774/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "موقف سياسي"
+    ],
+    "people": [
+      "سمير جعجع"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-media-response-2026",
+    "slug": "lf-response-al-akhbar-2026",
+    "publishedAt": "2026-03-11T16:00:00+02:00",
+    "title": {
+      "ar": "القوات: التنسيق مع رئاسة الجمهورية قائم في الملفات الوطنية",
+      "en": "Lebanese Forces: Coordination with the Presidency continues on national issues",
+      "fr": "Forces Libanaises : la coordination avec la Présidence se poursuit sur les dossiers nationaux"
+    },
+    "body": {
+      "ar": "ردّت القوات اللبنانية على ما نشرته صحيفة «الأخبار»، مؤكدة أن قنوات التواصل والتنسيق مع رئيس الجمهورية مفتوحة باستمرار في مختلف القضايا والملفات.\n\nوأوضحت أن الحملات الإعلامية لا تغيّر الوقائع السياسية ولا الموقف الثابت الداعم لقيام الدولة وعمل مؤسساتها.",
+      "en": "The Lebanese Forces responded to a report by Al-Akhbar, saying communication and coordination with the Presidency remain open across national files.",
+      "fr": "Les Forces Libanaises ont répondu à un article d’Al-Akhbar en affirmant que la communication et la coordination avec la Présidence demeurent ouvertes sur les dossiers nationaux."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "/lf-logo.png",
+    "imageAlt": {
+      "ar": "شعار القوات اللبنانية",
+      "en": "Lebanese Forces emblem",
+      "fr": "Emblème des Forces Libanaises"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/03/11/%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-695/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "بيان",
+      "رد إعلامي"
+    ],
+    "people": [],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-historic-march-2026",
+    "slug": "geagea-lf-historic-march-2026",
+    "publishedAt": "2026-02-27T18:00:00+02:00",
+    "title": {
+      "ar": "جعجع: القوات ليست حزباً عادياً بل مسيرة تاريخية",
+      "en": "Geagea: The Lebanese Forces is not an ordinary party but a historic journey",
+      "fr": "Geagea : les Forces Libanaises ne sont pas un parti ordinaire mais une marche historique"
+    },
+    "body": {
+      "ar": "أكد رئيس حزب القوات اللبنانية سمير جعجع خلال حفل تسليم بطاقات لمنتسبين جدد أن الانتساب ليس بطاقة عادية، بل التزام بالتاريخ والحاضر والمستقبل.\n\nودعا المنتسبين إلى الجهوزية والمشاركة الفعلية في الاستحقاقات المقبلة، معتبراً أن التغيير الحقيقي يحتاج إلى التزام شخصي وعمل منظم طويل النفس.",
+      "en": "At a ceremony for new members, Samir Geagea said joining the Lebanese Forces is a commitment to its history, present and future, and called for active participation and readiness for coming national milestones.",
+      "fr": "Lors d’une cérémonie de nouveaux adhérents, Samir Geagea a affirmé que rejoindre les Forces Libanaises constitue un engagement envers leur histoire, leur présent et leur avenir."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/geagea%284%29%289%29.jpg",
+    "imageAlt": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/02/27/%D8%AC%D8%B9%D8%AC%D8%B9-711/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "كلمة",
+      "توزيع بطاقات انتساب"
+    ],
+    "people": [
+      "سمير جعجع"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-position-rajji-unifil-2026",
+    "slug": "rajji-post-unifil-international-presence-2026",
+    "publishedAt": "2026-01-07T14:23:00+02:00",
+    "title": {
+      "ar": "رجّي: لبنان متمسّك بوجود دولي في الجنوب بعد انتهاء مهمة اليونيفيل",
+      "en": "Rajji: Lebanon supports an international presence in the south after UNIFIL",
+      "fr": "Rajji : le Liban tient à une présence internationale au Sud après la FINUL"
+    },
+    "body": {
+      "ar": "أكد وزير الخارجية والمغتربين يوسف رجّي تمسّك الدولة اللبنانية بإبقاء وجود دولي في الجنوب بعد انتهاء مهمة اليونيفيل.\n\nوأشار خلال لقائه وكيل الأمين العام للأمم المتحدة لعمليات السلام إلى أن أفكاراً عدة قيد البحث، بينها تعزيز دور هيئة الأمم المتحدة لمراقبة الهدنة، مع ضمان تطبيق القرار 1701.",
+      "en": "Foreign Minister Youssef Rajji said Lebanon supports maintaining an international presence in the south after UNIFIL’s mandate, while examining options that safeguard implementation of Resolution 1701.",
+      "fr": "Le ministre des Affaires étrangères Youssef Rajji a affirmé que le Liban souhaite maintenir une présence internationale au Sud après la FINUL, tout en garantissant l’application de la résolution 1701."
+    },
+    "category": {
+      "ar": "مواقف النواب والوزراء",
+      "en": "MPs & ministers’ positions",
+      "fr": "Positions des députés et ministres"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/lf-leaders/2018/Youssef-Rajji.jpg",
+    "imageAlt": {
+      "ar": "وزير الخارجية يوسف رجّي",
+      "en": "Foreign Minister Youssef Rajji",
+      "fr": "Le ministre des Affaires étrangères Youssef Rajji"
+    },
+    "sourceUrl": "https://www.mtv.com.lb/news/1641648",
+    "channel": "positions",
+    "regions": [
+      "الجنوب"
+    ],
+    "activityTypes": [
+      "لقاء دبلوماسي",
+      "موقف سياسي"
+    ],
+    "people": [
+      "يوسف رجّي"
+    ],
+    "pinned": false
+  },
+  {
+    "id": "showcase-statement-effective-state-2026",
+    "slug": "geagea-effective-state-security-2026",
+    "publishedAt": "2026-01-09T17:00:00+02:00",
+    "title": {
+      "ar": "جعجع: الدولة الفعلية مدخل الاستقرار السياسي والأمني",
+      "en": "Geagea: An effective state is the gateway to political and security stability",
+      "fr": "Geagea : un État effectif est la voie vers la stabilité politique et sécuritaire"
+    },
+    "body": {
+      "ar": "شدد رئيس حزب القوات اللبنانية سمير جعجع على أن قيام دولة فعلية هو العنوان الجامع للاستقرار السياسي والأمني والاقتصادي.\n\nوربط هذا الهدف بتطبيق الدستور واحترام المهل الدستورية وحصر القرار بالمؤسسات الشرعية، بعيداً من الاستثناءات أو المسايرة مع أي جهة خارجة عن القانون.",
+      "en": "Samir Geagea said an effective state is the common foundation for political, security and economic stability, based on the Constitution, institutional deadlines and legitimate authority.",
+      "fr": "Samir Geagea a affirmé qu’un État effectif constitue le fondement commun de la stabilité politique, sécuritaire et économique, dans le respect de la Constitution et des institutions légitimes."
+    },
+    "category": {
+      "ar": "البيانات",
+      "en": "Statements",
+      "fr": "Communiqués"
+    },
+    "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/geagea%284%29%289%29.jpg",
+    "imageAlt": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/2026/01/09/%D8%AC%D8%B9%D8%AC%D8%B9-671/",
+    "channel": "statements",
+    "regions": [],
+    "activityTypes": [
+      "موقف سياسي"
+    ],
+    "people": [
+      "سمير جعجع"
+    ],
+    "pinned": false
   }
-]
+]\n

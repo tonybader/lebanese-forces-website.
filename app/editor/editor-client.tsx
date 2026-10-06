@@ -6,6 +6,7 @@ import {
   Edit3,
   ExternalLink,
   ImagePlus,
+  Inbox,
   Loader2,
   LockKeyhole,
   LogOut,
@@ -605,6 +606,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           <span><span className="block text-[15px] font-extrabold">News editor</span><span className="block text-[10px] font-bold text-black/35">Lebanese Forces</span></span>
         </a>
         <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/media">Media & documents <ImagePlus /></a></Button>
+          <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/submissions">Submissions <Inbox /></a></Button>
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/news" target="_blank">View news <ExternalLink /></a></Button>
           <Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#df1f2d]"><LogOut /> Sign out</Button>
         </div>

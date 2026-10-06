@@ -26,6 +26,7 @@ export type Article = {
   imageUrl: string;
   imageAlt: LocalizedArticleText;
   externalUrl?: string;
+  sourceUrl?: string;
   pinned?: boolean;
   channel?: ArticleChannel;
   regions?: string[];
