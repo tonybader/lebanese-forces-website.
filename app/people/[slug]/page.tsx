@@ -28,5 +28,13 @@ export default async function ProfilePage({ params }: PageProps) {
   if (!profile) notFound();
   const homepage = await getHomepageContent();
   const override = homepage.people?.find((person) => person.slug === profile.slug);
-  return <ProfileView profile={override ? { ...profile, name: override.name, office: override.office, socials: override.socials } : profile} />;
+  return <ProfileView profile={override ? {
+    ...profile,
+    name: override.name,
+    office: override.office,
+    imageUrl: override.imageUrl,
+    summary: override.summary,
+    bio: override.bio,
+    socials: override.socials,
+  } : profile} />;
 }

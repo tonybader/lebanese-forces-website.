@@ -29,6 +29,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { ArticleTagLinks } from "@/components/article-tag-links";
 import { ContactForm } from "@/components/contact-form";
+import { HeroV2 } from "@/components/hero-v2";
 import {
   Collapsible,
   CollapsibleContent,
@@ -401,8 +402,9 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
 };
 
-const timeline: { year: string; title: Localized; body: Localized; imageUrl: string }[] = [
+const defaultTimeline: { id: string; year: string; title: Localized; body: Localized; imageUrl: string }[] = [
   {
+    id: "history-1976",
     year: "1976",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/4-1976-LF.jpg",
     title: { ar: "التأسيس", en: "Founding", fr: "Fondation" },
@@ -413,6 +415,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1978",
     year: "1978",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/6-1978-Achrafieh.jpg",
     title: { ar: "حرب المئة يوم", en: "Hundred Days’ War", fr: "Guerre des Cent Jours" },
@@ -423,6 +426,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1981",
     year: "1981",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/8-1981-Zahleh.jpg",
     title: { ar: "معركة زحلة", en: "Battle of Zahle", fr: "Bataille de Zahlé" },
@@ -433,6 +437,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1982",
     year: "1982",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/9-1982-elections.jpg",
     title: { ar: "بشير رئيساً", en: "Bachir elected president", fr: "Bachir élu président" },
@@ -443,6 +448,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1986",
     year: "1986",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/14-1985-tripartite.jpg",
     title: { ar: "قيادة سمير جعجع", en: "Geagea’s leadership", fr: "Direction de Samir Geagea" },
@@ -453,6 +459,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1989",
     year: "1989",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/16-1989-taef.jpg",
     title: { ar: "اتفاق الطائف", en: "Taif Agreement", fr: "Accord de Taëf" },
@@ -463,6 +470,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-1994",
     year: "1994",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/20and21-1994-arrest.jpg",
     title: { ar: "الحل والاعتقال", en: "Dissolution and arrest", fr: "Dissolution et arrestation" },
@@ -473,6 +481,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-2005",
     year: "2005",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/26-2005-14-march.jpg",
     title: { ar: "ثورة الأرز والحرية", en: "Cedar Revolution and freedom", fr: "Révolution du Cèdre et liberté" },
@@ -483,6 +492,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-2012",
     year: "2012",
     imageUrl: "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/29--2012-manifesto.jpg",
     title: { ar: "الشرعة والنظام", en: "Charter and internal system", fr: "Charte et règlement" },
@@ -493,6 +503,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-2023",
     year: "2023",
     imageUrl: "https://www.lstatic.org/UserFiles/images/2017/default/elections%2814%29.jpg",
     title: { ar: "انتخابات حزبية مباشرة", en: "Direct party elections", fr: "Élections internes directes" },
@@ -503,6 +514,7 @@ const timeline: { year: string; title: Localized; body: Localized; imageUrl: str
     },
   },
   {
+    id: "history-2025",
     year: "2025",
     imageUrl: "https://d39raawggeifpx.cloudfront.net/styles/16_9_desktop/s3/articleimages/16011c51-d85f-40e6-a5f8-a7cee0d5994d.JPG",
     title: { ar: "عودة إلى الحكومة", en: "Return to government", fr: "Retour au gouvernement" },
@@ -757,11 +769,11 @@ function DiasporaStoryCard({
   );
 }
 
-export default function Home() {
+export function HomePage({ heroVariant = "current" }: { heroVariant?: "current" | "v2" }) {
   const [lang, setLang] = useState<Lang>("ar");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeYear, setActiveYear] = useState("1976");
+  const [activeYear, setActiveYear] = useState("history-1976");
   const [activeTrack, setActiveTrack] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [leadershipOpen, setLeadershipOpen] = useState(false);
@@ -821,15 +833,24 @@ export default function Home() {
   const peopleOverrides = new Map((homepage.people || []).map((person) => [person.slug, person]));
   const applyPersonOverride = (person: PublicProfile): PublicProfile => {
     const override = peopleOverrides.get(person.slug);
-    return override ? { ...person, name: override.name, office: override.office, socials: override.socials } : person;
+    return override ? {
+      ...person,
+      name: override.name,
+      office: override.office,
+      imageUrl: override.imageUrl,
+      summary: override.summary,
+      bio: override.bio,
+      socials: override.socials,
+    } : person;
   };
   const siteMps = mps.map(applyPersonOverride);
   const siteMinisters = ministers.map(applyPersonOverride);
   const tracks = media.songs;
   const photos = media.photos;
+  const siteTimeline = homepage.historyTimeline?.length ? homepage.historyTimeline : defaultTimeline;
   const currentTimeline = useMemo(
-    () => timeline.find((item) => item.year === activeYear) || timeline[0],
-    [activeYear],
+    () => siteTimeline.find((item) => item.id === activeYear) || siteTimeline[0],
+    [activeYear, siteTimeline],
   );
   const articlesByChannel = useMemo<Record<ArticleChannel, Article[]>>(() => {
     const grouped: Record<ArticleChannel, Article[]> = {
@@ -849,6 +870,12 @@ export default function Home() {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
   }, [lang, rtl]);
+
+  useEffect(() => {
+    if (siteTimeline.length && !siteTimeline.some((item) => item.id === activeYear)) {
+      setActiveYear(siteTimeline[0].id);
+    }
+  }, [activeYear, siteTimeline]);
 
   useEffect(() => {
     let active = true;
@@ -942,14 +969,24 @@ export default function Home() {
   };
 
   const changeTimeline = (direction: number) => {
-    const currentIndex = timeline.findIndex((item) => item.year === activeYear);
-    const nextIndex = (currentIndex + direction + timeline.length) % timeline.length;
-    setActiveYear(timeline[nextIndex].year);
+    const currentIndex = siteTimeline.findIndex((item) => item.id === activeYear);
+    const nextIndex = (currentIndex + direction + siteTimeline.length) % siteTimeline.length;
+    setActiveYear(siteTimeline[nextIndex].id);
   };
 
   return (
     <main dir={rtl ? "rtl" : "ltr"} className="min-h-screen overflow-x-hidden bg-[#f7f7f5] text-[#171717]">
-      <header className="sticky top-0 z-40 border-b border-black/[.06] bg-[#f7f7f5]/88 shadow-[0_8px_30px_rgba(0,0,0,.03)] backdrop-blur-2xl">
+      {heroVariant === "v2" ? (
+        <HeroV2
+          activeSection={activeSection}
+          lang={lang}
+          nav={t.nav}
+          onLanguageChange={setLang}
+          onNavigate={goTo}
+        />
+      ) : (
+        <>
+          <header className="sticky top-0 z-40 border-b border-black/[.06] bg-[#f7f7f5]/88 shadow-[0_8px_30px_rgba(0,0,0,.03)] backdrop-blur-2xl">
         <div className="mx-auto flex h-[76px] max-w-[1380px] items-center gap-7 px-5 lg:px-8">
           <button onClick={() => goTo("home")} className="flex shrink-0 items-center gap-3 text-start" aria-label={t.eyebrow}>
             <span className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-[0_5px_20px_rgba(0,0,0,.07)] ring-1 ring-black/[.05]">
@@ -1020,10 +1057,10 @@ export default function Home() {
         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-black/[.025]">
           <div className="h-full bg-[#df1f2d] transition-[width] duration-150" style={{ width: `${scrollProgress}%` }} />
         </div>
-      </header>
+          </header>
 
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden bg-[#191919] text-white xl:hidden">
+          {menuOpen && (
+            <div className="fixed inset-0 z-50 overflow-hidden bg-[#191919] text-white xl:hidden">
           <div className="absolute -end-32 top-20 h-96 w-96 rounded-full bg-[#df1f2d]/20 blur-3xl" />
           <div className="relative mx-auto flex h-full max-w-2xl flex-col px-6 py-6">
             <div className="flex items-center justify-between">
@@ -1049,10 +1086,10 @@ export default function Home() {
             </nav>
             <div className="text-[12px] font-normal text-white/35">Lebanese Forces · القوات اللبنانية</div>
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      <section id="home" className="soft-grid relative isolate overflow-hidden pb-20 pt-4 sm:pb-28">
+          <section id="home" className="soft-grid relative isolate overflow-hidden pb-20 pt-4 sm:pb-28">
         <div className="absolute -start-56 top-8 -z-10 h-[560px] w-[560px] rounded-full bg-[#df1f2d]/10 blur-3xl" />
         <div className="absolute -end-64 bottom-0 -z-10 h-[520px] w-[520px] rounded-full bg-[#0b7740]/[.06] blur-3xl" />
         <div className="mx-auto grid min-h-[650px] max-w-[1380px] items-center gap-12 px-5 py-14 lg:grid-cols-[1.06fr_.94fr] lg:px-8 lg:py-20">
@@ -1094,7 +1131,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+          </section>
+        </>
+      )}
 
       <section aria-label="Party facts" className="relative z-10 -mt-12 px-5 lg:px-8">
         <div className="glass mx-auto grid max-w-[1320px] grid-cols-2 gap-px overflow-hidden rounded-[26px] bg-black/[.06] p-px lg:grid-cols-4" data-reveal>
@@ -1174,12 +1213,12 @@ export default function Home() {
         <SectionHeading kicker={t.historyKicker} title={t.historyTitle} description={t.historyText} />
         <div className="soft-shadow mt-12 overflow-hidden rounded-[32px] border border-black/[.06] bg-white" data-reveal>
           <div className="scrollbar-none flex overflow-x-auto border-b border-black/[.06] p-3.5">
-            {timeline.map((item) => (
+            {siteTimeline.map((item) => (
               <button
-                key={item.year}
-                onClick={() => setActiveYear(item.year)}
-                aria-pressed={activeYear === item.year}
-                className={"relative min-w-[100px] flex-1 rounded-2xl px-4 py-3.5 text-center transition duration-300 " + (activeYear === item.year ? "bg-[#df1f2d] text-white shadow-[0_10px_25px_rgba(223,31,45,.22)]" : "text-black/38 hover:bg-[#f4f4f1] hover:text-black")}
+                key={item.id}
+                onClick={() => setActiveYear(item.id)}
+                aria-pressed={activeYear === item.id}
+                className={"relative min-w-[100px] flex-1 rounded-2xl px-4 py-3.5 text-center transition duration-300 " + (activeYear === item.id ? "bg-[#df1f2d] text-white shadow-[0_10px_25px_rgba(223,31,45,.22)]" : "text-black/38 hover:bg-[#f4f4f1] hover:text-black")}
               >
                 <span className="block text-[17px] font-extrabold tabular-nums">{item.year}</span>
               </button>
@@ -1192,7 +1231,7 @@ export default function Home() {
               <span className="relative text-[clamp(4.2rem,10vw,8.5rem)] font-extrabold leading-none tracking-[-.06em] text-white drop-shadow-2xl">{currentTimeline.year}</span>
               <span className="arabic-safe relative mt-12 text-[11px] font-bold uppercase tracking-[.12em] text-white/35">{t.historyKicker}</span>
             </div>
-            <div key={currentTimeline.year} className="timeline-enter flex flex-col justify-center p-8 lg:p-14">
+            <div key={currentTimeline.id} className="timeline-enter flex flex-col justify-center p-8 lg:p-14">
               <div className="mb-7 grid h-12 w-12 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d]">
                 <Quote size={20} />
               </div>
@@ -1469,4 +1508,8 @@ export default function Home() {
       </Dialog>
     </main>
   );
+}
+
+export default function Home() {
+  return <HomePage />;
 }

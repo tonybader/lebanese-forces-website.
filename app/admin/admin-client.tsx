@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  CalendarRange,
   Check,
   CheckCircle2,
   ExternalLink,
@@ -11,8 +12,11 @@ import {
   Loader2,
   LockKeyhole,
   LogOut,
+  Plus,
   Save,
+  Trash2,
   UploadCloud,
+  UserRound,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -28,6 +32,7 @@ import type {
 } from "@/lib/homepage-types";
 
 type Notice = { kind: "success" | "error"; text: string } | null;
+type PendingImage = { file: File; preview: string };
 
 const sections: { key: HomepageSectionKey; label: string; hint: string }[] = [
   { key: "navigation", label: "Header & navigation", hint: "Menu labels in all three languages" },
@@ -36,10 +41,11 @@ const sections: { key: HomepageSectionKey; label: string; hint: string }[] = [
   { key: "interface", label: "Buttons & subtitles", hint: "Calls to action and supporting labels" },
   { key: "news", label: "Latest news", hint: "News section heading" },
   { key: "vision", label: "Vision", hint: "Party vision statement" },
-  { key: "history", label: "History", hint: "Interactive history introduction" },
+  { key: "history", label: "History timeline", hint: "Intro, dates, stories and photographs" },
   { key: "president", label: "Party president", hint: "Biography summary and photograph" },
+  { key: "presidentPage", label: "Dr Geagea full page", hint: "Full biography, copy and milestones" },
   { key: "leadership", label: "Leadership", hint: "Executive and parliamentary section" },
-  { key: "people", label: "MPs & ministers", hint: "Names, offices and social handles" },
+  { key: "people", label: "MPs & ministers", hint: "Photos, names, offices, CVs and socials" },
   { key: "publications", label: "Publications", hint: "Documents and library introduction" },
   { key: "media", label: "Media", hint: "Songs, video and photo introduction" },
   { key: "footer", label: "Footer & socials", hint: "Closing statement and party social links" },
@@ -218,6 +224,8 @@ export function HomepageDashboard({
   const [activeSection, setActiveSection] = useState<HomepageSectionKey>("hero");
   const [heroImage, setHeroImage] = useState<File | null>(null);
   const [presidentImage, setPresidentImage] = useState<File | null>(null);
+  const [personImages, setPersonImages] = useState<Record<string, PendingImage>>({});
+  const [historyImages, setHistoryImages] = useState<Record<string, PendingImage>>({});
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
 
@@ -261,10 +269,16 @@ export function HomepageDashboard({
     next.interfaceText[field][language] = value;
     return next;
   });
-  const setPersonText = (index: number, field: "name" | "office", value: string) => setContent((current) => {
+  const setPersonText = (index: number, field: "name" | "office" | "summary" | "bio", value: string) => setContent((current) => {
     const next = structuredClone(current);
     if (!next.people) return current;
     next.people[index][field][language] = value;
+    return next;
+  });
+  const setPersonImageUrl = (index: number, value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (!next.people) return current;
+    next.people[index].imageUrl = value;
     return next;
   });
   const setPersonSocial = (index: number, field: "x" | "instagram" | "facebook", value: string) => setContent((current) => {
@@ -286,6 +300,74 @@ export function HomepageDashboard({
     }
   };
 
+  const selectIndexedImage = async (kind: "person" | "history", id: string, file: File | undefined) => {
+    if (!file) return;
+    setNotice(null);
+    try {
+      const optimized = await optimizeImage(file);
+      const selection = { file: optimized, preview: URL.createObjectURL(optimized) };
+      const update = kind === "person" ? setPersonImages : setHistoryImages;
+      update((current) => {
+        if (current[id]?.preview) URL.revokeObjectURL(current[id].preview);
+        return { ...current, [id]: selection };
+      });
+    } catch (caught) {
+      setNotice({ kind: "error", text: caught instanceof Error ? caught.message : "The image could not be prepared." });
+    }
+  };
+
+  const addHistoryMilestone = () => setContent((current) => ({
+    ...current,
+    historyTimeline: [...current.historyTimeline, {
+      id: `history-${crypto.randomUUID().slice(0, 8)}`,
+      year: new Date().getFullYear().toString(),
+      title: { ar: "محطة جديدة", en: "New milestone", fr: "Nouvelle étape" },
+      body: { ar: "أضف تفاصيل هذه المحطة.", en: "Add this milestone’s details.", fr: "Ajoutez les détails de cette étape." },
+      imageUrl: "/lf-logo.png",
+    }],
+  }));
+  const updateHistoryMilestone = (index: number, field: "year" | "imageUrl" | "title" | "body", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (field === "title" || field === "body") next.historyTimeline[index][field][language] = value;
+    else next.historyTimeline[index][field] = value;
+    return next;
+  });
+  const deleteHistoryMilestone = (index: number) => setContent((current) => current.historyTimeline.length <= 1 ? current : ({
+    ...current,
+    historyTimeline: current.historyTimeline.filter((_, itemIndex) => itemIndex !== index),
+  }));
+
+  const setPresidentPageText = (field: Exclude<keyof HomepageContent["presidentPage"], "milestones" | "sourceUrl">, value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    next.presidentPage[field][language] = value;
+    return next;
+  });
+  const updatePresidentMilestone = (index: number, field: "year" | "title" | "text", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (field === "year") next.presidentPage.milestones[index].year = value;
+    else next.presidentPage.milestones[index][field][language] = value;
+    return next;
+  });
+  const addPresidentMilestone = () => setContent((current) => ({
+    ...current,
+    presidentPage: {
+      ...current.presidentPage,
+      milestones: [...current.presidentPage.milestones, {
+        id: `geagea-${crypto.randomUUID().slice(0, 8)}`,
+        year: new Date().getFullYear().toString(),
+        title: { ar: "محطة جديدة", en: "New milestone", fr: "Nouvelle étape" },
+        text: { ar: "أضف تفاصيل المحطة.", en: "Add milestone details.", fr: "Ajoutez les détails de cette étape." },
+      }],
+    },
+  }));
+  const deletePresidentMilestone = (index: number) => setContent((current) => current.presidentPage.milestones.length <= 1 ? current : ({
+    ...current,
+    presidentPage: {
+      ...current.presidentPage,
+      milestones: current.presidentPage.milestones.filter((_, itemIndex) => itemIndex !== index),
+    },
+  }));
+
   const save = async () => {
     setSaving(true);
     setNotice(null);
@@ -294,12 +376,18 @@ export function HomepageDashboard({
       form.set("content", JSON.stringify(content));
       if (heroImage) form.set("heroImage", heroImage);
       if (presidentImage) form.set("presidentImage", presidentImage);
+      Object.entries(personImages).forEach(([slug, image]) => form.set(`personImage:${slug}`, image.file));
+      Object.entries(historyImages).forEach(([id, image]) => form.set(`historyImage:${id}`, image.file));
       const response = await fetch("/api/homepage", { method: "PUT", body: form });
       const data = (await response.json()) as { content?: HomepageContent; error?: string };
       if (!response.ok || !data.content) throw new Error(data.error || "The homepage could not be saved.");
       setContent(data.content);
       setHeroImage(null);
       setPresidentImage(null);
+      Object.values(personImages).forEach((image) => URL.revokeObjectURL(image.preview));
+      Object.values(historyImages).forEach((image) => URL.revokeObjectURL(image.preview));
+      setPersonImages({});
+      setHistoryImages({});
       setNotice({ kind: "success", text: "Homepage changes were saved. Vercel will publish the new version automatically." });
     } catch (caught) {
       setNotice({ kind: "error", text: caught instanceof Error ? caught.message : "The homepage could not be saved." });
@@ -362,11 +450,81 @@ export function HomepageDashboard({
         </section>
       );
     }
+    if (activeSection === "history") {
+      return (
+        <section className="min-h-[620px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><CalendarRange size={16} /> HISTORY PAGE · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the interactive timeline</h2><p className="mt-2 text-sm leading-6 text-black/45">Change the section text, every date, title, story and background photograph. Click directly into text to edit it.</p></div>
+              <Button type="button" onClick={addHistoryMilestone} className="rounded-full bg-[#191919] font-extrabold hover:bg-[#333]"><Plus /> Add milestone</Button>
+            </div>
+            <div dir={rtl ? "rtl" : "ltr"} className="mt-8 rounded-[26px] bg-white p-6 shadow-sm sm:p-9">
+              <EditableText value={content.history.kicker[language]} onChange={(value) => setLocalized("history", "kicker", value)} label="History label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#df1f2d]" />
+              <EditableText value={content.history.title[language]} onChange={(value) => setLocalized("history", "title", value)} label="History title" className="section-title mt-4 max-w-4xl text-[clamp(2.3rem,5vw,4.8rem)] font-extrabold leading-[1.15]" />
+              <EditableText value={content.history.text[language]} onChange={(value) => setLocalized("history", "text", value)} label="History introduction" className="mt-5 max-w-4xl text-[16px] leading-8 text-black/55" />
+            </div>
+            <div className="mt-5 space-y-4">
+              {content.historyTimeline.map((item, index) => (
+                <article key={item.id} className="overflow-hidden rounded-[26px] border border-black/[.07] bg-white shadow-sm">
+                  <div dir={rtl ? "rtl" : "ltr"} className="grid lg:grid-cols-[.43fr_.57fr]">
+                    <div className="relative min-h-[320px] overflow-hidden bg-[#191919]">
+                      <img src={historyImages[item.id]?.preview || item.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover opacity-65" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/10" />
+                      <EditableText value={item.year} onChange={(value) => updateHistoryMilestone(index, "year", value)} label="Milestone year" multiline={false} className="absolute start-7 top-7 text-[clamp(3.5rem,8vw,6.7rem)] font-extrabold leading-none text-white" />
+                      <label htmlFor={`history-image-${item.id}`} className="absolute inset-x-5 bottom-5 cursor-pointer rounded-full bg-white/94 px-5 py-3 text-center text-[12px] font-extrabold text-[#191919]"><ImagePlus className="me-2 inline" size={15} />Upload timeline image</label>
+                      <Input id={`history-image-${item.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => void selectIndexedImage("history", item.id, event.target.files?.[0])} />
+                    </div>
+                    <div className="flex flex-col justify-center p-7 sm:p-10">
+                      <EditableText value={item.title[language]} onChange={(value) => updateHistoryMilestone(index, "title", value)} label="Milestone title" className="section-title text-[clamp(2rem,4vw,3.6rem)] font-extrabold leading-tight" />
+                      <EditableText value={item.body[language]} onChange={(value) => updateHistoryMilestone(index, "body", value)} label="Milestone story" className="mt-5 min-h-24 text-[16px] leading-8 text-black/58" />
+                      <label className="mt-7 text-[10px] font-extrabold text-black/38">IMAGE URL<Input value={item.imageUrl} onChange={(event) => updateHistoryMilestone(index, "imageUrl", event.target.value)} className="mt-2 h-11 rounded-xl" /></label>
+                      <Button type="button" variant="ghost" disabled={content.historyTimeline.length <= 1} onClick={() => deleteHistoryMilestone(index)} className="mt-4 w-fit rounded-full text-red-600 hover:bg-red-50 hover:text-red-700"><Trash2 /> Delete milestone</Button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
     if (activeSection === "people") {
       return (
         <section className="min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
-          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">LEADERSHIP DIRECTORY · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">MP and minister details</h2><p className="mt-2 text-sm leading-6 text-black/45">Click a person to edit the visible name, office and social handles. Profile URLs and photographs remain linked to the verified directory.</p>
-            <div className="mt-7 space-y-2">{(content.people || []).map((person, index) => <details key={person.slug} className="group rounded-[18px] border border-black/[.07] bg-white open:shadow-md"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4"><span><span dir={rtl ? "rtl" : "ltr"} className="block text-[14px] font-extrabold">{person.name[language]}</span><span dir={rtl ? "rtl" : "ltr"} className="mt-1 block text-[11px] text-black/38">{person.office[language]}</span></span><span className="rounded-full bg-[#f2f2ef] px-3 py-1 text-[10px] font-extrabold text-black/38 group-open:bg-[#df1f2d] group-open:text-white">Edit</span></summary><div className="grid gap-3 border-t border-black/[.06] p-5 md:grid-cols-2"><label><span className="text-[10px] font-extrabold text-black/38">NAME · {language.toUpperCase()}</span><Input dir={rtl ? "rtl" : "ltr"} value={person.name[language]} onChange={(event) => setPersonText(index, "name", event.target.value)} className="mt-2 h-11 rounded-xl" /></label><label><span className="text-[10px] font-extrabold text-black/38">OFFICE · {language.toUpperCase()}</span><Input dir={rtl ? "rtl" : "ltr"} value={person.office[language]} onChange={(event) => setPersonText(index, "office", event.target.value)} className="mt-2 h-11 rounded-xl" /></label>{(["x", "instagram", "facebook"] as const).map((social) => <label key={social}><span className="text-[10px] font-extrabold uppercase text-black/38">{social} URL</span><Input value={person.socials[social]} onChange={(event) => setPersonSocial(index, social, event.target.value)} placeholder="https://…" className="mt-2 h-11 rounded-xl" /></label>)}</div></details>)}</div>
+          <div className="mx-auto max-w-5xl">
+            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><UserRound size={16} /> LEADERSHIP DIRECTORY · {language.toUpperCase()}</div>
+            <h2 className="mt-2 text-3xl font-extrabold">Edit every public profile</h2>
+            <p className="mt-2 text-sm leading-6 text-black/45">Open a person to edit the exact photograph, name, office, introduction, full CV and social accounts shown on their profile page.</p>
+            <div className="mt-7 space-y-3">
+              {(content.people || []).map((person, index) => (
+                <details key={person.slug} className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-white open:shadow-lg">
+                  <summary className="flex cursor-pointer list-none items-center gap-4 px-4 py-3.5 sm:px-5">
+                    <img src={personImages[person.slug]?.preview || person.imageUrl} alt="" className="h-14 w-14 rounded-2xl bg-[#ecece8] object-cover object-top" />
+                    <span className="min-w-0 flex-1"><span dir={rtl ? "rtl" : "ltr"} className="block truncate text-[15px] font-extrabold">{person.name[language]}</span><span dir={rtl ? "rtl" : "ltr"} className="mt-1 block truncate text-[11px] text-black/38">{person.office[language]}</span></span>
+                    <span className="rounded-full bg-[#f2f2ef] px-3 py-1 text-[10px] font-extrabold text-black/38 group-open:bg-[#df1f2d] group-open:text-white">Edit profile</span>
+                  </summary>
+                  <div className="border-t border-black/[.06] p-4 sm:p-6">
+                    <div className="grid overflow-hidden rounded-[24px] bg-[#191919] text-white lg:grid-cols-[.42fr_.58fr]">
+                      <div className="relative min-h-[360px] bg-[#ecece8]">
+                        <img src={personImages[person.slug]?.preview || person.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
+                        <label htmlFor={`person-image-${person.slug}`} className="absolute inset-x-4 bottom-4 cursor-pointer rounded-full bg-white/94 px-4 py-3 text-center text-[12px] font-extrabold text-[#191919] shadow-lg"><ImagePlus className="me-2 inline" size={15} />Upload new photo</label>
+                        <Input id={`person-image-${person.slug}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => void selectIndexedImage("person", person.slug, event.target.files?.[0])} />
+                      </div>
+                      <div className="p-6 sm:p-8">
+                        <EditableText value={person.name[language]} onChange={(value) => setPersonText(index, "name", value)} label="Person name" multiline={false} className="section-title text-[clamp(2rem,4vw,3.6rem)] font-extrabold leading-tight" />
+                        <EditableText value={person.office[language]} onChange={(value) => setPersonText(index, "office", value)} label="Person office" multiline={false} className="mt-3 text-[15px] font-bold text-white/58" />
+                        <EditableText value={person.summary[language]} onChange={(value) => setPersonText(index, "summary", value)} label="Short profile introduction" className="mt-7 text-[16px] leading-8 text-white/76" />
+                        <div className="mt-7 border-t border-white/10 pt-6"><div className="text-[10px] font-extrabold uppercase tracking-[.12em] text-[#ff6570]">FULL CV / DESCRIPTION</div><EditableText value={person.bio[language]} onChange={(value) => setPersonText(index, "bio", value)} label="Full CV" className="mt-3 min-h-32 whitespace-pre-line text-[14px] leading-8 text-white/62" /></div>
+                      </div>
+                    </div>
+                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                      <label><span className="text-[10px] font-extrabold text-black/38">IMAGE URL</span><Input value={person.imageUrl} onChange={(event) => setPersonImageUrl(index, event.target.value)} className="mt-2 h-11 rounded-xl" /></label>
+                      {(["x", "instagram", "facebook"] as const).map((social) => <label key={social}><span className="text-[10px] font-extrabold uppercase text-black/38">{social} URL</span><Input value={person.socials[social]} onChange={(event) => setPersonSocial(index, social, event.target.value)} placeholder="https://…" className="mt-2 h-11 rounded-xl" /></label>)}
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
       );
@@ -404,6 +562,54 @@ export function HomepageDashboard({
             <EditableText value={content.president.bio2[language]} onChange={(value) => setLocalized("president", "bio2", value)} label="Second biography paragraph" className="mt-3 px-2 py-1 text-[15px] leading-8 text-white/66" />
             <EditableText value={content.president.imageCredit[language]} onChange={(value) => setLocalized("president", "imageCredit", value)} label="Photograph credit" multiline={false} className="mt-7 px-2 py-1 text-[11px] text-white/38" />
             <div className="mt-6 grid gap-2 sm:grid-cols-3">{(["x", "instagram", "facebook"] as const).map((social) => <label key={social} className="text-[9px] font-extrabold uppercase text-white/35">{social}<Input value={content.president.socials[social]} onChange={(event) => setContent((current) => ({ ...current, president: { ...current.president, socials: { ...current.president.socials, [social]: event.target.value } } }))} placeholder="https://…" className="mt-2 h-10 border-white/10 bg-white/[.06] text-[11px] text-white" /></label>)}</div>
+          </div>
+        </section>
+      );
+    }
+    if (activeSection === "presidentPage") {
+      return (
+        <section className="overflow-hidden rounded-[28px] bg-[#f7f7f5]">
+          <div dir={rtl ? "rtl" : "ltr"} className="grid min-h-[620px] bg-[#191919] text-white lg:grid-cols-[.44fr_.56fr]">
+            <div className="relative min-h-[460px] bg-black">
+              <img src={presidentObjectUrl || content.president.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover object-top grayscale" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+            </div>
+            <div className="flex flex-col justify-center p-7 sm:p-11 lg:p-14">
+              <EditableText value={content.presidentPage.backLabel[language]} onChange={(value) => setPresidentPageText("backLabel", value)} label="Back link" multiline={false} className="mb-12 w-fit text-[12px] font-bold text-white/45" />
+              <EditableText value={content.presidentPage.kicker[language]} onChange={(value) => setPresidentPageText("kicker", value)} label="Biography label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#ff6570]" />
+              <EditableText value={content.presidentPage.title[language]} onChange={(value) => setPresidentPageText("title", value)} label="Biography title" className="section-title mt-5 text-[clamp(3rem,6vw,6rem)] font-extrabold leading-[1.08]" />
+              <EditableText value={content.presidentPage.role[language]} onChange={(value) => setPresidentPageText("role", value)} label="Biography role" className="mt-4 text-[17px] font-bold text-white/60" />
+              <EditableText value={content.presidentPage.intro[language]} onChange={(value) => setPresidentPageText("intro", value)} label="Biography introduction" className="mt-8 text-[17px] leading-9 text-white/68" />
+              <EditableText value={content.presidentPage.socialsLabel[language]} onChange={(value) => setPresidentPageText("socialsLabel", value)} label="Social accounts label" multiline={false} className="mt-8 w-fit text-[10px] font-extrabold uppercase tracking-[.12em] text-white/38" />
+            </div>
+          </div>
+          <div dir={rtl ? "rtl" : "ltr"} className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-[.34fr_.66fr] lg:px-10 lg:py-20">
+            <EditableText value={content.presidentPage.storyTitle[language]} onChange={(value) => setPresidentPageText("storyTitle", value)} label="Story title" className="section-title text-[clamp(2.2rem,5vw,4.3rem)] font-extrabold leading-[1.15]" />
+            <EditableText value={content.presidentPage.story[language]} onChange={(value) => setPresidentPageText("story", value)} label="Full biography" className="min-h-72 whitespace-pre-line text-[17px] leading-[2.05] text-black/68" />
+          </div>
+          <div className="border-t border-black/[.06] bg-white px-6 py-14 lg:px-10 lg:py-20">
+            <div className="mx-auto max-w-6xl">
+              <div className="flex flex-wrap items-center justify-between gap-4" dir={rtl ? "rtl" : "ltr"}>
+                <EditableText value={content.presidentPage.timelineTitle[language]} onChange={(value) => setPresidentPageText("timelineTitle", value)} label="Timeline title" className="section-title text-[clamp(2.1rem,5vw,4.5rem)] font-extrabold" />
+                <Button type="button" onClick={addPresidentMilestone} className="rounded-full bg-[#191919] font-extrabold hover:bg-[#333]"><Plus /> Add milestone</Button>
+              </div>
+              <div className="mt-10 grid gap-3 md:grid-cols-2">
+                {content.presidentPage.milestones.map((item, index) => (
+                  <article key={item.id} dir={rtl ? "rtl" : "ltr"} className="group grid grid-cols-[105px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[#f7f7f5]">
+                    <EditableText value={item.year} onChange={(value) => updatePresidentMilestone(index, "year", value)} label="Milestone year" multiline={false} className="grid place-items-center bg-[#191919] p-4 text-center text-[19px] font-extrabold text-[#ff6570]" />
+                    <div className="p-5 sm:p-6">
+                      <EditableText value={item.title[language]} onChange={(value) => updatePresidentMilestone(index, "title", value)} label="Milestone title" className="text-[17px] font-extrabold" />
+                      <EditableText value={item.text[language]} onChange={(value) => updatePresidentMilestone(index, "text", value)} label="Milestone details" className="mt-2 min-h-16 text-[14px] leading-7 text-black/50" />
+                      <Button type="button" size="sm" variant="ghost" disabled={content.presidentPage.milestones.length <= 1} onClick={() => deletePresidentMilestone(index)} className="mt-3 rounded-full text-red-600 hover:bg-red-50 hover:text-red-700"><Trash2 size={14} /> Delete</Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2" dir="ltr">
+                <label><span className="text-[10px] font-extrabold text-black/38">SOURCE LABEL · {language.toUpperCase()}</span><Input dir={rtl ? "rtl" : "ltr"} value={content.presidentPage.sourceLabel[language]} onChange={(event) => setPresidentPageText("sourceLabel", event.target.value)} className="mt-2 h-11 rounded-xl" /></label>
+                <label><span className="text-[10px] font-extrabold text-black/38">SOURCE URL</span><Input value={content.presidentPage.sourceUrl} onChange={(event) => setContent((current) => ({ ...current, presidentPage: { ...current.presidentPage, sourceUrl: event.target.value } }))} className="mt-2 h-11 rounded-xl" /></label>
+              </div>
+            </div>
           </div>
         </section>
       );

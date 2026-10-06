@@ -291,6 +291,173 @@
       "fr": "Parcourez les années et découvrez les moments clés, de la fondation au rôle politique et institutionnel d’aujourd’hui."
     }
   },
+  "historyTimeline": [
+    {
+      "id": "history-1976",
+      "year": "1976",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/4-1976-LF.jpg",
+      "title": {
+        "ar": "التأسيس",
+        "en": "Founding",
+        "fr": "Fondation"
+      },
+      "body": {
+        "ar": "إنشاء صيغة توحيدية لأحزاب الجبهة اللبنانية حملت اسم «القوات اللبنانية» بقيادة الشيخ بشير الجميّل.",
+        "en": "A unified structure bringing together parties of the Lebanese Front was formed under the name “Lebanese Forces,” led by Bachir Gemayel.",
+        "fr": "Une structure unifiée regroupant les partis du Front libanais est créée sous le nom de « Forces Libanaises », dirigée par Bachir Gemayel."
+      }
+    },
+    {
+      "id": "history-1978",
+      "year": "1978",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/6-1978-Achrafieh.jpg",
+      "title": {
+        "ar": "حرب المئة يوم",
+        "en": "Hundred Days’ War",
+        "fr": "Guerre des Cent Jours"
+      },
+      "body": {
+        "ar": "اندلاع حرب المئة يوم في الأشرفية بعد توقيف بشير الجميّل على حاجز للجيش السوري.",
+        "en": "The Hundred Days’ War erupted in Achrafieh following Bachir Gemayel’s detention at a Syrian army checkpoint.",
+        "fr": "La Guerre des Cent Jours éclate à Achrafieh après l’arrestation de Bachir Gemayel à un barrage de l’armée syrienne."
+      }
+    },
+    {
+      "id": "history-1981",
+      "year": "1981",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/8-1981-Zahleh.jpg",
+      "title": {
+        "ar": "معركة زحلة",
+        "en": "Battle of Zahle",
+        "fr": "Bataille de Zahlé"
+      },
+      "body": {
+        "ar": "واجهت زحلة حصاراً وقصفاً قاسياً، وشكّلت المعركة محطة أساسية في مقاومة الوجود السوري.",
+        "en": "Zahle endured a severe siege and bombardment, marking a defining moment in resistance to the Syrian presence.",
+        "fr": "Zahlé subit un siège et des bombardements intenses, une étape majeure de la résistance à la présence syrienne."
+      }
+    },
+    {
+      "id": "history-1982",
+      "year": "1982",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/9-1982-elections.jpg",
+      "title": {
+        "ar": "بشير رئيساً",
+        "en": "Bachir elected president",
+        "fr": "Bachir élu président"
+      },
+      "body": {
+        "ar": "انتُخب بشير الجميّل رئيساً للجمهورية في 23 آب، ثم اغتيل في 14 أيلول قبل تسلّمه مهامه.",
+        "en": "Bachir Gemayel was elected President of the Republic on 23 August and assassinated on 14 September before taking office.",
+        "fr": "Bachir Gemayel est élu président de la République le 23 août, puis assassiné le 14 septembre avant son entrée en fonction."
+      }
+    },
+    {
+      "id": "history-1986",
+      "year": "1986",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/14-1985-tripartite.jpg",
+      "title": {
+        "ar": "قيادة سمير جعجع",
+        "en": "Geagea’s leadership",
+        "fr": "Direction de Samir Geagea"
+      },
+      "body": {
+        "ar": "تسلّم سمير جعجع قيادة القوات اللبنانية بعد إسقاط الاتفاق الثلاثي، وأطلق ورشة تنظيمية وسياسية وإعلامية واسعة.",
+        "en": "Samir Geagea assumed leadership after the Tripartite Accord was overturned and launched broad organizational, political and media development.",
+        "fr": "Samir Geagea prend la direction après l’abandon de l’Accord tripartite et lance une vaste réorganisation politique et médiatique."
+      }
+    },
+    {
+      "id": "history-1989",
+      "year": "1989",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/16-1989-taef.jpg",
+      "title": {
+        "ar": "اتفاق الطائف",
+        "en": "Taif Agreement",
+        "fr": "Accord de Taëf"
+      },
+      "body": {
+        "ar": "وافقت القوات على اتفاق الطائف، ثم حلّت جناحها العسكري طوعاً وانتقلت إلى العمل السياسي.",
+        "en": "The Lebanese Forces endorsed the Taif Agreement, voluntarily dissolved its military wing and moved into political action.",
+        "fr": "Les Forces Libanaises approuvent l’Accord de Taëf, dissolvent volontairement leur branche militaire et passent à l’action politique."
+      }
+    },
+    {
+      "id": "history-1994",
+      "year": "1994",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/20and21-1994-arrest.jpg",
+      "title": {
+        "ar": "الحل والاعتقال",
+        "en": "Dissolution and arrest",
+        "fr": "Dissolution et arrestation"
+      },
+      "body": {
+        "ar": "حُلّ الحزب في 23 آذار واعتُقل سمير جعجع في 21 نيسان، لتبدأ مرحلة أحد عشر عاماً من المقاومة السياسية.",
+        "en": "The party was dissolved on 23 March and Samir Geagea arrested on 21 April, beginning eleven years of political resistance.",
+        "fr": "Le parti est dissous le 23 mars et Samir Geagea arrêté le 21 avril, ouvrant onze années de résistance politique."
+      }
+    },
+    {
+      "id": "history-2005",
+      "year": "2005",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/26-2005-14-march.jpg",
+      "title": {
+        "ar": "ثورة الأرز والحرية",
+        "en": "Cedar Revolution and freedom",
+        "fr": "Révolution du Cèdre et liberté"
+      },
+      "body": {
+        "ar": "شارك الحزب في ثورة الأرز، انسحب الجيش السوري من لبنان، وأقرّ مجلس النواب قانون العفو الذي أعاد جعجع إلى الحرية.",
+        "en": "The party took part in the Cedar Revolution, the Syrian army withdrew, and Parliament adopted the amnesty law that freed Geagea.",
+        "fr": "Le parti participe à la Révolution du Cèdre, l’armée syrienne se retire et le Parlement adopte la loi d’amnistie libérant Geagea."
+      }
+    },
+    {
+      "id": "history-2012",
+      "year": "2012",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/LF-Party-Timeline/29--2012-manifesto.jpg",
+      "title": {
+        "ar": "الشرعة والنظام",
+        "en": "Charter and internal system",
+        "fr": "Charte et règlement"
+      },
+      "body": {
+        "ar": "إعلان شرعة الحزب واعتماد نظام داخلي متطوّر، مع فتح باب الانتساب وتكريس المسار المؤسساتي.",
+        "en": "The party charter and a modern internal system were adopted, opening membership and consolidating institutional development.",
+        "fr": "La charte et un règlement intérieur moderne sont adoptés, ouvrant l’adhésion et renforçant l’institutionnalisation."
+      }
+    },
+    {
+      "id": "history-2023",
+      "year": "2023",
+      "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/default/elections%2814%29.jpg",
+      "title": {
+        "ar": "انتخابات حزبية مباشرة",
+        "en": "Direct party elections",
+        "fr": "Élections internes directes"
+      },
+      "body": {
+        "ar": "أُجريت أول انتخابات حزبية مباشرة لاختيار رئيس الحزب ونائبه وأعضاء الهيئة التنفيذية.",
+        "en": "The first direct internal elections were held to choose the party president, vice president and Executive Committee.",
+        "fr": "Les premières élections internes directes sont organisées pour choisir le président, le vice-président et le Comité exécutif."
+      }
+    },
+    {
+      "id": "history-2025",
+      "year": "2025",
+      "imageUrl": "https://d39raawggeifpx.cloudfront.net/styles/16_9_desktop/s3/articleimages/16011c51-d85f-40e6-a5f8-a7cee0d5994d.JPG",
+      "title": {
+        "ar": "عودة إلى الحكومة",
+        "en": "Return to government",
+        "fr": "Retour au gouvernement"
+      },
+      "body": {
+        "ar": "تمثّلت القوات اللبنانية بأربعة وزراء في حكومة الرئيس نواف سلام ضمن حقائب سيادية وخدماتية واقتصادية.",
+        "en": "The Lebanese Forces entered Prime Minister Nawaf Salam’s cabinet with four ministers holding sovereign, service and economic portfolios.",
+        "fr": "Les Forces Libanaises rejoignent le gouvernement de Nawaf Salam avec quatre ministres aux portefeuilles souverains, économiques et de services."
+      }
+    }
+  ],
   "president": {
     "kicker": {
       "ar": "رئيس الحزب",
@@ -333,6 +500,159 @@
       "instagram": "https://www.instagram.com/samirgeageaofficial/",
       "facebook": "https://www.facebook.com/DrSamirGeagea/"
     }
+  },
+  "presidentPage": {
+    "backLabel": {
+      "ar": "العودة إلى الرئيسية",
+      "en": "Back to homepage",
+      "fr": "Retour à l’accueil"
+    },
+    "kicker": {
+      "ar": "رئيس حزب القوات اللبنانية",
+      "en": "President of the Lebanese Forces",
+      "fr": "Président des Forces Libanaises"
+    },
+    "title": {
+      "ar": "الدكتور سمير جعجع",
+      "en": "Dr Samir Geagea",
+      "fr": "Dr Samir Geagea"
+    },
+    "role": {
+      "ar": "مسيرة سياسية من زمن الحرب إلى العمل المؤسساتي",
+      "en": "A political journey from wartime to institutional action",
+      "fr": "Un parcours politique de la guerre à l’action institutionnelle"
+    },
+    "intro": {
+      "ar": "من عين الرمانة إلى قيادة القوات اللبنانية، ومن أحد عشر عاماً وثلاثة أشهر في الاعتقال إلى العودة للحياة السياسية، تختصر مسيرته محطات أساسية من تاريخ لبنان الحديث.",
+      "en": "From Ain el-Remmaneh to the leadership of the Lebanese Forces, and from eleven years and three months in detention to a return to political life, his path intersects with defining chapters of modern Lebanon.",
+      "fr": "De Aïn el-Remmaneh à la direction des Forces Libanaises, puis de onze ans et trois mois de détention au retour à la vie politique, son parcours traverse des chapitres majeurs du Liban contemporain."
+    },
+    "storyTitle": {
+      "ar": "السيرة والمسيرة",
+      "en": "Life and political journey",
+      "fr": "Vie et parcours politique"
+    },
+    "story": {
+      "ar": "وُلد سمير جعجع في 25 تشرين الأول 1952 في عين الرمانة، ونشأ في عائلة متوسطة الحال. تابع دراسته في المدارس الرسمية، ثم التحق بكلية الطب في الجامعة الأميركية في بيروت بمنحة جامعية، قبل أن ينتقل إلى جامعة القديس يوسف مع اندلاع الحرب اللبنانية.\n\nتدرّج في المسؤوليات الحزبية والميدانية، فتولّى مسؤوليات في منطقة بشري والشمال، ثم أصبح رئيساً لأركان القوات اللبنانية عام 1985. وفي كانون الثاني 1986 تسلّم قيادة القوات اللبنانية وأطلق مساراً تنظيمياً وسياسياً وإعلامياً واسعاً.\n\nتبنّى خيار إنهاء الحرب وبناء الدولة، فوافق على اتفاق الطائف عام 1989، وقاد حلّ الجناح العسكري للقوات وانتقالها إلى العمل السياسي. ومع اشتداد الضغوط في مرحلة الوصاية السورية، حُلّ الحزب واعتُقل جعجع في نيسان 1994.\n\nاستمر اعتقاله أحد عشر عاماً وثلاثة أشهر. وبعد انسحاب الجيش السوري عام 2005، أقرّ مجلس النواب قانون العفو، فخرج إلى الحرية في 26 تموز 2005 وعاد إلى قيادة الحزب والمشاركة في الحياة السياسية والحوار الوطني.",
+      "en": "Samir Geagea was born on 25 October 1952 in Ain el-Remmaneh and grew up in a middle-income family. He attended public schools before studying medicine at the American University of Beirut on a scholarship, later continuing at Saint Joseph University as the Lebanese war unfolded.\n\nHe advanced through party and field responsibilities in Bsharri and northern Lebanon, becoming chief of staff of the Lebanese Forces in 1985. In January 1986 he assumed the organization’s leadership and began a broad institutional, political and media development effort.\n\nGeagea backed the effort to end the war and rebuild the state. He endorsed the Taif Agreement in 1989 and oversaw the dissolution of the Lebanese Forces’ military wing and its transition to political work. During the period of Syrian tutelage, the party was dissolved and Geagea was arrested in April 1994.\n\nHis detention lasted eleven years and three months. After the Syrian army withdrew in 2005, Parliament adopted an amnesty law. He was released on 26 July 2005 and returned to party leadership, national dialogue and political life.",
+      "fr": "Samir Geagea est né le 25 octobre 1952 à Aïn el-Remmaneh dans une famille de condition moyenne. Après les écoles publiques, il étudie la médecine à l’Université américaine de Beyrouth grâce à une bourse, puis poursuit son cursus à l’Université Saint-Joseph lorsque la guerre libanaise éclate.\n\nIl gravit les échelons des responsabilités dans le parti et sur le terrain à Bécharré et dans le nord du Liban, avant de devenir chef d’état-major des Forces Libanaises en 1985. En janvier 1986, il en prend la direction et lance un vaste chantier institutionnel, politique et médiatique.\n\nIl soutient la fin de la guerre et la reconstruction de l’État, approuve l’Accord de Taëf en 1989 et supervise la dissolution de la branche militaire ainsi que le passage à l’action politique. Durant la tutelle syrienne, le parti est dissous et Geagea est arrêté en avril 1994.\n\nSa détention dure onze ans et trois mois. Après le retrait de l’armée syrienne en 2005, le Parlement vote une loi d’amnistie. Libéré le 26 juillet 2005, il reprend la direction du parti et participe à nouveau au dialogue national et à la vie politique."
+    },
+    "timelineTitle": {
+      "ar": "محطات رئيسية",
+      "en": "Defining milestones",
+      "fr": "Étapes marquantes"
+    },
+    "sourceLabel": {
+      "ar": "المرجع الرسمي للسيرة",
+      "en": "Official biography reference",
+      "fr": "Référence biographique officielle"
+    },
+    "sourceUrl": "https://www.lebanese-forces.com/person/politicians-samir-geagea/",
+    "socialsLabel": {
+      "ar": "الحسابات الرسمية",
+      "en": "Official accounts",
+      "fr": "Comptes officiels"
+    },
+    "milestones": [
+      {
+        "id": "geagea-1952",
+        "year": "1952",
+        "title": {
+          "ar": "الولادة",
+          "en": "Birth",
+          "fr": "Naissance"
+        },
+        "text": {
+          "ar": "وُلد في عين الرمانة في 25 تشرين الأول.",
+          "en": "Born in Ain el-Remmaneh on 25 October.",
+          "fr": "Né à Aïn el-Remmaneh le 25 octobre."
+        }
+      },
+      {
+        "id": "geagea-1975",
+        "year": "1975–78",
+        "title": {
+          "ar": "الطب والمسؤولية",
+          "en": "Medicine and responsibility",
+          "fr": "Médecine et responsabilités"
+        },
+        "text": {
+          "ar": "انتقل من دراسة الطب إلى تحمّل مسؤوليات متصاعدة مع توسّع الحرب.",
+          "en": "Moved from medical studies into growing responsibilities as the war expanded.",
+          "fr": "Passe des études de médecine à des responsabilités croissantes avec l’extension de la guerre."
+        }
+      },
+      {
+        "id": "geagea-1985",
+        "year": "1985",
+        "title": {
+          "ar": "رئاسة الأركان",
+          "en": "Chief of staff",
+          "fr": "Chef d’état-major"
+        },
+        "text": {
+          "ar": "تولّى رئاسة أركان القوات اللبنانية.",
+          "en": "Became chief of staff of the Lebanese Forces.",
+          "fr": "Devient chef d’état-major des Forces Libanaises."
+        }
+      },
+      {
+        "id": "geagea-1986",
+        "year": "1986",
+        "title": {
+          "ar": "قيادة القوات",
+          "en": "Party leadership",
+          "fr": "Direction des Forces"
+        },
+        "text": {
+          "ar": "تسلّم قيادة القوات اللبنانية في كانون الثاني.",
+          "en": "Assumed leadership of the Lebanese Forces in January.",
+          "fr": "Prend la direction des Forces Libanaises en janvier."
+        }
+      },
+      {
+        "id": "geagea-1989",
+        "year": "1989",
+        "title": {
+          "ar": "اتفاق الطائف",
+          "en": "Taif Agreement",
+          "fr": "Accord de Taëf"
+        },
+        "text": {
+          "ar": "وافق على الاتفاق وقاد الانتقال نحو العمل السياسي.",
+          "en": "Endorsed the agreement and led the transition to political action.",
+          "fr": "Approuve l’accord et conduit le passage à l’action politique."
+        }
+      },
+      {
+        "id": "geagea-1994",
+        "year": "1994",
+        "title": {
+          "ar": "الاعتقال",
+          "en": "Arrest",
+          "fr": "Arrestation"
+        },
+        "text": {
+          "ar": "اعتُقل في 21 نيسان بعد حلّ الحزب.",
+          "en": "Arrested on 21 April after the party was dissolved.",
+          "fr": "Arrêté le 21 avril après la dissolution du parti."
+        }
+      },
+      {
+        "id": "geagea-2005",
+        "year": "2005",
+        "title": {
+          "ar": "الحرية والعودة",
+          "en": "Freedom and return",
+          "fr": "Liberté et retour"
+        },
+        "text": {
+          "ar": "خرج من الاعتقال في 26 تموز وعاد إلى الحياة السياسية.",
+          "en": "Released on 26 July and returned to political life.",
+          "fr": "Libéré le 26 juillet, il revient à la vie politique."
+        }
+      }
+    ]
   },
   "leadership": {
     "kicker": {

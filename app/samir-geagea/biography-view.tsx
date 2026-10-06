@@ -2,6 +2,7 @@
 
 import { ArrowLeft, CalendarDays, ExternalLink, Globe2, Quote } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { HomepagePresidentPage } from "@/lib/homepage-types";
 
 type Language = "ar" | "en" | "fr";
 type Localized = Record<Language, string>;
@@ -71,48 +72,69 @@ const copy: Record<Language, {
   },
 };
 
-const milestones: { year: string; title: Localized; text: Localized }[] = [
+const defaultMilestones: { id: string; year: string; title: Localized; text: Localized }[] = [
   {
+    id: "geagea-1952",
     year: "1952",
     title: { ar: "الولادة", en: "Birth", fr: "Naissance" },
     text: { ar: "وُلد في عين الرمانة في 25 تشرين الأول.", en: "Born in Ain el-Remmaneh on 25 October.", fr: "Né à Aïn el-Remmaneh le 25 octobre." },
   },
   {
+    id: "geagea-1975",
     year: "1975–78",
     title: { ar: "الطب والمسؤولية", en: "Medicine and responsibility", fr: "Médecine et responsabilités" },
     text: { ar: "انتقل من دراسة الطب إلى تحمّل مسؤوليات متصاعدة مع توسّع الحرب.", en: "Moved from medical studies into growing responsibilities as the war expanded.", fr: "Passe des études de médecine à des responsabilités croissantes avec l’extension de la guerre." },
   },
   {
+    id: "geagea-1985",
     year: "1985",
     title: { ar: "رئاسة الأركان", en: "Chief of staff", fr: "Chef d’état-major" },
     text: { ar: "تولّى رئاسة أركان القوات اللبنانية.", en: "Became chief of staff of the Lebanese Forces.", fr: "Devient chef d’état-major des Forces Libanaises." },
   },
   {
+    id: "geagea-1986",
     year: "1986",
     title: { ar: "قيادة القوات", en: "Party leadership", fr: "Direction des Forces" },
     text: { ar: "تسلّم قيادة القوات اللبنانية في كانون الثاني.", en: "Assumed leadership of the Lebanese Forces in January.", fr: "Prend la direction des Forces Libanaises en janvier." },
   },
   {
+    id: "geagea-1989",
     year: "1989",
     title: { ar: "اتفاق الطائف", en: "Taif Agreement", fr: "Accord de Taëf" },
     text: { ar: "وافق على الاتفاق وقاد الانتقال نحو العمل السياسي.", en: "Endorsed the agreement and led the transition to political action.", fr: "Approuve l’accord et conduit le passage à l’action politique." },
   },
   {
+    id: "geagea-1994",
     year: "1994",
     title: { ar: "الاعتقال", en: "Arrest", fr: "Arrestation" },
     text: { ar: "اعتُقل في 21 نيسان بعد حلّ الحزب.", en: "Arrested on 21 April after the party was dissolved.", fr: "Arrêté le 21 avril après la dissolution du parti." },
   },
   {
+    id: "geagea-2005",
     year: "2005",
     title: { ar: "الحرية والعودة", en: "Freedom and return", fr: "Liberté et retour" },
     text: { ar: "خرج من الاعتقال في 26 تموز وعاد إلى الحياة السياسية.", en: "Released on 26 July and returned to political life.", fr: "Libéré le 26 juillet, il revient à la vie politique." },
   },
 ];
 
-export function BiographyView({ imageUrl, socials }: { imageUrl: string; socials: { x: string; instagram: string; facebook: string } }) {
+export function BiographyView({ imageUrl, socials, content }: { imageUrl: string; socials: { x: string; instagram: string; facebook: string }; content: HomepagePresidentPage }) {
   const [language, setLanguage] = useState<Language>("ar");
   const rtl = language === "ar";
-  const t = copy[language];
+  const defaults = copy[language];
+  const t = {
+    ...defaults,
+    back: content.backLabel[language] || defaults.back,
+    kicker: content.kicker[language] || defaults.kicker,
+    title: content.title[language] || defaults.title,
+    role: content.role[language] || defaults.role,
+    intro: content.intro[language] || defaults.intro,
+    storyTitle: content.storyTitle[language] || defaults.storyTitle,
+    paragraphs: (content.story[language] || defaults.paragraphs.join("\n\n")).split(/\n{2,}/).map((item) => item.trim()).filter(Boolean),
+    timelineTitle: content.timelineTitle[language] || defaults.timelineTitle,
+    source: content.sourceLabel[language] || defaults.source,
+    socials: content.socialsLabel[language] || defaults.socials,
+  };
+  const milestones = content.milestones.length ? content.milestones : defaultMilestones;
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -159,8 +181,8 @@ export function BiographyView({ imageUrl, socials }: { imageUrl: string; socials
         <div className="mx-auto max-w-[1180px] px-5 py-16 lg:px-8 lg:py-24">
           <div className="flex items-center gap-3 text-[#df1f2d]"><CalendarDays size={20} /><span className="text-[12px] font-extrabold">{t.kicker}</span></div>
           <h2 className="section-title mt-4 text-[clamp(2.2rem,5vw,4.8rem)] font-extrabold">{t.timelineTitle}</h2>
-          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.year} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[#f7f7f5] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#ff6570]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
-          <a href="https://www.lebanese-forces.com/person/politicians-samir-geagea/" target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-bold text-black/40 transition hover:text-[#df1f2d]">{t.source}<ExternalLink size={14} /></a>
+          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.id} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[#f7f7f5] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#ff6570]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
+          <a href={content.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-bold text-black/40 transition hover:text-[#df1f2d]">{t.source}<ExternalLink size={14} /></a>
         </div>
       </section>
     </main>

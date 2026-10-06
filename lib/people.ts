@@ -18,6 +18,7 @@ export type PublicProfile = {
     facebook?: string;
   };
   summary: LocalizedProfileText;
+  bio?: LocalizedProfileText;
   highlights: LocalizedProfileText[];
   aliases: string[];
   sourceUrl: string;

@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 
 export default async function SamirGeageaPage() {
   const homepage = await getHomepageContent();
-  return <BiographyView imageUrl={homepage.president.imageUrl} socials={homepage.president.socials} />;
+  return <BiographyView imageUrl={homepage.president.imageUrl} socials={homepage.president.socials} content={homepage.presidentPage} />;
 }

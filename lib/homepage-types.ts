@@ -22,7 +22,37 @@ export type HomepagePerson = {
   slug: string;
   name: HomepageLocalizedText;
   office: HomepageLocalizedText;
+  imageUrl: string;
+  summary: HomepageLocalizedText;
+  bio: HomepageLocalizedText;
   socials: { x: string; instagram: string; facebook: string };
+};
+export type HomepageHistoryMilestone = {
+  id: string;
+  year: string;
+  title: HomepageLocalizedText;
+  body: HomepageLocalizedText;
+  imageUrl: string;
+};
+export type HomepagePresidentMilestone = {
+  id: string;
+  year: string;
+  title: HomepageLocalizedText;
+  text: HomepageLocalizedText;
+};
+export type HomepagePresidentPage = {
+  backLabel: HomepageLocalizedText;
+  kicker: HomepageLocalizedText;
+  title: HomepageLocalizedText;
+  role: HomepageLocalizedText;
+  intro: HomepageLocalizedText;
+  storyTitle: HomepageLocalizedText;
+  story: HomepageLocalizedText;
+  timelineTitle: HomepageLocalizedText;
+  sourceLabel: HomepageLocalizedText;
+  sourceUrl: string;
+  socialsLabel: HomepageLocalizedText;
+  milestones: HomepagePresidentMilestone[];
 };
 export type HomepageInterfaceText = {
   historyCta: HomepageLocalizedText;
@@ -56,6 +86,7 @@ export type HomepageContent = {
   vision: HomepageTextSection;
   news: HomepageTextSection;
   history: HomepageTextSection;
+  historyTimeline: HomepageHistoryMilestone[];
   president: {
     kicker: HomepageLocalizedText;
     title: HomepageLocalizedText;
@@ -67,6 +98,7 @@ export type HomepageContent = {
     imageCredit: HomepageLocalizedText;
     socials: { x: string; instagram: string; facebook: string };
   };
+  presidentPage: HomepagePresidentPage;
   leadership: HomepageTextSection;
   publications: HomepageTextSection;
   media: HomepageTextSection;
@@ -84,6 +116,7 @@ export type HomepageSectionKey =
   | "vision"
   | "history"
   | "president"
+  | "presidentPage"
   | "leadership"
   | "people"
   | "publications"

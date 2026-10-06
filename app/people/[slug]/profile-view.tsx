@@ -43,6 +43,8 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
   const [language, setLanguage] = useState<ProfileLanguage>("ar");
   const rtl = language === "ar";
   const t = copy[language];
+  const biography = profile.bio ? profileText(profile.bio, language) : "";
+  const biographyParagraphs = biography.split(/\n{2,}/).map((item) => item.trim()).filter(Boolean);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -98,15 +100,23 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
 
                   <div className="mt-10 border-t border-white/[.09] pt-8">
                     <h2 className="text-[13px] font-extrabold text-white/45">{t.bio}</h2>
-                    <p className="mt-4 text-[17px] leading-9 text-white/78">{profileText(profile.summary, language)}</p>
-                    <ul className="mt-7 space-y-4">
-                      {profile.highlights.map((highlight, index) => (
-                        <li key={index} className="flex gap-3 text-[14px] leading-7 text-white/60">
-                          <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#df1f2d]" />
-                          <span>{profileText(highlight, language)}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {biographyParagraphs.length ? (
+                      <div className="mt-4 space-y-5 text-[16px] leading-9 text-white/72">
+                        {biographyParagraphs.map((paragraph, index) => <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}
+                      </div>
+                    ) : (
+                      <>
+                        <p className="mt-4 text-[17px] leading-9 text-white/78">{profileText(profile.summary, language)}</p>
+                        <ul className="mt-7 space-y-4">
+                          {profile.highlights.map((highlight, index) => (
+                            <li key={index} className="flex gap-3 text-[14px] leading-7 text-white/60">
+                              <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#df1f2d]" />
+                              <span>{profileText(highlight, language)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
                   </div>
 
                   <a href={profile.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[.06] px-5 py-3 text-[12px] font-extrabold text-white/65 transition hover:bg-white hover:text-[#191919]">{t.source}<ExternalLink size={14} /></a>

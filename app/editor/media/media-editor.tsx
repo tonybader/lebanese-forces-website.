@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   FileText,
   ImageIcon,
+  ImagePlus,
   Inbox,
   Library,
   Loader2,
@@ -13,9 +14,11 @@ import {
   Plus,
   Save,
   Trash2,
+  UploadCloud,
   Video,
 } from "lucide-react";
 import { useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -126,6 +129,9 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
   const [saving, setSaving] = useState(false);
   const [newMediaOpen, setNewMediaOpen] = useState(false);
   const [editor, setEditor] = useState<ItemEditor | null>(null);
+  const [documentFiles, setDocumentFiles] = useState<Record<string, File>>({});
+  const [documentCovers, setDocumentCovers] = useState<Record<string, File>>({});
+  const [uploadingItem, setUploadingItem] = useState(false);
   const [notice, setNotice] = useState<{ kind: "success" | "error"; text: string } | null>(null);
 
   const openNewSong = () => {
@@ -142,30 +148,70 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
     value: { id: uid("document"), section: "political", title: blankTitle(), description: blankTitle(), fileUrl: "", coverUrl: "" },
   });
 
-  const saveItem = () => {
+  const saveItem = async () => {
     if (!editor) return;
+    setNotice(null);
+    setUploadingItem(true);
+    let nextEditor = editor;
+    try {
+      if (editor.kind === "document") {
+        const value = { ...editor.value };
+        const pdf = documentFiles[value.id];
+        const cover = documentCovers[value.id];
+        const safeName = (name: string, fallback: string) => name.replace(/[^a-zA-Z0-9._-]/g, "-") || fallback;
+        if (pdf) {
+          const blob = await upload(`publications/${value.id}/${safeName(pdf.name, "document.pdf")}`, pdf, {
+            access: "private",
+            handleUploadUrl: "/api/media/upload",
+            clientPayload: JSON.stringify({ kind: "pdf", documentId: value.id }),
+            multipart: pdf.size > 5 * 1024 * 1024,
+          });
+          value.fileUrl = `/api/media/file?pathname=${encodeURIComponent(blob.pathname)}`;
+        }
+        if (cover) {
+          const extension = cover.type === "image/png" ? "png" : cover.type === "image/webp" ? "webp" : "jpg";
+          const blob = await upload(`publications/${value.id}/cover.${extension}`, cover, {
+            access: "private",
+            handleUploadUrl: "/api/media/upload",
+            clientPayload: JSON.stringify({ kind: "cover", documentId: value.id }),
+          });
+          value.coverUrl = `/api/media/file?pathname=${encodeURIComponent(blob.pathname)}`;
+        }
+        if (!value.fileUrl || !value.coverUrl) throw new Error("Choose a PDF and a cover image before saving this document.");
+        nextEditor = { ...editor, value };
+      }
+    } catch (error) {
+      setNotice({ kind: "error", text: error instanceof Error ? error.message : "The document files could not be uploaded." });
+      setUploadingItem(false);
+      return;
+    }
     setContent((current) => {
-      if (editor.kind === "song") {
+      if (nextEditor.kind === "song") {
         const songs = [...current.songs];
-        if (editor.index === null) songs.push(editor.value); else songs[editor.index] = editor.value;
+        if (nextEditor.index === null) songs.push(nextEditor.value); else songs[nextEditor.index] = nextEditor.value;
         return { ...current, songs };
       }
-      if (editor.kind === "photo") {
+      if (nextEditor.kind === "photo") {
         const photos = [...current.photos];
-        if (editor.index === null) photos.push(editor.value); else photos[editor.index] = editor.value;
+        if (nextEditor.index === null) photos.push(nextEditor.value); else photos[nextEditor.index] = nextEditor.value;
         return { ...current, photos };
       }
       const documents = [...current.documents];
-      if (editor.index === null) documents.push(editor.value); else documents[editor.index] = editor.value;
+      if (nextEditor.index === null) documents.push(nextEditor.value); else documents[nextEditor.index] = nextEditor.value;
       return { ...current, documents };
     });
+    if (nextEditor.kind === "document") {
+      setDocumentFiles((current) => { const next = { ...current }; delete next[nextEditor.value.id]; return next; });
+      setDocumentCovers((current) => { const next = { ...current }; delete next[nextEditor.value.id]; return next; });
+    }
+    setUploadingItem(false);
     setEditor(null);
   };
 
   const itemIsValid = Boolean(editor && editor.value.title.ar.trim() && (
     editor.kind === "song" ? editor.value.audioUrl.trim()
       : editor.kind === "photo" ? editor.value.imageUrl.trim()
-        : editor.value.fileUrl.trim() && editor.value.coverUrl.trim()
+        : (editor.value.fileUrl.trim() || Boolean(documentFiles[editor.value.id])) && (editor.value.coverUrl.trim() || Boolean(documentCovers[editor.value.id]))
   ));
 
   const save = async () => {
@@ -277,7 +323,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
             <>
               <DialogHeader>
                 <DialogTitle className="text-2xl font-extrabold">{editor.index === null ? "Add" : "Edit"} {editor.kind}</DialogTitle>
-                <DialogDescription>Update every field for this item. Arabic title and the main file URL are required.</DialogDescription>
+                <DialogDescription>Update every field for this item. Documents are uploaded directly—no PDF link is needed.</DialogDescription>
               </DialogHeader>
               <div className="space-y-5 py-3">
                 <LocalizedFields id={`${editor.kind}-title`} label="Title" value={editor.value.title} onChange={(title) => setEditor({ ...editor, value: { ...editor.value, title } } as ItemEditor)} />
@@ -293,17 +339,33 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
                 {editor.kind === "document" && (
                   <>
                     <LocalizedFields id="document-description" label="Description" value={editor.value.description} onChange={(description) => setEditor({ ...editor, value: { ...editor.value, description } })} />
-                    <div className="grid gap-4 md:grid-cols-3">
-                      <div className="space-y-2"><Label htmlFor="document-section">Publication library</Label><select id="document-section" value={editor.value.section} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, section: event.target.value as MediaDocument["section"] } })} className="h-11 w-full rounded-xl border border-black/10 bg-white px-3 text-sm"><option value="legislative">Legislative corner</option><option value="political">Political publications</option><option value="charter">Regulations & charter</option></select></div>
-                      <div className="space-y-2"><Label htmlFor="document-file">PDF URL</Label><Input id="document-file" value={editor.value.fileUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, fileUrl: event.target.value } })} placeholder="https://… or /documents/…" className="h-11 rounded-xl" /></div>
-                      <div className="space-y-2"><Label htmlFor="document-cover">Cover image URL</Label><Input id="document-cover" value={editor.value.coverUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, coverUrl: event.target.value } })} placeholder="https://… or /documents/…" className="h-11 rounded-xl" /></div>
+                    <div className="space-y-2"><Label htmlFor="document-section">Publication library</Label><select id="document-section" value={editor.value.section} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, section: event.target.value as MediaDocument["section"] } })} className="h-11 w-full rounded-xl border border-black/10 bg-white px-3 text-sm"><option value="legislative">Legislative corner</option><option value="political">Political publications</option><option value="charter">Regulations & charter</option></select></div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="rounded-[20px] border border-dashed border-black/12 bg-[#fafaf8] p-5">
+                        <UploadCloud className="text-[#df1f2d]" />
+                        <div className="mt-3 text-sm font-extrabold">PDF document</div>
+                        <p className="mt-1 text-xs leading-5 text-black/42">Upload a PDF up to 30 MB. Selecting a new file replaces the existing one.</p>
+                        <label htmlFor={`document-file-${editor.value.id}`} className="mt-4 inline-flex cursor-pointer rounded-full bg-[#191919] px-4 py-2.5 text-xs font-extrabold text-white">Choose PDF</label>
+                        <Input id={`document-file-${editor.value.id}`} type="file" accept="application/pdf" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setDocumentFiles((current) => ({ ...current, [editor.value.id]: file })); }} />
+                        <div className="mt-3 truncate text-[11px] font-bold text-black/48">{documentFiles[editor.value.id]?.name || (editor.value.fileUrl ? "Current PDF is saved" : "No PDF selected")}</div>
+                        {editor.value.fileUrl && <a href={editor.value.fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-extrabold text-[#df1f2d]">Open current PDF</a>}
+                      </div>
+                      <div className="rounded-[20px] border border-dashed border-black/12 bg-[#fafaf8] p-5">
+                        <ImagePlus className="text-[#df1f2d]" />
+                        <div className="mt-3 text-sm font-extrabold">PDF cover image</div>
+                        <p className="mt-1 text-xs leading-5 text-black/42">Upload the first-page cover as JPG, PNG or WebP for the publication card.</p>
+                        <label htmlFor={`document-cover-${editor.value.id}`} className="mt-4 inline-flex cursor-pointer rounded-full border border-black/10 bg-white px-4 py-2.5 text-xs font-extrabold">Choose cover</label>
+                        <Input id={`document-cover-${editor.value.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setDocumentCovers((current) => ({ ...current, [editor.value.id]: file })); }} />
+                        <div className="mt-3 truncate text-[11px] font-bold text-black/48">{documentCovers[editor.value.id]?.name || (editor.value.coverUrl ? "Current cover is saved" : "No cover selected")}</div>
+                        {editor.value.coverUrl && <img src={editor.value.coverUrl} alt="Current document cover" className="mt-3 h-24 w-18 rounded-lg object-cover ring-1 ring-black/5" />}
+                      </div>
                     </div>
                   </>
                 )}
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setEditor(null)} className="rounded-full">Cancel</Button>
-                <Button type="button" disabled={!itemIsValid} onClick={saveItem} className="rounded-full bg-[#df1f2d] font-extrabold hover:bg-[#c51825]"><Save /> Save item</Button>
+                <Button type="button" disabled={!itemIsValid || uploadingItem} onClick={() => void saveItem()} className="rounded-full bg-[#df1f2d] font-extrabold hover:bg-[#c51825]">{uploadingItem ? <Loader2 className="animate-spin" /> : <Save />} {uploadingItem ? "Uploading files…" : "Save item"}</Button>
               </DialogFooter>
             </>
           )}

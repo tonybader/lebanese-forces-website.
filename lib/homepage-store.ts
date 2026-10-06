@@ -3,9 +3,12 @@ import "server-only";
 import seedHomepageData from "@/data/homepage.json";
 import type {
   HomepageContent,
+  HomepageHistoryMilestone,
   HomepageInterfaceText,
   HomepageLocalizedText,
   HomepagePerson,
+  HomepagePresidentPage,
+  HomepagePresidentMilestone,
   HomepageTextSection,
 } from "@/lib/homepage-types";
 import { publicProfiles } from "@/lib/people";
@@ -22,6 +25,8 @@ export type HomepageUpdateInput = {
   content: HomepageContent;
   heroImage?: ImageUpload;
   presidentImage?: ImageUpload;
+  personImages?: Record<string, ImageUpload>;
+  historyImages?: Record<string, ImageUpload>;
 };
 
 function repositoryParts(): { owner: string; repository: string; branch: string } {
@@ -100,6 +105,13 @@ function defaultPeople(): HomepagePerson[] {
     slug: profile.slug,
     name: profile.name,
     office: profile.office,
+    imageUrl: profile.imageUrl,
+    summary: profile.summary,
+    bio: {
+      ar: [profile.summary.ar, ...profile.highlights.map((item) => item.ar)].join("\n\n"),
+      en: [profile.summary.en, ...profile.highlights.map((item) => item.en)].join("\n\n"),
+      fr: [profile.summary.fr, ...profile.highlights.map((item) => item.fr)].join("\n\n"),
+    },
     socials: {
       x: profile.socials?.x || "",
       instagram: profile.socials?.instagram || "",
@@ -118,6 +130,9 @@ function normalizePeople(value: unknown, fallback?: HomepagePerson[]): HomepageP
       slug: person.slug,
       name: localized(override?.name, person.name, 160),
       office: localized(override?.office, person.office, 300),
+      imageUrl: imageUrl(override?.imageUrl, person.imageUrl),
+      summary: localized(override?.summary, person.summary, 2000),
+      bio: localized(override?.bio, person.bio, 12_000),
       socials: {
         x: linkUrl(socials.x, person.socials.x),
         instagram: linkUrl(socials.instagram, person.socials.instagram),
@@ -125,6 +140,66 @@ function normalizePeople(value: unknown, fallback?: HomepagePerson[]): HomepageP
       },
     };
   });
+}
+
+function identifier(value: unknown, fallback: string): string {
+  const cleaned = text(value, fallback, 100).replace(/[^a-zA-Z0-9_-]/g, "-");
+  return cleaned || fallback;
+}
+
+function normalizeHistoryTimeline(
+  value: unknown,
+  fallback: HomepageHistoryMilestone[],
+): HomepageHistoryMilestone[] {
+  const candidate = Array.isArray(value) ? value : [];
+  const normalized = candidate.slice(0, 30).map((raw, index) => {
+    const item = raw && typeof raw === "object" ? raw as Partial<HomepageHistoryMilestone> : {};
+    const fallbackItem = fallback.find((entry) => entry.id === item.id) || fallback[index];
+    return {
+      id: identifier(item.id, fallbackItem?.id || `history-${index + 1}`),
+      year: text(item.year, fallbackItem?.year || "", 40),
+      title: localized(item.title, fallbackItem?.title || { ar: "", en: "", fr: "" }, 300),
+      body: localized(item.body, fallbackItem?.body || { ar: "", en: "", fr: "" }, 5000),
+      imageUrl: imageUrl(item.imageUrl, fallbackItem?.imageUrl || "/lf-logo.png"),
+    };
+  }).filter((item) => item.year && item.title.ar && item.body.ar);
+  return normalized.length ? normalized : fallback;
+}
+
+function normalizePresidentMilestones(
+  value: unknown,
+  fallback: HomepagePresidentMilestone[],
+): HomepagePresidentMilestone[] {
+  const candidate = Array.isArray(value) ? value : [];
+  const normalized = candidate.slice(0, 30).map((raw, index) => {
+    const item = raw && typeof raw === "object" ? raw as Partial<HomepagePresidentMilestone> : {};
+    const fallbackItem = fallback.find((entry) => entry.id === item.id) || fallback[index];
+    return {
+      id: identifier(item.id, fallbackItem?.id || `president-milestone-${index + 1}`),
+      year: text(item.year, fallbackItem?.year || "", 40),
+      title: localized(item.title, fallbackItem?.title || { ar: "", en: "", fr: "" }, 300),
+      text: localized(item.text, fallbackItem?.text || { ar: "", en: "", fr: "" }, 3000),
+    };
+  }).filter((item) => item.year && item.title.ar && item.text.ar);
+  return normalized.length ? normalized : fallback;
+}
+
+function normalizePresidentPage(value: unknown, fallback: HomepagePresidentPage): HomepagePresidentPage {
+  const candidate = value && typeof value === "object" ? value as Partial<HomepagePresidentPage> : {};
+  return {
+    backLabel: localized(candidate.backLabel, fallback.backLabel, 160),
+    kicker: localized(candidate.kicker, fallback.kicker, 160),
+    title: localized(candidate.title, fallback.title, 300),
+    role: localized(candidate.role, fallback.role, 600),
+    intro: localized(candidate.intro, fallback.intro, 3000),
+    storyTitle: localized(candidate.storyTitle, fallback.storyTitle, 300),
+    story: localized(candidate.story, fallback.story, 20_000),
+    timelineTitle: localized(candidate.timelineTitle, fallback.timelineTitle, 300),
+    sourceLabel: localized(candidate.sourceLabel, fallback.sourceLabel, 300),
+    sourceUrl: linkUrl(candidate.sourceUrl, fallback.sourceUrl),
+    socialsLabel: localized(candidate.socialsLabel, fallback.socialsLabel, 300),
+    milestones: normalizePresidentMilestones(candidate.milestones, fallback.milestones),
+  };
 }
 
 export function normalizeHomepage(
@@ -198,6 +273,7 @@ export function normalizeHomepage(
     vision: section(candidate.vision, fallback.vision),
     news: section(candidate.news, fallback.news),
     history: section(candidate.history, fallback.history),
+    historyTimeline: normalizeHistoryTimeline(candidate.historyTimeline, fallback.historyTimeline),
     president: {
       kicker: localized(president.kicker, fallback.president.kicker, 160),
       title: localized(president.title, fallback.president.title, 300),
@@ -213,6 +289,7 @@ export function normalizeHomepage(
         facebook: linkUrl(presidentSocials.facebook, fallback.president.socials.facebook),
       },
     },
+    presidentPage: normalizePresidentPage(candidate.presidentPage, fallback.presidentPage),
     leadership: section(candidate.leadership, fallback.leadership),
     publications: section(candidate.publications, fallback.publications),
     media: section(candidate.media, fallback.media),
@@ -317,6 +394,14 @@ export async function updateHomepage(input: HomepageUpdateInput): Promise<Homepa
   const content = normalizeHomepage(input.content, current.content);
   if (input.heroImage) content.hero.imageUrl = await uploadImage(input.heroImage, "hero");
   if (input.presidentImage) content.president.imageUrl = await uploadImage(input.presidentImage, "president");
+  for (const [slug, image] of Object.entries(input.personImages || {})) {
+    const person = content.people?.find((item) => item.slug === slug);
+    if (person) person.imageUrl = await uploadImage(image, `person-${identifier(slug, "profile")}`);
+  }
+  for (const [id, image] of Object.entries(input.historyImages || {})) {
+    const milestone = content.historyTimeline.find((item) => item.id === id);
+    if (milestone) milestone.imageUrl = await uploadImage(image, `history-${identifier(id, "milestone")}`);
+  }
   content.updatedAt = new Date().toISOString();
 
   await putRepositoryFile({
