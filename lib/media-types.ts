@@ -19,7 +19,7 @@ export type MediaPhoto = {
 
 export type MediaDocument = {
   id: string;
-  section: "legislative" | "papers";
+  section: "legislative" | "political" | "charter";
   title: MediaLocalizedText;
   description: MediaLocalizedText;
   fileUrl: string;

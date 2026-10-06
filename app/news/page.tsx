@@ -22,6 +22,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     ...(first(query.region) ? { region: first(query.region) } : {}),
     ...(first(query.activity) ? { activity: first(query.activity) } : {}),
     ...(first(query.person) ? { person: first(query.person) } : {}),
+    ...(first(query.q) ? { q: first(query.q) } : {}),
   };
   return <NewsList initialArticles={articles} filters={filters} />;
 }

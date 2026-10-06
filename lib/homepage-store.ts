@@ -3,9 +3,12 @@ import "server-only";
 import seedHomepageData from "@/data/homepage.json";
 import type {
   HomepageContent,
+  HomepageInterfaceText,
   HomepageLocalizedText,
+  HomepagePerson,
   HomepageTextSection,
 } from "@/lib/homepage-types";
+import { publicProfiles } from "@/lib/people";
 
 const DEFAULT_REPOSITORY = "tonybader/lebanese-forces-website.";
 const DEFAULT_BRANCH = "main";
@@ -86,6 +89,44 @@ function imageUrl(value: unknown, fallback: string): string {
   return fallback;
 }
 
+function linkUrl(value: unknown, fallback = ""): string {
+  if (typeof value !== "string") return fallback;
+  const cleaned = value.trim().slice(0, 2000);
+  return !cleaned || cleaned.startsWith("https://") || cleaned.startsWith("/") ? cleaned : fallback;
+}
+
+function defaultPeople(): HomepagePerson[] {
+  return publicProfiles.map((profile) => ({
+    slug: profile.slug,
+    name: profile.name,
+    office: profile.office,
+    socials: {
+      x: profile.socials?.x || "",
+      instagram: profile.socials?.instagram || "",
+      facebook: profile.socials?.facebook || "",
+    },
+  }));
+}
+
+function normalizePeople(value: unknown, fallback?: HomepagePerson[]): HomepagePerson[] {
+  const candidate = Array.isArray(value) ? value : [];
+  const defaults = fallback?.length ? fallback : defaultPeople();
+  return defaults.map((person) => {
+    const override = candidate.find((item) => item && typeof item === "object" && (item as Partial<HomepagePerson>).slug === person.slug) as Partial<HomepagePerson> | undefined;
+    const socials: Partial<HomepagePerson["socials"]> = override?.socials && typeof override.socials === "object" ? override.socials : {};
+    return {
+      slug: person.slug,
+      name: localized(override?.name, person.name, 160),
+      office: localized(override?.office, person.office, 300),
+      socials: {
+        x: linkUrl(socials.x, person.socials.x),
+        instagram: linkUrl(socials.instagram, person.socials.instagram),
+        facebook: linkUrl(socials.facebook, person.socials.facebook),
+      },
+    };
+  });
+}
+
 export function normalizeHomepage(
   value: unknown,
   fallback: HomepageContent = seedHomepageData as HomepageContent,
@@ -97,9 +138,56 @@ export function normalizeHomepage(
     candidate.president && typeof candidate.president === "object" ? candidate.president : {};
   const footer: Partial<HomepageContent["footer"]> =
     candidate.footer && typeof candidate.footer === "object" ? candidate.footer : {};
+  const candidateSocials: Partial<HomepageContent["socials"]> = candidate.socials && typeof candidate.socials === "object" ? candidate.socials : {};
+  const presidentSocials: Partial<HomepageContent["president"]["socials"]> = president.socials && typeof president.socials === "object" ? president.socials : {};
+  const interfaceCandidate = candidate.interfaceText && typeof candidate.interfaceText === "object" ? candidate.interfaceText as Partial<HomepageInterfaceText> : {};
+  const navigationCandidate = Array.isArray(candidate.navigation) ? candidate.navigation : [];
+  const statsCandidate = Array.isArray(candidate.stats) ? candidate.stats : [];
+  const valuesCandidate = Array.isArray(candidate.values) ? candidate.values : [];
 
   return {
     updatedAt: text(candidate.updatedAt, fallback.updatedAt, 80),
+    navigation: fallback.navigation.map((item) => {
+      const override = navigationCandidate.find((candidateItem) => candidateItem?.id === item.id);
+      return { id: item.id, label: localized(override?.label, item.label, 100) };
+    }),
+    stats: fallback.stats.map((item) => {
+      const override = statsCandidate.find((candidateItem) => candidateItem?.id === item.id);
+      return {
+        id: item.id,
+        value: text(override?.value, item.value, 40),
+        label: localized(override?.label, item.label, 160),
+      };
+    }),
+    values: fallback.values.map((item) => {
+      const override = valuesCandidate.find((candidateItem) => candidateItem?.id === item.id);
+      return {
+        id: item.id,
+        title: localized(override?.title, item.title, 160),
+        text: localized(override?.text, item.text, 1000),
+      };
+    }),
+    interfaceText: {
+      historyCta: localized(interfaceCandidate.historyCta, fallback.interfaceText.historyCta, 160),
+      mediaCta: localized(interfaceCandidate.mediaCta, fallback.interfaceText.mediaCta, 160),
+      allNews: localized(interfaceCandidate.allNews, fallback.interfaceText.allNews, 160),
+      bioLink: localized(interfaceCandidate.bioLink, fallback.interfaceText.bioLink, 160),
+      leadershipCta: localized(interfaceCandidate.leadershipCta, fallback.interfaceText.leadershipCta, 160),
+      songsTitle: localized(interfaceCandidate.songsTitle, fallback.interfaceText.songsTitle, 160),
+      videosTitle: localized(interfaceCandidate.videosTitle, fallback.interfaceText.videosTitle, 160),
+      photosTitle: localized(interfaceCandidate.photosTitle, fallback.interfaceText.photosTitle, 160),
+      contactKicker: localized(interfaceCandidate.contactKicker, fallback.interfaceText.contactKicker, 160),
+      contactTitle: localized(interfaceCandidate.contactTitle, fallback.interfaceText.contactTitle, 160),
+      contactText: localized(interfaceCandidate.contactText, fallback.interfaceText.contactText, 1200),
+    },
+    socials: {
+      facebook: linkUrl(candidateSocials.facebook, fallback.socials.facebook),
+      instagram: linkUrl(candidateSocials.instagram, fallback.socials.instagram),
+      x: linkUrl(candidateSocials.x, fallback.socials.x),
+      youtube: linkUrl(candidateSocials.youtube, fallback.socials.youtube),
+      newsWebsite: linkUrl(candidateSocials.newsWebsite, fallback.socials.newsWebsite),
+    },
+    people: normalizePeople(candidate.people, fallback.people),
     hero: {
       eyebrow: localized(hero.eyebrow, fallback.hero.eyebrow, 160),
       title: localized(hero.title, fallback.hero.title, 600),
@@ -119,6 +207,11 @@ export function normalizeHomepage(
       imageUrl: imageUrl(president.imageUrl, fallback.president.imageUrl),
       imageAlt: localized(president.imageAlt, fallback.president.imageAlt, 300),
       imageCredit: localized(president.imageCredit, fallback.president.imageCredit, 500),
+      socials: {
+        x: linkUrl(presidentSocials.x, fallback.president.socials.x),
+        instagram: linkUrl(presidentSocials.instagram, fallback.president.socials.instagram),
+        facebook: linkUrl(presidentSocials.facebook, fallback.president.socials.facebook),
+      },
     },
     leadership: section(candidate.leadership, fallback.leadership),
     publications: section(candidate.publications, fallback.publications),

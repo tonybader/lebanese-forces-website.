@@ -7,11 +7,11 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Download,
   ExternalLink,
   FileText,
   Globe2,
   ImageIcon,
+  Library,
   MapPin,
   Megaphone,
   Menu,
@@ -21,6 +21,7 @@ import {
   Play,
   Plane,
   Quote,
+  Search,
   Users,
   Video,
   X,
@@ -352,36 +353,6 @@ const ui = {
   },
 } as const;
 
-const sectionCopy = {
-  ar: {
-    legislative: "الزاوية التشريعية",
-    legislativeText: "أسئلة واقتراحات قوانين مقدّمة ضمن العمل النيابي.",
-    papers: "أوراق ووثائق",
-    papersText: "دراسات وأوراق سياسية وفكرية متاحة للقراءة والتنزيل.",
-    contactKicker: "شاركنا رأيك",
-    contactTitle: "تواصل معنا",
-    contactText: "اقتراحاتك وأسئلتك تهمّنا. أرسل رسالة مباشرة إلى فريق الموقع.",
-  },
-  en: {
-    legislative: "Legislative corner",
-    legislativeText: "Parliamentary questions and proposed laws submitted through legislative work.",
-    papers: "Papers & documents",
-    papersText: "Political and policy papers available to read and download.",
-    contactKicker: "Your voice matters",
-    contactTitle: "Contact us",
-    contactText: "Share a suggestion or question directly with the website team.",
-  },
-  fr: {
-    legislative: "Coin législatif",
-    legislativeText: "Questions parlementaires et propositions de loi issues du travail législatif.",
-    papers: "Études et documents",
-    papersText: "Études et documents politiques à consulter et télécharger.",
-    contactKicker: "Votre voix compte",
-    contactTitle: "Contactez-nous",
-    contactText: "Partagez une suggestion ou une question directement avec l’équipe du site.",
-  },
-} as const;
-
 const newsChannelPresentation: Record<ArticleChannel, {
   title: Localized;
   description: Localized;
@@ -581,20 +552,24 @@ const executiveRegions: { region: Localized; members: Localized[] }[] = [
   },
 ];
 
-const partyReferences = [
+const publicationLibraries = [
   {
+    section: "legislative" as const,
     icon: FileText,
-    title: { ar: "النظام الداخلي", en: "Internal Regulations", fr: "Règlement intérieur" },
-    detail: { ar: "36 صفحة", en: "36 pages", fr: "36 pages" },
-    href: "https://www.lstatic.org/PDF/lf-internal-regulation.pdf",
-    pdf: true,
+    title: { ar: "الزاوية التشريعية", en: "Legislative corner", fr: "Coin législatif" },
+    description: { ar: "أسئلة واقتراحات قوانين مقدّمة ضمن العمل النيابي.", en: "Parliamentary questions and proposed laws.", fr: "Questions parlementaires et propositions de loi." },
   },
   {
+    section: "political" as const,
     icon: BookOpen,
-    title: { ar: "شرعة الحزب", en: "Party Charter", fr: "Charte du parti" },
-    detail: { ar: "22 صفحة", en: "22 pages", fr: "22 pages" },
-    href: "https://www.lstatic.org/PDF/choraa.pdf",
-    pdf: true,
+    title: { ar: "المنشورات السياسية", en: "Political publications", fr: "Publications politiques" },
+    description: { ar: "دراسات وأوراق سياسية وفكرية متاحة للقراءة.", en: "Political studies and policy papers.", fr: "Études politiques et documents de réflexion." },
+  },
+  {
+    section: "charter" as const,
+    icon: Library,
+    title: { ar: "النظام والشرعة", en: "Regulations & charter", fr: "Règlement et charte" },
+    description: { ar: "النظام الداخلي وشرعة حزب القوات اللبنانية.", en: "The party's internal regulations and charter.", fr: "Le règlement intérieur et la charte du parti." },
   },
 ];
 
@@ -803,6 +778,17 @@ export default function Home() {
   const [media, setMedia] = useState<MediaContent>(seedMediaData as MediaContent);
   const t = {
     ...ui[lang],
+    nav: homepage.navigation.map((item) => [item.id, homepageText(item.label, lang)] as [string, string]),
+    stats: homepage.stats.map((item) => [item.value, homepageText(item.label, lang)] as [string, string]),
+    values: homepage.values.map((item) => [homepageText(item.title, lang), homepageText(item.text, lang)] as [string, string]),
+    historyCta: homepageText(homepage.interfaceText.historyCta, lang),
+    mediaCta: homepageText(homepage.interfaceText.mediaCta, lang),
+    allNews: homepageText(homepage.interfaceText.allNews, lang),
+    bioLink: homepageText(homepage.interfaceText.bioLink, lang),
+    expandLeadership: homepageText(homepage.interfaceText.leadershipCta, lang),
+    songs: homepageText(homepage.interfaceText.songsTitle, lang),
+    videos: homepageText(homepage.interfaceText.videosTitle, lang),
+    photos: homepageText(homepage.interfaceText.photosTitle, lang),
     eyebrow: homepageText(homepage.hero.eyebrow, lang),
     title: homepageText(homepage.hero.title, lang),
     intro: homepageText(homepage.hero.intro, lang),
@@ -832,10 +818,15 @@ export default function Home() {
     footerLine: homepageText(homepage.footer.line, lang),
   };
   const rtl = lang === "ar";
+  const peopleOverrides = new Map((homepage.people || []).map((person) => [person.slug, person]));
+  const applyPersonOverride = (person: PublicProfile): PublicProfile => {
+    const override = peopleOverrides.get(person.slug);
+    return override ? { ...person, name: override.name, office: override.office, socials: override.socials } : person;
+  };
+  const siteMps = mps.map(applyPersonOverride);
+  const siteMinisters = ministers.map(applyPersonOverride);
   const tracks = media.songs;
   const photos = media.photos;
-  const legislativeDocuments = media.documents.filter((document) => document.section === "legislative");
-  const paperDocuments = media.documents.filter((document) => document.section === "papers");
   const currentTimeline = useMemo(
     () => timeline.find((item) => item.year === activeYear) || timeline[0],
     [activeYear],
@@ -982,6 +973,11 @@ export default function Home() {
             ))}
           </nav>
 
+          <form action="/news" className="hidden h-10 w-[190px] shrink-0 items-center gap-2 rounded-full border border-black/[.08] bg-white/80 px-3 shadow-sm transition focus-within:w-[240px] focus-within:border-[#df1f2d]/35 2xl:flex">
+            <Search size={15} className="shrink-0 text-black/35" />
+            <input name="q" aria-label={lang === "ar" ? "البحث في الموقع" : lang === "fr" ? "Rechercher sur le site" : "Search the website"} placeholder={lang === "ar" ? "ابحث في الأخبار…" : lang === "fr" ? "Rechercher…" : "Search news…"} className="min-w-0 flex-1 bg-transparent text-[12px] font-bold outline-none placeholder:text-black/28" />
+          </form>
+
           <div className="ms-auto flex items-center gap-2">
             <div className="relative">
               <button
@@ -1039,6 +1035,10 @@ export default function Home() {
                 <X size={20} />
               </button>
             </div>
+            <form action="/news" className="mt-8 flex h-13 items-center gap-3 rounded-2xl border border-white/12 bg-white/[.06] px-4 focus-within:border-[#ff6570]/50">
+              <Search size={18} className="shrink-0 text-white/45" />
+              <input name="q" aria-label={lang === "ar" ? "البحث في الموقع" : lang === "fr" ? "Rechercher sur le site" : "Search the website"} placeholder={lang === "ar" ? "ابحث في الأخبار والبيانات…" : lang === "fr" ? "Rechercher dans les actualités…" : "Search news and statements…"} className="min-w-0 flex-1 bg-transparent text-[14px] font-bold text-white outline-none placeholder:text-white/32" />
+            </form>
             <nav className="my-auto grid gap-2">
               {t.nav.map(([id, label], index) => (
                 <button key={id} onClick={() => goTo(id)} className={"flex items-center justify-between rounded-2xl px-4 py-3 text-start text-[clamp(1.55rem,6vw,2.25rem)] font-extrabold transition " + (activeSection === id ? "bg-white text-[#191919]" : "hover:bg-white/[.06]")}>
@@ -1238,6 +1238,13 @@ export default function Home() {
               {t.bioLink}
               <ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />
             </a>
+            <div className="mt-5 flex gap-2">
+              {[
+                { mark: "𝕏", label: "X", href: homepage.president.socials.x },
+                { mark: "◎", label: "Instagram", href: homepage.president.socials.instagram },
+                { mark: "f", label: "Facebook", href: homepage.president.socials.facebook },
+              ].filter((social) => social.href).map((social) => <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={`${t.presidentTitle} ${social.label}`} className="grid h-10 w-10 place-items-center rounded-full border border-white/12 bg-white/[.05] text-[12px] font-extrabold text-white/65 transition hover:border-white hover:bg-white hover:text-[#191919]">{social.mark}</a>)}
+            </div>
             <div className="mt-10 grid gap-2 sm:grid-cols-3">
               {t.presidentFacts.map(([year, fact]) => (
                 <div key={year} className="rounded-[18px] border border-white/[.07] bg-white/[.05] p-4">
@@ -1255,8 +1262,8 @@ export default function Home() {
         <SectionHeading kicker={t.leadershipKicker} title={t.leadershipTitle} description={t.leadershipText} />
         <div className="mt-10 grid gap-3 sm:grid-cols-3" data-reveal>
           {[
-            { label: t.tabs[0], count: ministers.length, people: ministers },
-            { label: t.tabs[1], count: mps.length, people: mps },
+            { label: t.tabs[0], count: siteMinisters.length, people: siteMinisters },
+            { label: t.tabs[1], count: siteMps.length, people: siteMps },
             { label: t.tabs[2], count: 11, people: [] },
           ].map((preview, previewIndex) => (
             <button key={preview.label} type="button" onClick={() => setLeadershipOpen(true)} className="group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border border-black/[.07] bg-white p-5 text-start shadow-[0_8px_30px_rgba(0,0,0,.035)] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg">
@@ -1290,14 +1297,14 @@ export default function Home() {
               </TabsList>
               <TabsContent value="cabinet" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {ministers.map((person, index) => (
+                  {siteMinisters.map((person, index) => (
                     <PersonCard key={person.slug} person={person} lang={lang} role={t.minister} index={index} />
                   ))}
                 </div>
               </TabsContent>
               <TabsContent value="parliament" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {mps.map((person, index) => (
+                  {siteMps.map((person, index) => (
                     <PersonCard key={person.slug} person={person} lang={lang} role={t.mp} index={index} />
                   ))}
                 </div>
@@ -1317,46 +1324,28 @@ export default function Home() {
 
       <section id="publications" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <SectionHeading kicker={t.publicationsKicker} title={t.publicationsTitle} description={t.publicationsText} />
-        <div className="mt-12 grid gap-3 sm:grid-cols-2" data-reveal>
-          {partyReferences.map((item, index) => {
-            const Icon = item.icon;
+        <div className="mt-12 grid gap-4 lg:grid-cols-3" data-reveal>
+          {publicationLibraries.map((library, index) => {
+            const Icon = library.icon;
+            const count = media.documents.filter((document) => document.section === library.section).length;
             return (
-              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="group flex min-h-[220px] flex-col rounded-[26px] border border-black/[.07] bg-white p-7 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#191919] hover:bg-[#191919] hover:text-white hover:shadow-[0_22px_55px_rgba(0,0,0,.13)] lg:p-8">
+              <a key={library.section} href={`/publications/${library.section}`} target="_blank" rel="noreferrer" className="group flex min-h-[310px] flex-col overflow-hidden rounded-[30px] border border-black/[.07] bg-white p-7 shadow-[0_12px_38px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#191919] hover:bg-[#191919] hover:text-white hover:shadow-[0_25px_65px_rgba(0,0,0,.15)] lg:p-8">
                 <div className="flex items-start justify-between">
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d] transition group-hover:bg-[#df1f2d] group-hover:text-white"><Icon size={20} /></span>
-                  <span className="text-xs font-bold text-black/22 group-hover:text-white/25">0{index + 1}</span>
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#f3f3f0] text-[#df1f2d] transition group-hover:bg-[#df1f2d] group-hover:text-white"><Icon size={22} /></span>
+                  <span className="text-xs font-extrabold text-black/22 group-hover:text-white/28">0{index + 1}</span>
                 </div>
-                <div className="mt-auto">
-                  <h3 className="text-[21px] font-extrabold leading-8">{text(item.title, lang)}</h3>
-                  <div className="mt-2 text-[13px] font-normal text-black/42 group-hover:text-white/42">{text(item.detail, lang)}</div>
-                  <div className="mt-6 flex items-center justify-between border-t border-black/[.07] pt-5 text-[13px] font-bold group-hover:border-white/12">
-                    <span>{t.download}</span>
-                    <Download size={17} />
+                <div className="mt-auto pt-14">
+                  <h3 className="section-title text-[clamp(1.7rem,2.8vw,2.55rem)] font-extrabold leading-[1.25]">{text(library.title, lang)}</h3>
+                  <p className="mt-3 text-[13px] leading-7 text-black/45 group-hover:text-white/48">{text(library.description, lang)}</p>
+                  <div className="mt-7 flex items-center justify-between border-t border-black/[.07] pt-5 text-[12px] font-extrabold group-hover:border-white/12">
+                    <span>{lang === "ar" ? `عرض ${count} مستندات` : lang === "fr" ? `Voir ${count} documents` : `View ${count} documents`}</span>
+                    <ArrowUpLeft size={16} />
                   </div>
                 </div>
               </a>
             );
           })}
         </div>
-        {[
-          { key: "legislative", title: sectionCopy[lang].legislative, description: sectionCopy[lang].legislativeText, documents: legislativeDocuments },
-          { key: "papers", title: sectionCopy[lang].papers, description: sectionCopy[lang].papersText, documents: paperDocuments },
-        ].map((group) => (
-          <div key={group.key} className="mt-16">
-            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-black/[.08] pb-5">
-              <div><h3 className="section-title text-[clamp(1.8rem,3.5vw,3rem)] font-extrabold">{group.title}</h3><p className="mt-2 text-[13px] leading-6 text-black/45">{group.description}</p></div>
-              <span className="rounded-full bg-[#191919] px-3 py-1.5 text-[11px] font-extrabold text-white">{group.documents.length}</span>
-            </div>
-            <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
-              {group.documents.map((document) => (
-                <a key={document.id} href={document.fileUrl} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_10px_34px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.1)]">
-                  <div className="aspect-[4/3] overflow-hidden bg-[#ecece8]"><img src={document.coverUrl} alt={mediaText(document.title, lang)} className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.025]" /></div>
-                  <div className="p-5"><h4 className="text-[16px] font-extrabold leading-7">{mediaText(document.title, lang)}</h4><p className="mt-2 line-clamp-2 text-[12px] leading-6 text-black/45">{mediaText(document.description, lang)}</p><div className="mt-5 flex items-center justify-between border-t border-black/[.07] pt-4 text-[12px] font-extrabold text-[#df1f2d]"><span>{t.download}</span><Download size={15} /></div></div>
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
       </section>
 
       <section id="media" className="relative overflow-hidden bg-[#191919] text-white">
@@ -1420,7 +1409,7 @@ export default function Home() {
 
       <section id="contact" className="soft-grid px-5 py-24 lg:px-8 lg:py-30">
         <div className="mx-auto grid max-w-[1180px] items-start gap-10 lg:grid-cols-[.68fr_1.32fr]">
-          <SectionHeading kicker={sectionCopy[lang].contactKicker} title={sectionCopy[lang].contactTitle} description={sectionCopy[lang].contactText} />
+          <SectionHeading kicker={homepageText(homepage.interfaceText.contactKicker, lang)} title={homepageText(homepage.interfaceText.contactTitle, lang)} description={homepageText(homepage.interfaceText.contactText, lang)} />
           <ContactForm lang={lang} />
         </div>
       </section>
@@ -1442,17 +1431,17 @@ export default function Home() {
               <div className="text-[11px] font-bold uppercase tracking-[.14em] text-white/35">Social media</div>
               <div className="mt-5 flex flex-wrap gap-2">
                 {[
-                  { mark: "f", label: "Facebook", href: "https://www.facebook.com/LFPartyOfficial/" },
-                  { mark: "◎", label: "Instagram", href: "https://www.instagram.com/lfpartyofficial/" },
-                  { mark: "𝕏", label: "X", href: "https://x.com/LFPartyOfficial" },
-                  { mark: "▶", label: "YouTube", href: media.officialYouTubeUrl },
+                  { mark: "f", label: "Facebook", href: homepage.socials.facebook },
+                  { mark: "◎", label: "Instagram", href: homepage.socials.instagram },
+                  { mark: "𝕏", label: "X", href: homepage.socials.x },
+                  { mark: "▶", label: "YouTube", href: homepage.socials.youtube || media.officialYouTubeUrl },
                 ].map(({ mark, label, href }) => (
                   <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="grid h-12 w-12 place-items-center rounded-full border border-white/14 text-white/70 transition hover:-translate-y-0.5 hover:border-[#df1f2d] hover:bg-[#df1f2d] hover:text-white">
                     <span className="text-[16px] font-extrabold">{mark}</span>
                   </a>
                 ))}
               </div>
-              <a href="https://www.lebanese-forces.com/" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 text-[13px] font-bold text-white/60 hover:text-white">{t.official}<ExternalLink size={15} /></a>
+              <a href={homepage.socials.newsWebsite} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 text-[13px] font-bold text-white/60 hover:text-white">{t.official}<ExternalLink size={15} /></a>
             </div>
           </div>
           <div className="mt-14 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs font-bold text-white/32 sm:flex-row">

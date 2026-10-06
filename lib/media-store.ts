@@ -97,7 +97,11 @@ function normalizeDocument(value: unknown, index: number): MediaDocument | null 
   if (!title.ar || !fileUrl || !coverUrl) return null;
   return {
     id: cleanText(item.id, `document-${index}`, 100),
-    section: item.section === "legislative" ? "legislative" : "papers",
+    section: item.section === "legislative"
+      ? "legislative"
+      : item.section === "charter"
+        ? "charter"
+        : "political",
     title,
     description: localized(item.description),
     fileUrl,

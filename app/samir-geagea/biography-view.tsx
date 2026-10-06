@@ -109,7 +109,7 @@ const milestones: { year: string; title: Localized; text: Localized }[] = [
   },
 ];
 
-export function BiographyView({ imageUrl }: { imageUrl: string }) {
+export function BiographyView({ imageUrl, socials }: { imageUrl: string; socials: { x: string; instagram: string; facebook: string } }) {
   const [language, setLanguage] = useState<Language>("ar");
   const rtl = language === "ar";
   const t = copy[language];
@@ -141,9 +141,9 @@ export function BiographyView({ imageUrl }: { imageUrl: string }) {
             <div className="mt-8">
               <div className="text-[10px] font-extrabold uppercase tracking-[.13em] text-white/38">{t.socials}</div>
               <div className="mt-3 flex gap-2">
-                <a href="https://x.com/DrSamirGeagea" target="_blank" rel="noreferrer" aria-label="X" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">𝕏</a>
-                <a href="https://www.instagram.com/samirgeageaofficial/" target="_blank" rel="noreferrer" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">◎</a>
-                <a href="https://www.facebook.com/DrSamirGeagea/" target="_blank" rel="noreferrer" aria-label="Facebook" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">f</a>
+                {socials.x && <a href={socials.x} target="_blank" rel="noreferrer" aria-label="X" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">𝕏</a>}
+                {socials.instagram && <a href={socials.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">◎</a>}
+                {socials.facebook && <a href={socials.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-white/[.06] font-extrabold transition hover:bg-white hover:text-[#191919]">f</a>}
               </div>
             </div>
           </div>

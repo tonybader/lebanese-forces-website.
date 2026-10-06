@@ -7,6 +7,7 @@ import {
   Globe2,
   SlidersHorizontal,
   Pin,
+  Search,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -29,6 +30,7 @@ export type NewsFilters = {
   region?: string;
   activity?: string;
   person?: string;
+  q?: string;
 };
 
 const copy = {
@@ -46,6 +48,8 @@ const copy = {
     region: "المنطقة",
     activity: "نوع النشاط",
     person: "الشخصية",
+    search: "البحث في الأخبار",
+    searchPlaceholder: "ابحث بعنوان، اسم، منطقة أو كلمة…",
   },
   en: {
     kicker: "Newsroom",
@@ -61,6 +65,8 @@ const copy = {
     region: "Region",
     activity: "Activity type",
     person: "Public figure",
+    search: "Search coverage",
+    searchPlaceholder: "Search title, person, region or keyword…",
   },
   fr: {
     kicker: "Salle de presse",
@@ -76,6 +82,8 @@ const copy = {
     region: "Région",
     activity: "Type d’activité",
     person: "Personnalité",
+    search: "Rechercher",
+    searchPlaceholder: "Titre, personne, région ou mot-clé…",
   },
 };
 
@@ -85,6 +93,20 @@ function sameTag(values: string[] | undefined, selected: string | undefined): bo
   return (values || []).some(
     (value) => value.normalize("NFKC").toLocaleLowerCase("ar-LB") === normalized,
   );
+}
+
+function searchableArticle(article: Article): string {
+  return [
+    article.title.ar,
+    article.title.en,
+    article.title.fr,
+    article.body.ar,
+    article.body.en,
+    article.body.fr,
+    ...(article.regions || []),
+    ...(article.activityTypes || []),
+    ...(article.people || []),
+  ].join(" ").normalize("NFKC").toLocaleLowerCase("ar-LB");
 }
 
 export function NewsList({
@@ -103,7 +125,8 @@ export function NewsList({
       (!filters.channel || getArticleChannel(article) === filters.channel) &&
       sameTag(article.regions, filters.region) &&
       sameTag(article.activityTypes, filters.activity) &&
-      sameTag(article.people, filters.person),
+      sameTag(article.people, filters.person) &&
+      (!filters.q || searchableArticle(article).includes(filters.q.normalize("NFKC").toLocaleLowerCase("ar-LB"))),
     ),
     [filters, initialArticles],
   );
@@ -153,6 +176,11 @@ export function NewsList({
       </section>
 
       <section className="mx-auto max-w-[1380px] px-5 pt-10 lg:px-8 lg:pt-14">
+        <form action="/news" className="mb-8 flex max-w-3xl items-center gap-3 rounded-[20px] border border-black/[.08] bg-white p-2 shadow-[0_10px_30px_rgba(0,0,0,.04)] focus-within:border-[#df1f2d]/30">
+          <Search size={19} className="ms-3 shrink-0 text-black/35" />
+          <input name="q" defaultValue={filters.q || ""} aria-label={t.search} placeholder={t.searchPlaceholder} className="h-11 min-w-0 flex-1 bg-transparent px-1 text-[14px] font-bold outline-none placeholder:text-black/28" />
+          <button type="submit" className="h-11 shrink-0 rounded-xl bg-[#191919] px-5 text-[12px] font-extrabold text-white transition hover:bg-[#df1f2d]">{t.search}</button>
+        </form>
         <div className="flex items-center gap-2 text-[12px] font-extrabold text-black/45"><SlidersHorizontal size={15} />{t.filter}</div>
         <nav className="mt-4 flex flex-wrap gap-2" aria-label={t.filter}>
           <a href="/news" className={`rounded-full border px-4 py-2.5 text-[12px] font-extrabold transition ${!filters.channel && !tagFilter ? "border-[#191919] bg-[#191919] text-white" : "border-black/[.08] bg-white text-black/50 hover:border-[#df1f2d]/30 hover:text-[#df1f2d]"}`}>{t.all}</a>
@@ -164,6 +192,12 @@ export function NewsList({
         {tagFilter && (
           <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#df1f2d]/15 bg-red-50 px-5 py-4 text-[13px]">
             <span className="text-black/48">{t.showing} <strong className="text-[#191919]">{tagFilter.label}: {tagFilter.value}</strong></span>
+            <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#df1f2d] shadow-sm"><X size={13} />{t.clear}</a>
+          </div>
+        )}
+        {filters.q && (
+          <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#df1f2d]/15 bg-red-50 px-5 py-4 text-[13px]">
+            <span className="text-black/48">{t.showing} <strong className="text-[#191919]">“{filters.q}”</strong></span>
             <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#df1f2d] shadow-sm"><X size={13} />{t.clear}</a>
           </div>
         )}

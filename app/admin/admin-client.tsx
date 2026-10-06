@@ -30,15 +30,33 @@ import type {
 type Notice = { kind: "success" | "error"; text: string } | null;
 
 const sections: { key: HomepageSectionKey; label: string; hint: string }[] = [
+  { key: "navigation", label: "Header & navigation", hint: "Menu labels in all three languages" },
   { key: "hero", label: "Hero", hint: "Opening title, introduction and image" },
+  { key: "highlights", label: "Facts & values", hint: "Homepage numbers and value cards" },
+  { key: "interface", label: "Buttons & subtitles", hint: "Calls to action and supporting labels" },
   { key: "news", label: "Latest news", hint: "News section heading" },
   { key: "vision", label: "Vision", hint: "Party vision statement" },
   { key: "history", label: "History", hint: "Interactive history introduction" },
   { key: "president", label: "Party president", hint: "Biography summary and photograph" },
   { key: "leadership", label: "Leadership", hint: "Executive and parliamentary section" },
+  { key: "people", label: "MPs & ministers", hint: "Names, offices and social handles" },
   { key: "publications", label: "Publications", hint: "Documents and library introduction" },
   { key: "media", label: "Media", hint: "Songs, video and photo introduction" },
-  { key: "footer", label: "Footer", hint: "Closing statement" },
+  { key: "footer", label: "Footer & socials", hint: "Closing statement and party social links" },
+];
+
+const interfaceFields: Array<{ key: keyof HomepageContent["interfaceText"]; label: string }> = [
+  { key: "historyCta", label: "History button" },
+  { key: "mediaCta", label: "Media button" },
+  { key: "allNews", label: "All news link" },
+  { key: "bioLink", label: "President biography button" },
+  { key: "leadershipCta", label: "Leadership expand button" },
+  { key: "songsTitle", label: "Songs subtitle" },
+  { key: "videosTitle", label: "Videos subtitle" },
+  { key: "photosTitle", label: "Photos subtitle" },
+  { key: "contactKicker", label: "Contact label" },
+  { key: "contactTitle", label: "Contact title" },
+  { key: "contactText", label: "Contact description" },
 ];
 
 async function optimizeImage(file: File): Promise<File> {
@@ -214,13 +232,47 @@ export function HomepageDashboard({
       if (section === "footer") {
         next.footer.line[language] = value;
       } else {
-        const target = next[section] as unknown as Record<string, HomepageLocalizedText | string>;
+        const target = (next as unknown as Record<string, unknown>)[section] as Record<string, HomepageLocalizedText | string>;
         const localized = target[field];
         if (localized && typeof localized === "object") localized[language] = value;
       }
       return next;
     });
   };
+
+  const setNavigationLabel = (index: number, value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    next.navigation[index].label[language] = value;
+    return next;
+  });
+  const setStat = (index: number, field: "value" | "label", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (field === "value") next.stats[index].value = value;
+    else next.stats[index].label[language] = value;
+    return next;
+  });
+  const setValueCard = (index: number, field: "title" | "text", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    next.values[index][field][language] = value;
+    return next;
+  });
+  const setInterfaceLabel = (field: keyof HomepageContent["interfaceText"], value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    next.interfaceText[field][language] = value;
+    return next;
+  });
+  const setPersonText = (index: number, field: "name" | "office", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (!next.people) return current;
+    next.people[index][field][language] = value;
+    return next;
+  });
+  const setPersonSocial = (index: number, field: "x" | "instagram" | "facebook", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (!next.people) return current;
+    next.people[index].socials[field] = value;
+    return next;
+  });
 
   const selectImage = async (kind: "hero" | "president", file: File | undefined) => {
     if (!file) return;
@@ -261,7 +313,7 @@ export function HomepageDashboard({
     router.refresh();
   };
 
-  const section = activeSection === "footer" ? null : content[activeSection] as unknown as Record<string, HomepageLocalizedText | string>;
+  const section = activeSection === "footer" ? null : (content as unknown as Record<string, unknown>)[activeSection] as Record<string, HomepageLocalizedText | string>;
   const localizedValue = (field: string) => {
     if (activeSection === "footer") return content.footer.line[language];
     const value = section?.[field];
@@ -284,6 +336,41 @@ export function HomepageDashboard({
   );
 
   const renderPreview = () => {
+    if (activeSection === "navigation") {
+      return (
+        <section className="soft-grid min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-7 sm:p-10 lg:p-14">
+          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">HEADER NAVIGATION · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit every menu label</h2><p className="mt-2 text-sm text-black/45">The section destinations stay fixed so navigation cannot break; every visible label is editable.</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{content.navigation.map((item, index) => <label key={item.id} className="rounded-[18px] border border-black/[.07] bg-white p-4 shadow-sm"><span className="text-[10px] font-extrabold uppercase tracking-[.11em] text-black/35">#{item.id}</span><Input dir={rtl ? "rtl" : "ltr"} value={item.label[language]} onChange={(event) => setNavigationLabel(index, event.target.value)} className="mt-3 h-11 rounded-xl font-extrabold" /></label>)}</div>
+          </div>
+        </section>
+      );
+    }
+    if (activeSection === "highlights") {
+      return (
+        <section className="min-h-[590px] rounded-[28px] bg-[#191919] p-7 text-white sm:p-10 lg:p-14">
+          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#ff6570]">FACTS & VALUES · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit homepage highlights</h2>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{content.stats.map((item, index) => <div key={item.id} className="rounded-[20px] border border-white/10 bg-white/[.06] p-4"><Label className="text-[10px] text-white/38">VALUE</Label><Input value={item.value} onChange={(event) => setStat(index, "value", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-xl font-extrabold text-white" /><Label className="mt-4 block text-[10px] text-white/38">LABEL</Label><Input dir={rtl ? "rtl" : "ltr"} value={item.label[language]} onChange={(event) => setStat(index, "label", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-white" /></div>)}</div>
+            <div className="mt-8 grid gap-3 lg:grid-cols-3">{content.values.map((item, index) => <div key={item.id} className="rounded-[22px] border border-white/10 bg-white/[.06] p-5"><Label className="text-[10px] text-white/38">CARD TITLE</Label><Input dir={rtl ? "rtl" : "ltr"} value={item.title[language]} onChange={(event) => setValueCard(index, "title", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-lg font-extrabold text-white" /><Label className="mt-4 block text-[10px] text-white/38">DESCRIPTION</Label><textarea dir={rtl ? "rtl" : "ltr"} value={item.text[language]} onChange={(event) => setValueCard(index, "text", event.target.value)} className="mt-2 min-h-28 w-full rounded-xl border border-white/10 bg-white/8 p-3 text-sm leading-6 text-white outline-none" /></div>)}</div>
+          </div>
+        </section>
+      );
+    }
+    if (activeSection === "interface") {
+      return (
+        <section className="soft-grid min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-7 sm:p-10 lg:p-14">
+          <div className="mx-auto max-w-4xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">BUTTONS & SUPPORTING TEXT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit subtitles and calls to action</h2><div className="mt-8 grid gap-4 sm:grid-cols-2">{interfaceFields.map((item) => <label key={item.key} className={`rounded-[18px] border border-black/[.07] bg-white p-4 ${item.key === "contactText" ? "sm:col-span-2" : ""}`}><span className="text-[11px] font-extrabold text-black/42">{item.label}</span>{item.key === "contactText" ? <textarea dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 min-h-28 w-full rounded-xl border border-black/10 bg-[#fafaf8] p-3 text-sm leading-6 outline-none" /> : <Input dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 h-11 rounded-xl" />}</label>)}</div></div>
+        </section>
+      );
+    }
+    if (activeSection === "people") {
+      return (
+        <section className="min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">LEADERSHIP DIRECTORY · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">MP and minister details</h2><p className="mt-2 text-sm leading-6 text-black/45">Click a person to edit the visible name, office and social handles. Profile URLs and photographs remain linked to the verified directory.</p>
+            <div className="mt-7 space-y-2">{(content.people || []).map((person, index) => <details key={person.slug} className="group rounded-[18px] border border-black/[.07] bg-white open:shadow-md"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4"><span><span dir={rtl ? "rtl" : "ltr"} className="block text-[14px] font-extrabold">{person.name[language]}</span><span dir={rtl ? "rtl" : "ltr"} className="mt-1 block text-[11px] text-black/38">{person.office[language]}</span></span><span className="rounded-full bg-[#f2f2ef] px-3 py-1 text-[10px] font-extrabold text-black/38 group-open:bg-[#df1f2d] group-open:text-white">Edit</span></summary><div className="grid gap-3 border-t border-black/[.06] p-5 md:grid-cols-2"><label><span className="text-[10px] font-extrabold text-black/38">NAME · {language.toUpperCase()}</span><Input dir={rtl ? "rtl" : "ltr"} value={person.name[language]} onChange={(event) => setPersonText(index, "name", event.target.value)} className="mt-2 h-11 rounded-xl" /></label><label><span className="text-[10px] font-extrabold text-black/38">OFFICE · {language.toUpperCase()}</span><Input dir={rtl ? "rtl" : "ltr"} value={person.office[language]} onChange={(event) => setPersonText(index, "office", event.target.value)} className="mt-2 h-11 rounded-xl" /></label>{(["x", "instagram", "facebook"] as const).map((social) => <label key={social}><span className="text-[10px] font-extrabold uppercase text-black/38">{social} URL</span><Input value={person.socials[social]} onChange={(event) => setPersonSocial(index, social, event.target.value)} placeholder="https://…" className="mt-2 h-11 rounded-xl" /></label>)}</div></details>)}</div>
+          </div>
+        </section>
+      );
+    }
     if (activeSection === "hero") {
       return (
         <section className="soft-grid grid min-h-[590px] items-center gap-9 rounded-[28px] bg-[#f7f7f5] p-7 sm:p-12 lg:grid-cols-[1.08fr_.92fr] lg:p-16">
@@ -316,6 +403,7 @@ export function HomepageDashboard({
             <EditableText value={content.president.bio[language]} onChange={(value) => setLocalized("president", "bio", value)} label="First biography paragraph" className="mt-7 px-2 py-1 text-[15px] leading-8 text-white/66" />
             <EditableText value={content.president.bio2[language]} onChange={(value) => setLocalized("president", "bio2", value)} label="Second biography paragraph" className="mt-3 px-2 py-1 text-[15px] leading-8 text-white/66" />
             <EditableText value={content.president.imageCredit[language]} onChange={(value) => setLocalized("president", "imageCredit", value)} label="Photograph credit" multiline={false} className="mt-7 px-2 py-1 text-[11px] text-white/38" />
+            <div className="mt-6 grid gap-2 sm:grid-cols-3">{(["x", "instagram", "facebook"] as const).map((social) => <label key={social} className="text-[9px] font-extrabold uppercase text-white/35">{social}<Input value={content.president.socials[social]} onChange={(event) => setContent((current) => ({ ...current, president: { ...current.president, socials: { ...current.president.socials, [social]: event.target.value } } }))} placeholder="https://…" className="mt-2 h-10 border-white/10 bg-white/[.06] text-[11px] text-white" /></label>)}</div>
           </div>
         </section>
       );
@@ -324,7 +412,7 @@ export function HomepageDashboard({
       return (
         <section className="relative grid min-h-[420px] place-items-center overflow-hidden rounded-[28px] bg-[#191919] p-8 text-center text-white">
           <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#df1f2d]/25 blur-3xl" />
-          <div className="relative max-w-4xl"><img src="/lf-logo.png" alt="" className="mx-auto h-24 w-24 rounded-full bg-white object-contain p-2" /><EditableText value={content.footer.line[language]} onChange={(value) => setLocalized("footer", "line", value)} label="Footer statement" className="section-title mt-8 px-2 py-1 text-[clamp(2rem,5vw,4rem)] font-extrabold leading-[1.3]" /></div>
+          <div className="relative w-full max-w-4xl"><img src="/lf-logo.png" alt="" className="mx-auto h-24 w-24 rounded-full bg-white object-contain p-2" /><EditableText value={content.footer.line[language]} onChange={(value) => setLocalized("footer", "line", value)} label="Footer statement" className="section-title mt-8 px-2 py-1 text-[clamp(2rem,5vw,4rem)] font-extrabold leading-[1.3]" /><div className="mx-auto mt-9 grid max-w-3xl gap-2 sm:grid-cols-2">{(["facebook", "instagram", "x", "youtube", "newsWebsite"] as const).map((social) => <label key={social} className="text-start text-[9px] font-extrabold uppercase text-white/35">{social}<Input value={content.socials[social]} onChange={(event) => setContent((current) => ({ ...current, socials: { ...current.socials, [social]: event.target.value } }))} placeholder="https://…" className="mt-2 h-10 border-white/10 bg-white/[.06] text-[11px] text-white" /></label>)}</div></div>
         </section>
       );
     }

@@ -3,6 +3,8 @@
 import {
   ArrowLeft,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Edit3,
   ExternalLink,
   ImagePlus,
@@ -19,6 +21,7 @@ import {
   Pin,
   Plus,
   Save,
+  Search,
   Sparkles,
   Tags,
   Trash2,
@@ -141,6 +144,7 @@ const regionRules = [
 ] as const;
 
 const activityRules = [
+  ["نشاط حزبي", ["تسلّم وتسليم", "تسلم وتسليم", "مقر المنسقية", "رؤساء المراكز", "العمل الحزبي", "منسق المنطقة", "party activity", "chapter handover"]],
   ["بيان", ["بيان", "statement", "communiqué", "communique"]],
   ["موقف سياسي", ["موقف", "تصريح", "position", "déclaration"]],
   ["اجتماع", ["اجتماع", "لقاء", "meeting", "réunion", "rencontre"]],
@@ -153,6 +157,13 @@ const activityRules = [
   ["حملة", ["حملة", "campaign", "campagne"]],
   ["مقابلة إعلامية", ["مقابلة", "حديث تلفزيوني", "interview", "entretien"]],
   ["مؤتمر صحافي", ["مؤتمر صحافي", "مؤتمر صحفي", "press conference", "conférence de presse"]],
+] as const;
+
+const partyPeopleRules = [
+  ["طوني بدر", ["طوني بدر", "tony bader"]],
+  ["سليم أبي ضاهر", ["سليم أبي ضاهر", "سليم ابي ضاهر", "selim abi daher", "salim abi daher"]],
+  ["إميل مكرزل", ["إميل مكرزل", "اميل مكرزل", "emile moukarzel", "emil moukarzel"]],
+  ["جورج عيد", ["جورج عيد", "georges eid", "george eid"]],
 ] as const;
 
 function normalizedSearchText(value: string): string {
@@ -200,6 +211,7 @@ function suggestTags(
   const people = publicProfiles
     .filter((profile) => profile.aliases.some((alias) => haystack.includes(normalizedSearchText(alias))))
     .map((profile) => profile.name.ar);
+  people.push(...matchedLabels(haystack, partyPeopleRules));
   const samirAliases = ["سمير جعجع", "samir geagea", "samir geagea", "samir jaajaa"];
   if (samirAliases.some((alias) => haystack.includes(normalizedSearchText(alias)))) {
     people.unshift("سمير جعجع");
@@ -409,11 +421,14 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const [people, setPeople] = useState("");
   const [pinned, setPinned] = useState(false);
   const [tagAssistantMessage, setTagAssistantMessage] = useState("");
+  const [tagSuggestionLoading, setTagSuggestionLoading] = useState(false);
   const [titleAssistantMessage, setTitleAssistantMessage] = useState<{ language: ArticleLanguage; text: string } | null>(null);
   const [titleSuggestionLoading, setTitleSuggestionLoading] = useState<ArticleLanguage | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [editing, setEditing] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [articleSearch, setArticleSearch] = useState("");
+  const [articlePage, setArticlePage] = useState(1);
   const [loadingArticles, setLoadingArticles] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -422,6 +437,26 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
 
   const objectUrl = useMemo(() => (image ? URL.createObjectURL(image) : ""), [image]);
   const previewUrl = objectUrl || editing?.imageUrl || "";
+  const filteredArticles = useMemo(() => {
+    const query = normalizedSearchText(articleSearch.trim());
+    if (!query) return articles;
+    return articles.filter((article) => normalizedSearchText([
+      article.title.ar,
+      article.title.en,
+      article.title.fr,
+      article.body.ar,
+      article.body.en,
+      article.body.fr,
+      ...(article.regions || []),
+      ...(article.activityTypes || []),
+      ...(article.people || []),
+      articleChannelText(getArticleChannel(article), "en"),
+    ].join(" ")).includes(query));
+  }, [articleSearch, articles]);
+  const articlePageSize = 20;
+  const articlePageCount = Math.max(1, Math.ceil(filteredArticles.length / articlePageSize));
+  const visibleArticlePage = Math.min(articlePage, articlePageCount);
+  const pagedArticles = filteredArticles.slice((visibleArticlePage - 1) * articlePageSize, visibleArticlePage * articlePageSize);
   useEffect(() => () => { if (objectUrl) URL.revokeObjectURL(objectUrl); }, [objectUrl]);
 
   const loadArticles = async () => {
@@ -546,17 +581,57 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     value: string,
   ) => setter((current) => ({ ...current, [language]: value }));
 
-  const analyzeArticleTags = () => {
-    const suggestions = suggestTags(title, body, channel);
-    const total = suggestions.regions.length + suggestions.activityTypes.length + suggestions.people.length;
-    setRegions((current) => mergeTagText(current, suggestions.regions));
-    setActivityTypes((current) => mergeTagText(current, suggestions.activityTypes));
-    setPeople((current) => mergeTagText(current, suggestions.people));
-    setTagAssistantMessage(
-      total
-        ? `${total} suggestion${total === 1 ? "" : "s"} added. Review or remove any tag before publishing.`
-        : "No clear tags were found. You can still add them manually.",
-    );
+  const analyzeArticleTags = async () => {
+    const localSuggestions = suggestTags(title, body, channel);
+    const analysisBody = body.ar.trim() || body.en.trim() || body.fr.trim();
+    if (analysisBody.length < 20) {
+      setTagAssistantMessage("Add a little more article text before analyzing tags.");
+      return;
+    }
+    setTagSuggestionLoading(true);
+    setTagAssistantMessage("AI is identifying the region, activity type and every materially involved person…");
+    try {
+      const response = await fetch("/api/editor/suggest-title", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          body: analysisBody,
+          currentTitle: title.ar || title.en || title.fr,
+          language: body.ar.trim() ? "ar" : body.en.trim() ? "en" : "fr",
+          channel,
+          people: parseTagText(people),
+          regions: parseTagText(regions),
+          activityTypes: parseTagText(activityTypes),
+        }),
+      });
+      const result = (await response.json()) as {
+        regions?: string[];
+        activityTypes?: string[];
+        people?: string[];
+        source?: "ai" | "fallback";
+        error?: string;
+      };
+      if (!response.ok) throw new Error(result.error || "The article could not be analyzed.");
+      const suggestions = {
+        regions: [...localSuggestions.regions, ...(result.regions || [])],
+        activityTypes: [...localSuggestions.activityTypes, ...(result.activityTypes || [])],
+        people: [...localSuggestions.people, ...(result.people || [])],
+      };
+      const total = suggestions.regions.length + suggestions.activityTypes.length + suggestions.people.length;
+      setRegions((current) => mergeTagText(current, suggestions.regions));
+      setActivityTypes((current) => mergeTagText(current, suggestions.activityTypes));
+      setPeople((current) => mergeTagText(current, suggestions.people));
+      setTagAssistantMessage(total
+        ? `${result.source === "ai" ? "AI analysis" : "Local analysis"} added ${total} editable tag suggestions. Review them before publishing.`
+        : "No clear tags were found. You can still add them manually.");
+    } catch (caught) {
+      setRegions((current) => mergeTagText(current, localSuggestions.regions));
+      setActivityTypes((current) => mergeTagText(current, localSuggestions.activityTypes));
+      setPeople((current) => mergeTagText(current, localSuggestions.people));
+      setTagAssistantMessage(caught instanceof Error ? `${caught.message} Local suggestions were added instead.` : "Local suggestions were added instead.");
+    } finally {
+      setTagSuggestionLoading(false);
+    }
   };
 
   const analyzeArticleTitle = async (language: ArticleLanguage) => {
@@ -575,18 +650,20 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           body: body[language],
+          currentTitle: title[language],
           language,
           channel,
           people: parseTagText(people),
           regions: parseTagText(regions),
+          activityTypes: parseTagText(activityTypes),
         }),
       });
-      const result = (await response.json()) as { title?: string; error?: string };
+      const result = (await response.json()) as { title?: string; source?: "ai" | "fallback"; error?: string };
       if (!response.ok || !result.title) throw new Error(result.error || "A reliable title could not be suggested.");
       updateTranslation(setTitle, language, result.title);
       setTitleAssistantMessage({
         language,
-        text: "A newsroom-style headline was drafted from the article. Review it before publishing.",
+        text: `${result.source === "ai" ? "AI" : "The newsroom fallback"} drafted a concise headline from the actual news angle. Review it before publishing.`,
       });
     } catch (caught) {
       setTitleAssistantMessage({
@@ -697,7 +774,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
             <section aria-labelledby="article-tags-heading">
               <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
                 <h2 id="article-tags-heading" className="flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#df1f2d]" />Searchable tags</h2>
-                <Button type="button" variant="outline" size="sm" onClick={analyzeArticleTags} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white"><Sparkles size={14} />Analyze & suggest tags</Button>
+                <Button type="button" variant="outline" size="sm" disabled={tagSuggestionLoading} onClick={() => void analyzeArticleTags()} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white">{tagSuggestionLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Analyze & suggest tags</Button>
               </div>
               <p className="mb-4 text-[12px] leading-6 text-black/45">The assistant detects regions, activity types and public figures from the title and article. For statements, it suggests a region only when the text identifies a regional chapter as the issuer. Every suggestion remains editable.</p>
               {tagAssistantMessage && <p role="status" className="mb-4 rounded-xl bg-[#191919] px-4 py-3 text-[11px] font-bold text-white/72">{tagAssistantMessage}</p>}
@@ -716,10 +793,15 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
 
         <section className="rounded-[30px] bg-[#191919] p-5 text-white shadow-[0_20px_60px_rgba(0,0,0,.12)] sm:p-7">
           <div className="flex items-center justify-between gap-4"><div><div className="text-[11px] font-bold text-[#ff6570]">PINNED, THEN NEWEST</div><h2 className="mt-1 text-2xl font-extrabold">Published articles</h2></div><Button type="button" onClick={clearForm} className="rounded-full bg-white text-[#191919] hover:bg-[#df1f2d] hover:text-white"><Plus /> New</Button></div>
+          <div className="relative mt-5">
+            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/35" />
+            <Input value={articleSearch} onChange={(event) => { setArticleSearch(event.target.value); setArticlePage(1); }} placeholder="Search title, text, person, region or tag…" className="h-12 rounded-2xl border-white/10 bg-white/[.07] pl-11 text-white placeholder:text-white/30" />
+          </div>
+          <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-white/35"><span>{filteredArticles.length} result{filteredArticles.length === 1 ? "" : "s"}</span><span>20 per page</span></div>
           <div className="mt-6 max-h-[900px] space-y-3 overflow-y-auto pr-1">
-            {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : articles.map((article, index) => (
+            {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : !pagedArticles.length ? <div className="rounded-[20px] border border-dashed border-white/10 px-5 py-12 text-center text-sm text-white/35">No matching articles.</div> : pagedArticles.map((article, index) => (
               <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#df1f2d] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
-                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{(visibleArticlePage - 1) * articlePageSize + index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
                 {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].slice(0, 5).map((tag, tagIndex) => <span key={`${tag}-${tagIndex}`} className="rounded-full bg-white/[.07] px-2.5 py-1 text-[10px] font-bold text-white/50">{tag}</span>)}
@@ -738,6 +820,11 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
                 </div>
               </article>
             ))}
+          </div>
+          <div className="mt-5 flex items-center justify-between border-t border-white/[.08] pt-5">
+            <Button type="button" size="sm" variant="ghost" disabled={visibleArticlePage <= 1} onClick={() => setArticlePage(Math.max(1, visibleArticlePage - 1))} className="rounded-full text-white/65 hover:bg-white/10 hover:text-white"><ChevronLeft /> Previous</Button>
+            <span className="text-[11px] font-extrabold text-white/45">Page {visibleArticlePage} of {articlePageCount}</span>
+            <Button type="button" size="sm" variant="ghost" disabled={visibleArticlePage >= articlePageCount} onClick={() => setArticlePage(Math.min(articlePageCount, visibleArticlePage + 1))} className="rounded-full text-white/65 hover:bg-white/10 hover:text-white">Next <ChevronRight /></Button>
           </div>
         </section>
       </div>

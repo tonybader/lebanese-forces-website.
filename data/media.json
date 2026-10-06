@@ -1,27 +1,43 @@
 {
-  "updatedAt": "2026-10-06T00:00:00.000Z",
+  "updatedAt": "2026-10-06T20:51:24.329Z",
   "officialYouTubeUrl": "https://www.youtube.com/channel/UC5uWfpNVik89jgLaAxFoERQ",
   "songs": [
     {
       "id": "lf-anthem",
-      "title": { "ar": "نشيد القوات اللبنانية", "en": "Lebanese Forces Anthem", "fr": "Hymne des Forces Libanaises" },
+      "title": {
+        "ar": "نشيد القوات اللبنانية",
+        "en": "Lebanese Forces Anthem",
+        "fr": "Hymne des Forces Libanaises"
+      },
       "audioUrl": "https://www.lstatic.org/music/lebanese-forces-anthem.mp3"
     },
     {
       "id": "martyrs-anthem",
-      "title": { "ar": "نشيد الشهداء", "en": "Martyrs’ Anthem", "fr": "Hymne des martyrs" },
+      "title": {
+        "ar": "نشيد الشهداء",
+        "en": "Martyrs’ Anthem",
+        "fr": "Hymne des martyrs"
+      },
       "audioUrl": "https://www.lstatic.org/music/nashid-alshouhada.mp3"
     },
     {
       "id": "journey-of-freedom",
-      "title": { "ar": "مشوار الحرية", "en": "Journey of Freedom", "fr": "Le chemin de la liberté" },
+      "title": {
+        "ar": "مشوار الحرية",
+        "en": "Journey of Freedom",
+        "fr": "Le chemin de la liberté"
+      },
       "audioUrl": "https://www.lstatic.org/music/meshwar-alhoriyi.mp3"
     }
   ],
   "photos": [
     {
       "id": "bachir-gemayel",
-      "title": { "ar": "الرئيس الشهيد بشير الجميّل", "en": "President-elect Bachir Gemayel", "fr": "Le président élu Béchir Gemayel" },
+      "title": {
+        "ar": "الرئيس الشهيد بشير الجميّل",
+        "en": "President-elect Bachir Gemayel",
+        "fr": "Le président élu Béchir Gemayel"
+      },
       "imageUrl": "https://www.lstatic.org/UserFiles/images/picture-of-the-day/bashir-al-gemayel7.jpg",
       "credit": "Lebanese Forces historical archive",
       "sourceUrl": "https://www.lebanese-forces.com/",
@@ -29,7 +45,11 @@
     },
     {
       "id": "samir-geagea",
-      "title": { "ar": "رئيس الحزب الدكتور سمير جعجع", "en": "Party president Dr Samir Geagea", "fr": "Le président du parti Dr Samir Geagea" },
+      "title": {
+        "ar": "رئيس الحزب الدكتور سمير جعجع",
+        "en": "Party president Dr Samir Geagea",
+        "fr": "Le président du parti Dr Samir Geagea"
+      },
       "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/samir-geagea/geagea%284%29%289%29.jpg",
       "credit": "Lebanese Forces official archive",
       "sourceUrl": "https://www.lebanese-forces.com/person/politicians-samir-geagea/",
@@ -37,7 +57,11 @@
     },
     {
       "id": "lf-logo",
-      "title": { "ar": "شعار القوات اللبنانية", "en": "Lebanese Forces emblem", "fr": "Emblème des Forces Libanaises" },
+      "title": {
+        "ar": "شعار القوات اللبنانية",
+        "en": "Lebanese Forces emblem",
+        "fr": "Emblème des Forces Libanaises"
+      },
       "imageUrl": "/lf-logo.png",
       "credit": "Lebanese Forces brand identity",
       "sourceUrl": "/",
@@ -48,50 +72,130 @@
     {
       "id": "question-palestinian-arms",
       "section": "legislative",
-      "title": { "ar": "سؤال إلى الحكومة بشأن سحب السلاح الفلسطيني من المخيمات", "en": "Question to the government on withdrawing Palestinian arms from camps", "fr": "Question au gouvernement sur le retrait des armes palestiniennes des camps" },
-      "description": { "ar": "سؤال مقدّم من تكتل الجمهورية القوية", "en": "A parliamentary question submitted by the Strong Republic bloc", "fr": "Question parlementaire présentée par le bloc de la République forte" },
+      "title": {
+        "ar": "سؤال إلى الحكومة بشأن سحب السلاح الفلسطيني من المخيمات",
+        "en": "Question to the government on withdrawing Palestinian arms from camps",
+        "fr": "Question au gouvernement sur le retrait des armes palestiniennes des camps"
+      },
+      "description": {
+        "ar": "سؤال مقدّم من تكتل الجمهورية القوية",
+        "en": "A parliamentary question submitted by the Strong Republic bloc",
+        "fr": "Question parlementaire présentée par le bloc de la République forte"
+      },
       "fileUrl": "/documents/question-palestinian-arms-camps.pdf",
       "coverUrl": "/documents/covers/question-palestinian-arms-camps.jpg"
     },
     {
       "id": "public-health-prosecution",
       "section": "legislative",
-      "title": { "ar": "اقتراح قانون لإنشاء نيابة عامة صحية", "en": "Proposed law establishing a Public Health Prosecution Office", "fr": "Proposition de loi créant un parquet de santé publique" },
-      "description": { "ar": "اقتراح قانون لتعزيز المساءلة في القطاع الصحي", "en": "A proposed law to strengthen accountability in the health sector", "fr": "Une proposition de loi pour renforcer la responsabilité dans le secteur de la santé" },
+      "title": {
+        "ar": "اقتراح قانون لإنشاء نيابة عامة صحية",
+        "en": "Proposed law establishing a Public Health Prosecution Office",
+        "fr": "Proposition de loi créant un parquet de santé publique"
+      },
+      "description": {
+        "ar": "اقتراح قانون لتعزيز المساءلة في القطاع الصحي",
+        "en": "A proposed law to strengthen accountability in the health sector",
+        "fr": "Une proposition de loi pour renforcer la responsabilité dans le secteur de la santé"
+      },
       "fileUrl": "/documents/public-health-prosecution-proposal.pdf",
       "coverUrl": "/documents/covers/public-health-prosecution-proposal.jpg"
     },
     {
       "id": "why-vote-lf",
-      "section": "papers",
-      "title": { "ar": "لماذا ننتخب القوات اللبنانية؟", "en": "Why Vote Lebanese Forces?", "fr": "Pourquoi voter Forces Libanaises ?" },
-      "description": { "ar": "ورقة تعريفية بالخيارات السياسية والإصلاحية", "en": "An overview of the party’s political and reform choices", "fr": "Aperçu des choix politiques et réformateurs du parti" },
+      "section": "political",
+      "title": {
+        "ar": "لماذا ننتخب القوات اللبنانية؟",
+        "en": "Why Vote Lebanese Forces?",
+        "fr": "Pourquoi voter Forces Libanaises ?"
+      },
+      "description": {
+        "ar": "ورقة تعريفية بالخيارات السياسية والإصلاحية",
+        "en": "An overview of the party’s political and reform choices",
+        "fr": "Aperçu des choix politiques et réformateurs du parti"
+      },
       "fileUrl": "/documents/why-vote-lf-arabic.pdf",
       "coverUrl": "/documents/covers/why-vote-lf-arabic.jpg"
     },
     {
       "id": "hezbollah-identity-crisis",
-      "section": "papers",
-      "title": { "ar": "حزب الله: أزمة هوية لا أزمة سلاح فقط", "en": "Hezbollah: an identity crisis, not only an arms crisis", "fr": "Hezbollah : une crise d’identité, pas seulement une crise des armes" },
-      "description": { "ar": "قراءة سياسية في طبيعة الأزمة ودلالاتها", "en": "A political reading of the crisis and its implications", "fr": "Une lecture politique de la crise et de ses implications" },
+      "section": "political",
+      "title": {
+        "ar": "حزب الله: أزمة هوية لا أزمة سلاح فقط",
+        "en": "Hezbollah: an identity crisis, not only an arms crisis",
+        "fr": "Hezbollah : une crise d’identité, pas seulement une crise des armes"
+      },
+      "description": {
+        "ar": "قراءة سياسية في طبيعة الأزمة ودلالاتها",
+        "en": "A political reading of the crisis and its implications",
+        "fr": "Une lecture politique de la crise et de ses implications"
+      },
       "fileUrl": "/documents/hezbollah-identity-crisis.pdf",
       "coverUrl": "/documents/covers/hezbollah-identity-crisis.jpg"
     },
     {
       "id": "hezbollah-lebanese-system",
-      "section": "papers",
-      "title": { "ar": "كيف ضرب حزب الله النظام اللبناني في أساسه", "en": "How Hezbollah undermined the foundations of Lebanon’s system", "fr": "Comment le Hezbollah a sapé les fondements du système libanais" },
-      "description": { "ar": "دراسة في أثر السلاح على الدولة والنظام", "en": "A study of the impact of arms on the state and political system", "fr": "Une étude sur l’impact des armes sur l’État et le système politique" },
+      "section": "political",
+      "title": {
+        "ar": "كيف ضرب حزب الله النظام اللبناني في أساسه",
+        "en": "How Hezbollah undermined the foundations of Lebanon’s system",
+        "fr": "Comment le Hezbollah a sapé les fondements du système libanais"
+      },
+      "description": {
+        "ar": "دراسة في أثر السلاح على الدولة والنظام",
+        "en": "A study of the impact of arms on the state and political system",
+        "fr": "Une étude sur l’impact des armes sur l’État et le système politique"
+      },
       "fileUrl": "/documents/how-hezbollah-undermined-lebanese-system.pdf",
       "coverUrl": "/documents/covers/how-hezbollah-undermined-lebanese-system.jpg"
     },
     {
       "id": "truce-to-invasion",
-      "section": "papers",
-      "title": { "ar": "من الهدنة إلى الاجتياح: قصة الحياد اللبناني المجهض", "en": "From truce to invasion: the story of Lebanon’s aborted neutrality", "fr": "De la trêve à l’invasion : l’histoire de la neutralité libanaise avortée" },
-      "description": { "ar": "قراءة تاريخية وسياسية في مسار الحياد اللبناني", "en": "A historical and political reading of Lebanon’s path toward neutrality", "fr": "Une lecture historique et politique du parcours de la neutralité libanaise" },
+      "section": "political",
+      "title": {
+        "ar": "من الهدنة إلى الاجتياح: قصة الحياد اللبناني المجهض",
+        "en": "From truce to invasion: the story of Lebanon’s aborted neutrality",
+        "fr": "De la trêve à l’invasion : l’histoire de la neutralité libanaise avortée"
+      },
+      "description": {
+        "ar": "قراءة تاريخية وسياسية في مسار الحياد اللبناني",
+        "en": "A historical and political reading of Lebanon’s path toward neutrality",
+        "fr": "Une lecture historique et politique du parcours de la neutralité libanaise"
+      },
       "fileUrl": "/documents/from-truce-to-invasion.pdf",
       "coverUrl": "/documents/covers/from-truce-to-invasion.jpg"
+    },
+    {
+      "id": "lf-internal-regulations",
+      "section": "charter",
+      "title": {
+        "ar": "النظام الداخلي",
+        "en": "Internal Regulations",
+        "fr": "Règlement intérieur"
+      },
+      "description": {
+        "ar": "النظام الداخلي لحزب القوات اللبنانية",
+        "en": "Internal regulations of the Lebanese Forces party",
+        "fr": "Règlement intérieur du parti des Forces Libanaises"
+      },
+      "fileUrl": "https://www.lstatic.org/PDF/lf-internal-regulation.pdf",
+      "coverUrl": "/lf-logo.png"
+    },
+    {
+      "id": "lf-party-charter",
+      "section": "charter",
+      "title": {
+        "ar": "شرعة الحزب",
+        "en": "Party Charter",
+        "fr": "Charte du parti"
+      },
+      "description": {
+        "ar": "شرعة حزب القوات اللبنانية",
+        "en": "Charter of the Lebanese Forces party",
+        "fr": "Charte du parti des Forces Libanaises"
+      },
+      "fileUrl": "https://www.lstatic.org/PDF/choraa.pdf",
+      "coverUrl": "/lf-logo.png"
     }
   ]
 }

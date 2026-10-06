@@ -1,5 +1,222 @@
 {
-  "updatedAt": "2026-09-15T21:26:50.955Z",
+  "updatedAt": "2026-10-06T20:51:24.330Z",
+  "navigation": [
+    {
+      "id": "home",
+      "label": {
+        "ar": "الرئيسية",
+        "en": "Home",
+        "fr": "Accueil"
+      }
+    },
+    {
+      "id": "history",
+      "label": {
+        "ar": "تاريخنا",
+        "en": "History",
+        "fr": "Histoire"
+      }
+    },
+    {
+      "id": "president",
+      "label": {
+        "ar": "رئيس الحزب",
+        "en": "Party president",
+        "fr": "Président du parti"
+      }
+    },
+    {
+      "id": "leadership",
+      "label": {
+        "ar": "القيادة والكتل",
+        "en": "Leadership & blocs",
+        "fr": "Direction & blocs"
+      }
+    },
+    {
+      "id": "news",
+      "label": {
+        "ar": "الأخبار",
+        "en": "News",
+        "fr": "Actualités"
+      }
+    },
+    {
+      "id": "diaspora",
+      "label": {
+        "ar": "الانتشار",
+        "en": "Diaspora",
+        "fr": "Diaspora"
+      }
+    },
+    {
+      "id": "publications",
+      "label": {
+        "ar": "المنشورات",
+        "en": "Publications",
+        "fr": "Publications"
+      }
+    },
+    {
+      "id": "media",
+      "label": {
+        "ar": "الميديا",
+        "en": "Media",
+        "fr": "Médias"
+      }
+    },
+    {
+      "id": "contact",
+      "label": {
+        "ar": "تواصل معنا",
+        "en": "Contact",
+        "fr": "Contact"
+      }
+    }
+  ],
+  "stats": [
+    {
+      "id": "founded",
+      "value": "1976",
+      "label": {
+        "ar": "سنة التأسيس",
+        "en": "Founded",
+        "fr": "Fondation"
+      }
+    },
+    {
+      "id": "executive",
+      "value": "11",
+      "label": {
+        "ar": "عضواً منتخباً في الهيئة",
+        "en": "Elected executive members",
+        "fr": "Membres exécutifs élus"
+      }
+    },
+    {
+      "id": "mps",
+      "value": "19",
+      "label": {
+        "ar": "نائباً في البرلمان",
+        "en": "Members of Parliament",
+        "fr": "Députés au Parlement"
+      }
+    },
+    {
+      "id": "ministers",
+      "value": "4",
+      "label": {
+        "ar": "وزراء حاليون",
+        "en": "Current ministers",
+        "fr": "Ministres actuels"
+      }
+    }
+  ],
+  "values": [
+    {
+      "id": "people",
+      "title": {
+        "ar": "الإنسان",
+        "en": "People",
+        "fr": "L’humain"
+      },
+      "text": {
+        "ar": "كرامة الإنسان وحريته هما نقطة الانطلاق والغاية.",
+        "en": "Human dignity and freedom are the starting point and the goal.",
+        "fr": "La dignité et la liberté humaines sont le point de départ et la finalité."
+      }
+    },
+    {
+      "id": "sovereignty",
+      "title": {
+        "ar": "السيادة",
+        "en": "Sovereignty",
+        "fr": "Souveraineté"
+      },
+      "text": {
+        "ar": "قرار وطني حر ودولة تمارس سلطتها على كامل أراضيها.",
+        "en": "A free national decision and a state exercising authority over all its territory.",
+        "fr": "Une décision nationale libre et un État exerçant son autorité sur tout son territoire."
+      }
+    },
+    {
+      "id": "democracy",
+      "title": {
+        "ar": "الديمقراطية",
+        "en": "Democracy",
+        "fr": "Démocratie"
+      },
+      "text": {
+        "ar": "مؤسسات دستورية، محاسبة وتداول سلمي للسلطة.",
+        "en": "Constitutional institutions, accountability and peaceful transfer of power.",
+        "fr": "Institutions constitutionnelles, responsabilité et alternance pacifique."
+      }
+    }
+  ],
+  "interfaceText": {
+    "historyCta": {
+      "ar": "اكتشف تاريخ الحزب",
+      "en": "Explore the party history",
+      "fr": "Découvrir l’histoire du parti"
+    },
+    "mediaCta": {
+      "ar": "استكشف المكتبة الإعلامية",
+      "en": "Explore the media library",
+      "fr": "Explorer la médiathèque"
+    },
+    "allNews": {
+      "ar": "كل الأخبار",
+      "en": "All news",
+      "fr": "Toute l’actualité"
+    },
+    "bioLink": {
+      "ar": "اقرأ السيرة الكاملة",
+      "en": "Read the full biography",
+      "fr": "Lire la biographie complète"
+    },
+    "leadershipCta": {
+      "ar": "عرض القيادة والكتل",
+      "en": "View leadership and blocs",
+      "fr": "Voir la direction et les blocs"
+    },
+    "songsTitle": {
+      "ar": "أناشيد وأغانٍ",
+      "en": "Songs & anthems",
+      "fr": "Chants et hymnes"
+    },
+    "videosTitle": {
+      "ar": "فيديو",
+      "en": "Video",
+      "fr": "Vidéo"
+    },
+    "photosTitle": {
+      "ar": "صور",
+      "en": "Photos",
+      "fr": "Photos"
+    },
+    "contactKicker": {
+      "ar": "شاركنا رأيك",
+      "en": "Your voice matters",
+      "fr": "Votre voix compte"
+    },
+    "contactTitle": {
+      "ar": "تواصل معنا",
+      "en": "Contact us",
+      "fr": "Contactez-nous"
+    },
+    "contactText": {
+      "ar": "اقتراحاتك وأسئلتك تهمّنا. أرسل رسالة مباشرة إلى فريق الموقع.",
+      "en": "Share a suggestion or question directly with the website team.",
+      "fr": "Partagez une suggestion ou une question directement avec l’équipe du site."
+    }
+  },
+  "socials": {
+    "facebook": "https://www.facebook.com/LFPartyOfficial/",
+    "instagram": "https://www.instagram.com/lfpartyofficial/",
+    "x": "https://x.com/LFPartyOfficial",
+    "youtube": "https://www.youtube.com/channel/UC5uWfpNVik89jgLaAxFoERQ",
+    "newsWebsite": "https://www.lebanese-forces.com/"
+  },
   "hero": {
     "eyebrow": {
       "ar": "القوات اللبنانية",
@@ -110,6 +327,11 @@
       "ar": "وزارة الخارجية الأميركية · ملكية عامة",
       "en": "U.S. Department of State · Public domain",
       "fr": "Département d’État des États-Unis · Domaine public"
+    },
+    "socials": {
+      "x": "https://x.com/DrSamirGeagea",
+      "instagram": "https://www.instagram.com/samirgeageaofficial/",
+      "facebook": "https://www.facebook.com/DrSamirGeagea/"
     }
   },
   "leadership": {
