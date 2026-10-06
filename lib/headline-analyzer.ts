@@ -85,6 +85,10 @@ function extractArabicReplyTarget(text: string): string {
   return match?.replace(/\s+/g, " ").trim() || "";
 }
 
+function containsAny(text: string, terms: string[]): boolean {
+  return terms.some((term) => text.includes(term));
+}
+
 function cleanArabicRegion(value: string): string {
   return searchableArabic(value)
     .replace(/^(?:منسقية\s+)?(?:منطقة|قضاء|اقليم)\s+/, "")
@@ -121,10 +125,159 @@ function conciseArabicEventHeadline(text: string, channel: ArticleChannel, regio
       : "قداس لشهداء القوات اللبنانية";
   }
 
-  const eventTypes = ["قداس", "احتفال", "ندوة", "مؤتمر", "لقاء", "زيارة", "عشاء"];
-  const eventType = eventTypes.find((type) => searchable.includes(type));
+  if (channel === "diaspora" && /عشاء/.test(searchable) && /دعم/.test(searchable) && /طلاب/.test(searchable)) {
+    return region
+      ? `عشاء للقوات اللبنانية في ${region} لدعم الطلاب اللبنانيين`
+      : "عشاء اغترابي لدعم الطلاب اللبنانيين";
+  }
+
+  const eventTypes = [
+    { match: "قداس", label: "قداس" },
+    { match: "احتفال", label: "احتفال" },
+    { match: "ندوة", label: "ندوة" },
+    { match: "موتمر", label: "مؤتمر" },
+    { match: "لقاء", label: "لقاء" },
+    { match: "زيارة", label: "زيارة" },
+    { match: "عشاء", label: "عشاء" },
+  ];
+  const eventType = eventTypes.find((type) => searchable.includes(type.match))?.label;
   if (!eventType || !region) return "";
-  return `${eventType} القوات اللبنانية في منطقة ${region}`;
+  return channel === "diaspora"
+    ? `${eventType} القوات اللبنانية في ${region}`
+    : `${eventType} القوات اللبنانية في منطقة ${region}`;
+}
+
+function conciseArabicNewsHeadline(
+  text: string,
+  channel: ArticleChannel,
+  actor: string,
+  people: string[],
+  regions: string[],
+): string {
+  const searchable = searchableArabic(text);
+  const subject = actor || (searchable.includes("القوات اللبنانية") ? "القوات اللبنانية" : "");
+  const region = extractArabicRegion(text, regions);
+  const secondPerson = people[1]?.trim() ? shortArabicActor(people[1]) : "";
+
+  if (
+    subject &&
+    containsAny(searchable, ["الاعتكاف", "معتكف", "يعتكف"]) &&
+    containsAny(searchable, ["جلسات مجلس الوزراء", "جلسات الحكومة"])
+  ) {
+    if (containsAny(searchable, ["كهرباء لبنان", "قطاع الكهرباء"])) {
+      return `${subject} يعتكف عن جلسات مجلس الوزراء حتى معالجة مستحقات كهرباء لبنان`;
+    }
+    return `${subject} يعتكف عن جلسات مجلس الوزراء حتى اتخاذ القرارات المطلوبة`;
+  }
+
+  if (subject && /رفض|يرفض/.test(searchable) && /تعديل/.test(searchable) && /تاجيل/.test(searchable) && /الانتخابات/.test(searchable)) {
+    return `${subject} يرفض أي تعديل يؤجل الانتخابات النيابية`;
+  }
+
+  if (subject && /حذر|يحذر/.test(searchable) && /تاجيل/.test(searchable) && /الانتخابات/.test(searchable)) {
+    return `${subject} يحذّر من تأجيل الانتخابات النيابية`;
+  }
+
+  if (
+    subject &&
+    containsAny(searchable, ["دعا", "يدعو", "طالب", "يطالب"]) &&
+    /الانتخابات/.test(searchable) &&
+    containsAny(searchable, ["موعدها", "في الموعد", "ضمن المهل"])
+  ) {
+    return `${subject} يدعو إلى إجراء الانتخابات النيابية في موعدها`;
+  }
+
+  if (
+    subject &&
+    containsAny(searchable, ["دعا", "يدعو", "طالب", "يطالب"]) &&
+    /السلاح/.test(searchable) &&
+    containsAny(searchable, ["بيد الدولة", "حصر السلاح", "الموسسات الشرعية"])
+  ) {
+    return `${subject} يدعو إلى حصر السلاح بيد الدولة`;
+  }
+
+  if (
+    subject &&
+    /اصلاح/.test(searchable) &&
+    /اموال المودعين/.test(searchable) &&
+    containsAny(searchable, ["طالب", "يطالب", "دعا", "يدعو"])
+  ) {
+    return `${subject} يطالب بإقرار الإصلاحات لحماية أموال المودعين`;
+  }
+
+  if (
+    subject === "القوات اللبنانية" &&
+    /دعم الجيش/.test(searchable) &&
+    /السلاح/.test(searchable) &&
+    containsAny(searchable, ["بيد الدولة", "حصرية السلاح", "حصر السلاح"])
+  ) {
+    return "القوات اللبنانية تؤكد دعم الجيش وحصرية السلاح بيد الدولة";
+  }
+
+  if (
+    subject === "القوات اللبنانية" &&
+    containsAny(searchable, ["ادانت", "تدين", "استنكرت", "تستنكر"]) &&
+    /الاعتداء/.test(searchable) &&
+    /الجيش اللبناني/.test(searchable)
+  ) {
+    return "القوات اللبنانية تدين الاعتداء على الجيش اللبناني";
+  }
+
+  if (
+    subject &&
+    containsAny(searchable, ["اعلن", "يطلق", "اطلق"]) &&
+    /خطة/.test(searchable) &&
+    /التغذية/.test(searchable) &&
+    /الكهرباء/.test(searchable)
+  ) {
+    return `${subject} يعلن خطة لزيادة التغذية الكهربائية`;
+  }
+
+  if (
+    subject &&
+    /مناقصة/.test(searchable) &&
+    /معامل/.test(searchable) &&
+    /الطاقة المتجددة/.test(searchable)
+  ) {
+    return `${subject} يعلن مناقصة لمعامل إنتاج الكهرباء بالطاقة المتجددة`;
+  }
+
+  if (
+    subject === "القوات اللبنانية" &&
+    containsAny(searchable, ["اطلقت", "تطلق", "اطلاق"]) &&
+    /حملة/.test(searchable) &&
+    containsAny(searchable, ["العائلات", "العايلات"]) &&
+    /الجنوب/.test(searchable)
+  ) {
+    return "القوات اللبنانية تطلق حملة لدعم العائلات في الجنوب";
+  }
+
+  if (
+    subject && secondPerson &&
+    containsAny(searchable, ["التقي", "اجتمع", "استقبل"]) &&
+    containsAny(searchable, ["استجرار الكهرباء", "شراء الكهرباء"]) &&
+    /سوريا/.test(searchable)
+  ) {
+    return `${subject} يبحث مع ${secondPerson} استجرار الكهرباء عبر سوريا`;
+  }
+
+  if (
+    subject && secondPerson &&
+    containsAny(searchable, ["التقي", "اجتمع", "استقبل"]) &&
+    containsAny(searchable, ["التطورات السياسية", "الاوضاع السياسية", "الملفات السياسية"])
+  ) {
+    return `${subject} يبحث مع ${secondPerson} التطورات السياسية`;
+  }
+
+  if (
+    subject && region && channel === "party" &&
+    containsAny(searchable, ["زار", "زارت", "زيارة"]) &&
+    !containsAny(searchable, ["لقاء", "ندوة", "مؤتمر"])
+  ) {
+    return `زيارة ${subject} إلى منطقة ${region}`;
+  }
+
+  return "";
 }
 
 function arabicTopic(text: string): string {
@@ -154,7 +307,7 @@ function splitSentences(text: string): string[] {
 function fallbackSentence(text: string, language: ArticleLanguage): string {
   const boilerplate = /^(?:صدر عن|يتم تداول|في إطار|للمزيد|تابعونا|source|read more|dans le cadre|pour en savoir plus)/i;
   const actionWords: Record<ArticleLanguage, string[]> = {
-    ar: ["أكد", "أكّد", "أعلن", "دعا", "حذّر", "طالب", "شدد", "شدّد", "اعتبر", "أوضح", "افتتح", "زار", "التقى", "نظّم", "نظمت"],
+    ar: ["قرر", "قرّر", "أكد", "أكّد", "أعلن", "دعا", "حذّر", "طالب", "رفض", "شدد", "شدّد", "اعتبر", "أوضح", "افتتح", "زار", "زارت", "التقى", "نظّم", "نظمت"],
     en: ["said", "announced", "called", "warned", "urged", "confirmed", "met", "visited", "launched", "organized"],
     fr: ["a déclaré", "a annoncé", "a appelé", "a averti", "a confirmé", "a rencontré", "a visité", "a lancé", "a organisé"],
   };
@@ -171,7 +324,8 @@ function fallbackSentence(text: string, language: ArticleLanguage): string {
 }
 
 function arabicHeadline(text: string, channel: ArticleChannel, people: string[], regions: string[]): string {
-  const actor = extractArabicActor(text, people);
+  const searchable = searchableArabic(text);
+  const actor = extractArabicActor(text, people) || (searchable.includes("القوات اللبنانية") ? "القوات اللبنانية" : "");
   const replyTarget = extractArabicReplyTarget(text);
   const topic = arabicTopic(text);
 
@@ -183,14 +337,17 @@ function arabicHeadline(text: string, channel: ArticleChannel, people: string[],
     return `${actor} يردّ على ${replyTarget}${topic ? ` بشأن ${topic}` : ""}`;
   }
 
+  const newsHeadline = conciseArabicNewsHeadline(text, channel, actor, people, regions);
+  if (newsHeadline) return newsHeadline;
+
   const eventHeadline = conciseArabicEventHeadline(text, channel, regions);
   if (eventHeadline) return eventHeadline;
 
   const strongest = fallbackSentence(text, "ar")
-    .replace(/^(?:وقال|وأكّد|وأكد|وشدّد|وشدد|واعتبر|وأوضح|ولفت)\s+/, "")
+    .replace(/^و(?=(?:قال|أكد|أكّد|شدد|شدّد|اعتبر|أوضح|لفت|دعا|حذر|حذّر|طالب|رفض))/, "")
     .replace(/^(?:أن|إن|ان)\s+/, "")
     .trim();
-  if (actor && !strongest.startsWith(actor)) return `${actor}: ${strongest}`;
+  if (actor && !searchableArabic(strongest).includes(searchableArabic(actor))) return `${actor}: ${strongest}`;
   return strongest;
 }
 
