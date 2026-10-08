@@ -943,9 +943,11 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       }
     };
     void refreshContent();
+    const refreshTimer = window.setInterval(refreshContent, 5 * 60 * 1000);
     window.addEventListener("focus", refreshContent);
     return () => {
       active = false;
+      window.clearInterval(refreshTimer);
       window.removeEventListener("focus", refreshContent);
     };
   }, []);
@@ -1053,9 +1055,6 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           </form>
 
           <div className="ms-auto flex items-center gap-2">
-            <a href="/" className="hidden h-10 items-center rounded-full border border-[#df1f2d]/20 bg-[#df1f2d]/[.06] px-4 text-[11px] font-extrabold text-[#c91827] transition hover:bg-[#df1f2d] hover:text-white sm:flex">
-              V2
-            </a>
             <div className="relative">
               <button
                 onClick={() => setLanguageOpen((open) => !open)}
@@ -1219,6 +1218,29 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
+      <section id="diaspora" className="px-5 pb-12 lg:px-8 lg:pb-20">
+        <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] px-6 py-14 text-white shadow-[0_30px_80px_rgba(0,0,0,.14)] sm:px-9 lg:px-14 lg:py-18">
+          <div className="absolute -end-32 -top-36 h-96 w-96 rounded-full bg-[#df1f2d]/24 blur-3xl" />
+          <div className="absolute -bottom-40 -start-28 h-80 w-80 rounded-full bg-[#0b7740]/16 blur-3xl" />
+          <div className="relative flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading
+              kicker={articleChannelText("diaspora", lang)}
+              title={text(newsChannelPresentation.diaspora.title, lang)}
+              description={text(newsChannelPresentation.diaspora.description, lang)}
+              light
+            />
+            <a href={articleChannelHref("diaspora")} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[.06] px-5 py-3 text-[12px] font-extrabold text-white/70 transition hover:bg-white hover:text-[#191919]">{t.browseSection}<ArrowLeft size={15} className={rtl ? "" : "rotate-180"} /></a>
+          </div>
+          <div className="relative mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+            {articlesByChannel.diaspora.length > 0 ? articlesByChannel.diaspora.slice(0, 3).map((article) => (
+              <DiasporaStoryCard key={article.id} article={article} lang={lang} readLabel={t.read} />
+            )) : (
+              <div className="rounded-[24px] border border-white/[.08] bg-white/[.045] p-8 text-[13px] leading-7 text-white/45 md:col-span-2 lg:col-span-3">{t.noStories}</div>
+            )}
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-[1380px] px-5 pb-20 lg:px-8 lg:pb-28">
         <div className="overflow-hidden rounded-[34px] border border-black/[.07] bg-[#eeeee9] p-6 sm:p-9 lg:p-12" data-reveal>
           <div className="flex flex-col justify-between gap-6 border-b border-black/[.08] pb-8 sm:flex-row sm:items-end">
@@ -1250,29 +1272,6 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           ) : (
             <div className="py-12 text-[14px] text-black/40">{t.noStories}</div>
           )}
-        </div>
-      </section>
-
-      <section id="diaspora" className="px-5 pb-12 lg:px-8 lg:pb-20">
-        <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] px-6 py-14 text-white shadow-[0_30px_80px_rgba(0,0,0,.14)] sm:px-9 lg:px-14 lg:py-18">
-          <div className="absolute -end-32 -top-36 h-96 w-96 rounded-full bg-[#df1f2d]/24 blur-3xl" />
-          <div className="absolute -bottom-40 -start-28 h-80 w-80 rounded-full bg-[#0b7740]/16 blur-3xl" />
-          <div className="relative flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              kicker={articleChannelText("diaspora", lang)}
-              title={text(newsChannelPresentation.diaspora.title, lang)}
-              description={text(newsChannelPresentation.diaspora.description, lang)}
-              light
-            />
-            <a href={articleChannelHref("diaspora")} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[.06] px-5 py-3 text-[12px] font-extrabold text-white/70 transition hover:bg-white hover:text-[#191919]">{t.browseSection}<ArrowLeft size={15} className={rtl ? "" : "rotate-180"} /></a>
-          </div>
-          <div className="relative mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal>
-            {articlesByChannel.diaspora.length > 0 ? articlesByChannel.diaspora.slice(0, 3).map((article) => (
-              <DiasporaStoryCard key={article.id} article={article} lang={lang} readLabel={t.read} />
-            )) : (
-              <div className="rounded-[24px] border border-white/[.08] bg-white/[.045] p-8 text-[13px] leading-7 text-white/45 md:col-span-2 lg:col-span-3">{t.noStories}</div>
-            )}
-          </div>
         </div>
       </section>
 
@@ -1414,11 +1413,11 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           </CollapsibleTrigger>
           <CollapsibleContent>
             <Tabs defaultValue="cabinet" dir={rtl ? "rtl" : "ltr"} className="mt-7">
-              <TabsList className="scrollbar-none h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]">
-                <TabsTrigger value="cabinet" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
-                <TabsTrigger value="parliament" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
-                <TabsTrigger value="secretariat" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
-                <TabsTrigger value="executive" className="h-11 min-w-fit rounded-2xl border-0 px-5 text-[13px] font-bold data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[3]}</TabsTrigger>
+              <TabsList className="scrollbar-none !h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]">
+                <TabsTrigger value="cabinet" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
+                <TabsTrigger value="parliament" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
+                <TabsTrigger value="secretariat" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
+                <TabsTrigger value="executive" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[3]}</TabsTrigger>
               </TabsList>
               <TabsContent value="cabinet" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -1548,47 +1547,54 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="instagram" className="relative overflow-hidden bg-[#f0f0ec] px-5 py-24 lg:px-8 lg:py-30">
+      <section id="instagram" className="relative overflow-hidden bg-[#f0f0ec] px-5 py-16 lg:px-8 lg:py-20">
         <div className="absolute -start-56 top-20 h-96 w-96 rounded-full bg-[#df1f2d]/10 blur-3xl" />
-        <div className="relative mx-auto max-w-[1320px]">
-          <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
-            <SectionHeading kicker={t.instagramKicker} title={t.instagramTitle} description={t.instagramText} />
+        <div className="relative mx-auto max-w-[1120px]">
+          <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+            <div className="max-w-2xl" data-reveal>
+              <div className="arabic-safe mb-3 flex items-center gap-3 text-[12px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
+                <span className="h-2 w-2 rounded-full bg-[#df1f2d]" />
+                {t.instagramKicker}
+              </div>
+              <h2 className="section-title text-[clamp(1.9rem,3.6vw,3.2rem)] font-extrabold leading-[1.15] tracking-[-.035em] text-[#171717]">{t.instagramTitle}</h2>
+              <p className="mt-3 max-w-xl text-[14px] font-normal leading-7 text-black/55 sm:text-[15px]">{t.instagramText}</p>
+            </div>
             <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-3 rounded-full bg-[#191919] px-5 py-3 text-[12px] font-extrabold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#df1f2d]">
               <Camera size={17} />{t.followInstagram}<ArrowUpLeft size={15} />
             </a>
           </div>
 
-          <div className="mt-11 grid gap-4 md:grid-cols-3" data-reveal>
+          <div className="mt-8 grid gap-3 md:grid-cols-3" data-reveal>
             {instagramPosts.slice(0, 3).map((post) => (
-              <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" className="group relative aspect-[4/5] overflow-hidden rounded-[28px] bg-[#191919] shadow-[0_16px_45px_rgba(0,0,0,.12)]">
+              <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" className="group relative aspect-square overflow-hidden rounded-[22px] bg-[#191919] shadow-[0_12px_35px_rgba(0,0,0,.1)]">
                 <img src={post.imageUrl} alt={mediaText(post.caption, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/15" />
-                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5">
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-white/92 text-[#df1f2d] shadow-lg"><Camera size={18} /></span>
-                  {post.mediaType === "VIDEO" && <span className="grid h-10 w-10 place-items-center rounded-full bg-black/35 text-white backdrop-blur"><Play size={14} fill="currentColor" /></span>}
+                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-white/92 text-[#df1f2d] shadow-lg"><Camera size={16} /></span>
+                  {post.mediaType === "VIDEO" && <span className="grid h-9 w-9 place-items-center rounded-full bg-black/35 text-white backdrop-blur"><Play size={13} fill="currentColor" /></span>}
                 </div>
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                   <div className="text-[10px] font-bold text-white/48">{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</div>
-                  <p className="mt-2 line-clamp-4 text-[14px] font-bold leading-7 text-white sm:text-[15px]">{mediaText(post.caption, lang)}</p>
+                  <p className="mt-2 line-clamp-2 text-[13px] font-bold leading-6 text-white sm:text-[14px]">{mediaText(post.caption, lang)}</p>
                 </div>
               </a>
             ))}
           </div>
 
           {media.mediaPartners.length > 0 && (
-            <div className="mt-16 border-t border-black/[.08] pt-9" data-reveal>
-              <div className="mb-6 flex items-center gap-3 text-[14px] font-extrabold"><Radio size={19} className="text-[#df1f2d]" />{t.mediaPartners}</div>
-              <div className="grid gap-4 md:grid-cols-2">
+            <div className="mt-10 border-t border-black/[.08] pt-7" data-reveal>
+              <div className="mb-5 flex items-center gap-3 text-[13px] font-extrabold"><Radio size={18} className="text-[#df1f2d]" />{t.mediaPartners}</div>
+              <div className="grid gap-3 md:grid-cols-2">
                 {media.mediaPartners.map((partner) => (
-                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[150px] items-center gap-6 rounded-[26px] border border-black/[.07] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.1)] sm:p-6">
-                    <span className="grid h-24 w-28 shrink-0 place-items-center overflow-hidden rounded-[20px] bg-white p-3 ring-1 ring-black/[.06]">
+                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[110px] items-center gap-4 rounded-[22px] border border-black/[.07] bg-white p-4 shadow-[0_8px_28px_rgba(0,0,0,.04)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.09)]">
+                    <span className="grid h-[72px] w-[88px] shrink-0 place-items-center overflow-hidden rounded-[16px] bg-white p-2.5 ring-1 ring-black/[.06]">
                       <img src={partner.logoUrl} alt={mediaText(partner.name, lang)} className="max-h-full max-w-full object-contain" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[18px] font-extrabold">{mediaText(partner.name, lang)}</span>
-                      <span className="mt-2 block text-[12px] font-normal leading-6 text-black/45">{mediaText(partner.description, lang)}</span>
+                      <span className="block text-[16px] font-extrabold">{mediaText(partner.name, lang)}</span>
+                      <span className="mt-1.5 block text-[11px] font-normal leading-5 text-black/45">{mediaText(partner.description, lang)}</span>
                     </span>
-                    <ArrowUpLeft size={18} className="shrink-0 text-black/28 transition group-hover:text-[#df1f2d]" />
+                    <ArrowUpLeft size={16} className="shrink-0 text-black/28 transition group-hover:text-[#df1f2d]" />
                   </a>
                 ))}
               </div>

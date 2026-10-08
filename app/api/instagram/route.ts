@@ -19,7 +19,7 @@ function response(posts: MediaInstagramPost[], source: "instagram" | "editor") {
     { posts, source },
     {
       headers: {
-        "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600",
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
       },
     },
   );
@@ -42,7 +42,7 @@ export async function GET() {
 
     const request = await fetch(endpoint, {
       headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 900 },
+      next: { revalidate: 300 },
     });
     if (!request.ok) return response(fallback, "editor");
 

@@ -341,21 +341,18 @@ export function HeroV2({
           </nav>
 
           <div className={styles.headerTools}>
-            <div className={styles.versionSwitch} aria-label="Website version">
-              <Link className={styles.versionLink} href="/classic">{copy.current}</Link>
-              <Link className={`${styles.versionLink} ${styles.versionActive}`} href="/" aria-current="page">{copy.v2}</Link>
-            </div>
             <Link className={`${styles.toolButton} ${styles.searchButton}`} href="/news" aria-label={copy.search}>
               <Search size={17} />
             </Link>
             <div className={styles.languageMenu}>
               <button
-                className={styles.toolButton}
+                className={`${styles.toolButton} ${styles.languageButton}`}
                 onClick={() => setLanguageOpen((open) => !open)}
                 aria-label={copy.languages}
                 aria-expanded={languageOpen}
               >
                 <Globe2 size={17} />
+                <span>{lang.toUpperCase()}</span>
               </button>
               {languageOpen && (
                 <div className={styles.languagePopover}>
@@ -393,15 +390,6 @@ export function HeroV2({
                 <span aria-hidden="true">↗</span>
               </button>
             ))}
-            <div className={styles.mobileUtility}>
-              <Link href="/classic">{copy.currentLabel}</Link>
-              <Link href="/" aria-current="page">{copy.v2Label}</Link>
-              {(["ar", "en", "fr"] as HeroV2Language[]).map((language) => (
-                <button key={language} onClick={() => onLanguageChange(language)}>
-                  {language.toUpperCase()}
-                </button>
-              ))}
-            </div>
           </nav>
         )}
       </header>
