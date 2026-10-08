@@ -60,12 +60,14 @@ export async function PUT(request: Request) {
     const presidentFile = optionalImage(form, "presidentImage");
     const personImages = await imageMap(form, "personImage:");
     const historyImages = await imageMap(form, "historyImage:");
+    const secretariatImages = await imageMap(form, "secretariatImage:");
     const updated = await updateHomepage({
       content,
       ...(heroFile ? { heroImage: { bytes: new Uint8Array(await heroFile.arrayBuffer()), contentType: heroFile.type } } : {}),
       ...(presidentFile ? { presidentImage: { bytes: new Uint8Array(await presidentFile.arrayBuffer()), contentType: presidentFile.type } } : {}),
       personImages,
       historyImages,
+      secretariatImages,
     });
     return NextResponse.json({ content: updated });
   } catch (error) {

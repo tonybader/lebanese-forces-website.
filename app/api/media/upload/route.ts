@@ -24,14 +24,16 @@ export async function POST(request: Request) {
       request,
       body,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
-        if (!pathname.startsWith("publications/")) throw new Error("Invalid publication upload path.");
+        const publicationUpload = pathname.startsWith("publications/");
+        const mediaUpload = pathname.startsWith("media/");
+        if ((!publicationUpload && !mediaUpload) || pathname.includes("..")) throw new Error("Invalid media upload path.");
         const payload = clientPayload ? JSON.parse(clientPayload) as { kind?: string } : {};
-        const pdf = payload.kind === "pdf";
+        const pdf = publicationUpload && payload.kind === "pdf";
         return {
           allowedContentTypes: pdf
             ? ["application/pdf"]
             : ["image/jpeg", "image/png", "image/webp"],
-          maximumSizeInBytes: pdf ? 30 * 1024 * 1024 : 6 * 1024 * 1024,
+          maximumSizeInBytes: pdf ? 30 * 1024 * 1024 : 8 * 1024 * 1024,
           addRandomSuffix: true,
         };
       },

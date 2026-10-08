@@ -18,7 +18,7 @@ import {
 export const runtime = "nodejs";
 
 const languages = new Set<ArticleLanguage>(["ar", "en", "fr"]);
-const channels = new Set<ArticleChannel>(["statements", "positions", "party", "diaspora"]);
+const channels = new Set<ArticleChannel>(["statements", "positions", "party", "special", "diaspora"]);
 const articleAnalysisSchema = z.object({
   title: z.string().min(8).max(150),
   regions: z.array(z.string().min(2).max(80)).max(8),

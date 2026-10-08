@@ -1,6 +1,69 @@
 {
   "updatedAt": "2026-10-06T20:51:24.329Z",
   "officialYouTubeUrl": "https://www.youtube.com/channel/UC5uWfpNVik89jgLaAxFoERQ",
+  "instagramProfileUrl": "https://www.instagram.com/LFPartyOfficial/",
+  "instagramPosts": [
+    {
+      "id": "instagram-deomi8ejz8h",
+      "caption": {
+        "ar": "أنطوان حبشي: أين رئيس الجمهورية ورئيس الحكومة ومجلس الوزراء من تنفيذ قرار المجلس الدستوري بإبطال ترشّح بسّام بدران لولاية ثانية؟",
+        "en": "Antoine Habchi asks where the constitutional authorities stand on enforcing the Constitutional Council's decision.",
+        "fr": "Antoine Habchi interpelle les autorités constitutionnelles sur l’application de la décision du Conseil constitutionnel."
+      },
+      "imageUrl": "/instagram/latest-01.jpg",
+      "permalink": "https://www.instagram.com/lfpartyofficial/p/DeOmI8ejZ8h/",
+      "publishedAt": "2026-10-08T00:00:00.000Z",
+      "mediaType": "IMAGE"
+    },
+    {
+      "id": "instagram-deoiwzrdbpm",
+      "caption": {
+        "ar": "ستريدا جعجع: ما يحصل مؤخراً في ملف الكهرباء لم يعد مقبولاً، ونرفض إعادة فتح النقاش حول قانون الانتخابات.",
+        "en": "Strida Geagea: recent developments in the electricity file are no longer acceptable, and we reject reopening debate over the electoral law.",
+        "fr": "Strida Geagea : les développements récents du dossier de l’électricité ne sont plus acceptables, et nous refusons de rouvrir le débat sur la loi électorale."
+      },
+      "imageUrl": "/instagram/latest-02.jpg",
+      "permalink": "https://www.instagram.com/lfpartyofficial/p/DeOiwzrDbPM/",
+      "publishedAt": "2026-10-08T00:00:00.000Z",
+      "mediaType": "IMAGE"
+    },
+    {
+      "id": "instagram-demce8ix6z0",
+      "caption": {
+        "ar": "غسان حاصباني: كانت هناك نية لتوسيع النقاش خارج الأمور التقنية المطلوبة لتطبيق قانون الانتخابات الحالي، لكننا لم نقبل بذلك.",
+        "en": "Ghassan Hasbani: there was an attempt to expand the debate beyond the technical requirements of the current electoral law, but we did not accept it.",
+        "fr": "Ghassan Hasbani : certains voulaient élargir le débat au-delà des exigences techniques de la loi électorale actuelle, mais nous l’avons refusé."
+      },
+      "imageUrl": "/instagram/latest-03.jpg",
+      "permalink": "https://www.instagram.com/lfpartyofficial/reel/DeMCe8Ix6z0/",
+      "publishedAt": "2026-10-07T00:00:00.000Z",
+      "mediaType": "VIDEO"
+    }
+  ],
+  "mediaPartners": [
+    {
+      "id": "almassira",
+      "name": { "ar": "مجلة المسيرة", "en": "Al Massira Magazine", "fr": "Magazine Al Massira" },
+      "description": {
+        "ar": "قراءات سياسية، ملفات وتحقيقات من مجلة المسيرة.",
+        "en": "Political analysis, features and investigations from Al Massira.",
+        "fr": "Analyses politiques, dossiers et enquêtes du magazine Al Massira."
+      },
+      "url": "https://www.almassira.com/",
+      "logoUrl": "/media-partners/almassira.png"
+    },
+    {
+      "id": "rll",
+      "name": { "ar": "إذاعة لبنان الحر", "en": "Radio Liban Libre", "fr": "Radio Liban Libre" },
+      "description": {
+        "ar": "آخر الأخبار والبرامج والبث المباشر عبر إذاعة لبنان الحر.",
+        "en": "News, programs and live radio from Radio Liban Libre.",
+        "fr": "Actualités, émissions et direct de Radio Liban Libre."
+      },
+      "url": "https://www.rll.com.lb/",
+      "logoUrl": "/media-partners/rll.png"
+    }
+  ],
   "songs": [
     {
       "id": "lf-anthem",

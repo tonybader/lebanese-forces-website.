@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const pathname = new URL(request.url).searchParams.get("pathname")?.trim() || "";
-  if (!pathname.startsWith("publications/") || pathname.includes("..")) {
+  if ((!pathname.startsWith("publications/") && !pathname.startsWith("media/")) || pathname.includes("..")) {
     return NextResponse.json({ error: "Invalid file path." }, { status: 400 });
   }
 

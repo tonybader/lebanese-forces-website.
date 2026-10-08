@@ -36,7 +36,7 @@ type HeroV2Props = {
 const content = {
   ar: {
     brand: "القوات اللبنانية",
-    current: "الحالية",
+    current: "الكلاسيكية",
     v2: "V2",
     search: "البحث في الموقع",
     languages: "تغيير اللغة",
@@ -49,8 +49,8 @@ const content = {
     captionSmall: "جذورنا هنا. ومستقبلنا هنا.",
     pause: "إيقاف تبديل الرسائل تلقائياً",
     play: "تشغيل تبديل الرسائل تلقائياً",
-    currentLabel: "النسخة الحالية",
-    v2Label: "التصميم الجديد",
+    currentLabel: "النسخة السابقة",
+    v2Label: "النسخة الرئيسية",
     slides: [
       {
         eyebrow: "جذورٌ راسخة. إيمانٌ لا يتغيّر.",
@@ -101,7 +101,7 @@ const content = {
   },
   en: {
     brand: "Lebanese Forces",
-    current: "Current",
+    current: "Classic",
     v2: "V2",
     search: "Search the website",
     languages: "Change language",
@@ -114,8 +114,8 @@ const content = {
     captionSmall: "Our roots are here. Our future is here.",
     pause: "Pause automatic messages",
     play: "Play automatic messages",
-    currentLabel: "Current version",
-    v2Label: "New design",
+    currentLabel: "Classic version",
+    v2Label: "Main version",
     slides: [
       {
         eyebrow: "Deep roots. Unwavering belief.",
@@ -166,7 +166,7 @@ const content = {
   },
   fr: {
     brand: "Forces Libanaises",
-    current: "Actuelle",
+    current: "Classique",
     v2: "V2",
     search: "Rechercher sur le site",
     languages: "Changer de langue",
@@ -179,8 +179,8 @@ const content = {
     captionSmall: "Nos racines sont ici. Notre avenir aussi.",
     pause: "Suspendre le défilement automatique",
     play: "Reprendre le défilement automatique",
-    currentLabel: "Version actuelle",
-    v2Label: "Nouveau design",
+    currentLabel: "Version classique",
+    v2Label: "Version principale",
     slides: [
       {
         eyebrow: "Des racines profondes. Une conviction intacte.",
@@ -342,8 +342,8 @@ export function HeroV2({
 
           <div className={styles.headerTools}>
             <div className={styles.versionSwitch} aria-label="Website version">
-              <Link className={styles.versionLink} href="/">{copy.current}</Link>
-              <Link className={`${styles.versionLink} ${styles.versionActive}`} href="/v2" aria-current="page">{copy.v2}</Link>
+              <Link className={styles.versionLink} href="/classic">{copy.current}</Link>
+              <Link className={`${styles.versionLink} ${styles.versionActive}`} href="/" aria-current="page">{copy.v2}</Link>
             </div>
             <Link className={`${styles.toolButton} ${styles.searchButton}`} href="/news" aria-label={copy.search}>
               <Search size={17} />
@@ -394,8 +394,8 @@ export function HeroV2({
               </button>
             ))}
             <div className={styles.mobileUtility}>
-              <Link href="/">{copy.currentLabel}</Link>
-              <Link href="/v2" aria-current="page">{copy.v2Label}</Link>
+              <Link href="/classic">{copy.currentLabel}</Link>
+              <Link href="/" aria-current="page">{copy.v2Label}</Link>
               {(["ar", "en", "fr"] as HeroV2Language[]).map((language) => (
                 <button key={language} onClick={() => onLanguageChange(language)}>
                   {language.toUpperCase()}

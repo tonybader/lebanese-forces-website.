@@ -9,6 +9,8 @@ import type {
   HomepagePerson,
   HomepagePresidentPage,
   HomepagePresidentMilestone,
+  HomepageSecretariatMember,
+  HomepageSupportSection,
   HomepageTextSection,
 } from "@/lib/homepage-types";
 import { publicProfiles } from "@/lib/people";
@@ -27,6 +29,7 @@ export type HomepageUpdateInput = {
   presidentImage?: ImageUpload;
   personImages?: Record<string, ImageUpload>;
   historyImages?: Record<string, ImageUpload>;
+  secretariatImages?: Record<string, ImageUpload>;
 };
 
 function repositoryParts(): { owner: string; repository: string; branch: string } {
@@ -145,6 +148,38 @@ function normalizePeople(value: unknown, fallback?: HomepagePerson[]): HomepageP
 function identifier(value: unknown, fallback: string): string {
   const cleaned = text(value, fallback, 100).replace(/[^a-zA-Z0-9_-]/g, "-");
   return cleaned || fallback;
+}
+
+function normalizeSupport(
+  value: unknown,
+  fallback: HomepageSupportSection,
+): HomepageSupportSection {
+  const candidate = value && typeof value === "object" ? value as Partial<HomepageSupportSection> : {};
+  return {
+    kicker: localized(candidate.kicker, fallback.kicker, 160),
+    title: localized(candidate.title, fallback.title, 500),
+    text: localized(candidate.text, fallback.text, 2500),
+    buttonLabel: localized(candidate.buttonLabel, fallback.buttonLabel, 160),
+    url: linkUrl(candidate.url, fallback.url),
+  };
+}
+
+function normalizeSecretariat(
+  value: unknown,
+  fallback: HomepageSecretariatMember[],
+): HomepageSecretariatMember[] {
+  const candidate = Array.isArray(value) && value.length ? value : fallback;
+  const normalized = candidate.slice(0, 24).map((raw, index) => {
+    const item = raw && typeof raw === "object" ? raw as Partial<HomepageSecretariatMember> : {};
+    const fallbackItem = fallback.find((entry) => entry.id === item.id) || fallback[index];
+    return {
+      id: identifier(item.id, fallbackItem?.id || `secretariat-${index + 1}`),
+      name: localized(item.name, fallbackItem?.name || { ar: "", en: "", fr: "" }, 200),
+      role: localized(item.role, fallbackItem?.role || { ar: "", en: "", fr: "" }, 400),
+      imageUrl: imageUrl(item.imageUrl, fallbackItem?.imageUrl || "/lf-logo.png"),
+    };
+  }).filter((item) => item.name.ar && item.role.ar);
+  return normalized.length ? normalized : fallback;
 }
 
 function normalizeHistoryTimeline(
@@ -270,6 +305,7 @@ export function normalizeHomepage(
       imageUrl: imageUrl(hero.imageUrl, fallback.hero.imageUrl),
       imageAlt: localized(hero.imageAlt, fallback.hero.imageAlt, 300),
     },
+    support: normalizeSupport(candidate.support, fallback.support),
     vision: section(candidate.vision, fallback.vision),
     news: section(candidate.news, fallback.news),
     history: section(candidate.history, fallback.history),
@@ -291,6 +327,7 @@ export function normalizeHomepage(
     },
     presidentPage: normalizePresidentPage(candidate.presidentPage, fallback.presidentPage),
     leadership: section(candidate.leadership, fallback.leadership),
+    secretariat: normalizeSecretariat(candidate.secretariat, fallback.secretariat),
     publications: section(candidate.publications, fallback.publications),
     media: section(candidate.media, fallback.media),
     footer: { line: localized(footer.line, fallback.footer.line, 800) },
@@ -401,6 +438,10 @@ export async function updateHomepage(input: HomepageUpdateInput): Promise<Homepa
   for (const [id, image] of Object.entries(input.historyImages || {})) {
     const milestone = content.historyTimeline.find((item) => item.id === id);
     if (milestone) milestone.imageUrl = await uploadImage(image, `history-${identifier(id, "milestone")}`);
+  }
+  for (const [id, image] of Object.entries(input.secretariatImages || {})) {
+    const member = content.secretariat.find((item) => item.id === id);
+    if (member) member.imageUrl = await uploadImage(image, `secretariat-${identifier(id, "member")}`);
   }
   content.updatedAt = new Date().toISOString();
 

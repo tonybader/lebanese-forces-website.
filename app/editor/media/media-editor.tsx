@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  Camera,
   CheckCircle2,
   FileText,
   ImageIcon,
@@ -12,6 +13,7 @@ import {
   Music2,
   Pencil,
   Plus,
+  Radio,
   Save,
   Trash2,
   UploadCloud,
@@ -45,7 +47,9 @@ import { Label } from "@/components/ui/label";
 import type {
   MediaContent,
   MediaDocument,
+  MediaInstagramPost,
   MediaLocalizedText,
+  MediaPartner,
   MediaPhoto,
   MediaSong,
 } from "@/lib/media-types";
@@ -56,6 +60,8 @@ const uid = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toStrin
 type ItemEditor =
   | { kind: "song"; index: number | null; value: MediaSong }
   | { kind: "photo"; index: number | null; value: MediaPhoto }
+  | { kind: "instagram"; index: number | null; value: MediaInstagramPost }
+  | { kind: "partner"; index: number | null; value: MediaPartner }
   | { kind: "document"; index: number | null; value: MediaDocument };
 
 const documentSectionLabel: Record<MediaDocument["section"], string> = {
@@ -131,6 +137,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
   const [editor, setEditor] = useState<ItemEditor | null>(null);
   const [documentFiles, setDocumentFiles] = useState<Record<string, File>>({});
   const [documentCovers, setDocumentCovers] = useState<Record<string, File>>({});
+  const [itemImages, setItemImages] = useState<Record<string, File>>({});
   const [uploadingItem, setUploadingItem] = useState(false);
   const [notice, setNotice] = useState<{ kind: "success" | "error"; text: string } | null>(null);
 
@@ -141,6 +148,22 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
   const openNewPhoto = () => {
     setNewMediaOpen(false);
     setEditor({ kind: "photo", index: null, value: { id: uid("photo"), title: blankTitle(), imageUrl: "", credit: "", sourceUrl: "/", fit: "cover" } });
+  };
+  const openNewInstagram = () => {
+    setNewMediaOpen(false);
+    setEditor({
+      kind: "instagram",
+      index: null,
+      value: { id: uid("instagram"), caption: blankTitle(), imageUrl: "", permalink: "", publishedAt: new Date().toISOString().slice(0, 10), mediaType: "IMAGE" },
+    });
+  };
+  const openNewPartner = () => {
+    setNewMediaOpen(false);
+    setEditor({
+      kind: "partner",
+      index: null,
+      value: { id: uid("partner"), name: blankTitle(), description: blankTitle(), url: "", logoUrl: "" },
+    });
   };
   const openNewDocument = () => setEditor({
     kind: "document",
@@ -154,6 +177,21 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
     setUploadingItem(true);
     let nextEditor = editor;
     try {
+      if (editor.kind === "photo" || editor.kind === "instagram" || editor.kind === "partner") {
+        const image = itemImages[editor.value.id];
+        if (image) {
+          const extension = image.type === "image/png" ? "png" : image.type === "image/webp" ? "webp" : "jpg";
+          const blob = await upload(`media/${editor.kind}/${editor.value.id}/image.${extension}`, image, {
+            access: "private",
+            handleUploadUrl: "/api/media/upload",
+            clientPayload: JSON.stringify({ kind: "image", mediaKind: editor.kind }),
+          });
+          const imageUrl = `/api/media/file?pathname=${encodeURIComponent(blob.pathname)}`;
+          if (editor.kind === "photo") nextEditor = { ...editor, value: { ...editor.value, imageUrl } };
+          if (editor.kind === "instagram") nextEditor = { ...editor, value: { ...editor.value, imageUrl } };
+          if (editor.kind === "partner") nextEditor = { ...editor, value: { ...editor.value, logoUrl: imageUrl } };
+        }
+      }
       if (editor.kind === "document") {
         const value = { ...editor.value };
         const pdf = documentFiles[value.id];
@@ -196,6 +234,16 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
         if (nextEditor.index === null) photos.push(nextEditor.value); else photos[nextEditor.index] = nextEditor.value;
         return { ...current, photos };
       }
+      if (nextEditor.kind === "instagram") {
+        const instagramPosts = [...current.instagramPosts];
+        if (nextEditor.index === null) instagramPosts.unshift(nextEditor.value); else instagramPosts[nextEditor.index] = nextEditor.value;
+        return { ...current, instagramPosts };
+      }
+      if (nextEditor.kind === "partner") {
+        const mediaPartners = [...current.mediaPartners];
+        if (nextEditor.index === null) mediaPartners.push(nextEditor.value); else mediaPartners[nextEditor.index] = nextEditor.value;
+        return { ...current, mediaPartners };
+      }
       const documents = [...current.documents];
       if (nextEditor.index === null) documents.push(nextEditor.value); else documents[nextEditor.index] = nextEditor.value;
       return { ...current, documents };
@@ -204,15 +252,20 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
       setDocumentFiles((current) => { const next = { ...current }; delete next[nextEditor.value.id]; return next; });
       setDocumentCovers((current) => { const next = { ...current }; delete next[nextEditor.value.id]; return next; });
     }
+    if (nextEditor.kind === "photo" || nextEditor.kind === "instagram" || nextEditor.kind === "partner") {
+      setItemImages((current) => { const next = { ...current }; delete next[nextEditor.value.id]; return next; });
+    }
     setUploadingItem(false);
     setEditor(null);
   };
 
-  const itemIsValid = Boolean(editor && editor.value.title.ar.trim() && (
-    editor.kind === "song" ? editor.value.audioUrl.trim()
-      : editor.kind === "photo" ? editor.value.imageUrl.trim()
-        : (editor.value.fileUrl.trim() || Boolean(documentFiles[editor.value.id])) && (editor.value.coverUrl.trim() || Boolean(documentCovers[editor.value.id]))
-  ));
+  const itemIsValid = Boolean(editor && (() => {
+    if (editor.kind === "song") return editor.value.title.ar.trim() && editor.value.audioUrl.trim();
+    if (editor.kind === "photo") return editor.value.title.ar.trim() && (editor.value.imageUrl.trim() || Boolean(itemImages[editor.value.id]));
+    if (editor.kind === "instagram") return editor.value.caption.ar.trim() && editor.value.permalink.trim() && (editor.value.imageUrl.trim() || Boolean(itemImages[editor.value.id]));
+    if (editor.kind === "partner") return editor.value.name.ar.trim() && editor.value.url.trim() && (editor.value.logoUrl.trim() || Boolean(itemImages[editor.value.id]));
+    return editor.value.title.ar.trim() && (editor.value.fileUrl.trim() || Boolean(documentFiles[editor.value.id])) && (editor.value.coverUrl.trim() || Boolean(documentCovers[editor.value.id]));
+  })());
 
   const save = async () => {
     setSaving(true);
@@ -258,10 +311,11 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
         {notice && <Alert variant={notice.kind === "error" ? "destructive" : "default"} className={`mb-6 ${notice.kind === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-900" : ""}`}><CheckCircle2 /><AlertTitle>{notice.kind === "success" ? "Published" : "Could not publish"}</AlertTitle><AlertDescription>{notice.text}</AlertDescription></Alert>}
 
         <section className="mb-6 rounded-[26px] border border-black/[.07] bg-[#191919] p-5 text-white sm:p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-            <div className="min-w-0 flex-1"><Label htmlFor="youtube-url" className="flex items-center gap-2 text-sm font-extrabold"><Video size={17} className="text-[#ff6570]" /> Official YouTube channel</Label><Input id="youtube-url" value={content.officialYouTubeUrl} onChange={(event) => setContent((current) => ({ ...current, officialYouTubeUrl: event.target.value }))} className="mt-3 h-11 rounded-xl border-white/10 bg-white/8 text-white" /></div>
-            <span className="text-[11px] text-white/40">Used by the public video section</span>
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="min-w-0"><Label htmlFor="youtube-url" className="flex items-center gap-2 text-sm font-extrabold"><Video size={17} className="text-[#ff6570]" /> Official YouTube channel</Label><Input id="youtube-url" value={content.officialYouTubeUrl} onChange={(event) => setContent((current) => ({ ...current, officialYouTubeUrl: event.target.value }))} className="mt-3 h-11 rounded-xl border-white/10 bg-white/8 text-white" /></div>
+            <div className="min-w-0"><Label htmlFor="instagram-url" className="flex items-center gap-2 text-sm font-extrabold"><Camera size={17} className="text-[#ff6570]" /> Official Instagram account</Label><Input id="instagram-url" value={content.instagramProfileUrl} onChange={(event) => setContent((current) => ({ ...current, instagramProfileUrl: event.target.value }))} className="mt-3 h-11 rounded-xl border-white/10 bg-white/8 text-white" /></div>
           </div>
+          <p className="mt-4 text-[11px] text-white/40">These links are used by the public video and Instagram sections.</p>
         </section>
 
         <div className="space-y-6">
@@ -283,6 +337,36 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
                   <div className="min-w-0 flex-1"><div className="text-[10px] font-extrabold uppercase tracking-[.11em] text-[#df1f2d]">Photo</div><h3 dir="rtl" className="mt-1 truncate text-right text-[14px] font-extrabold">{photo.title.ar}</h3><p className="mt-1 truncate text-[10px] text-black/35">{photo.credit || photo.imageUrl}</p></div>
                   <Button type="button" size="sm" variant="outline" onClick={() => setEditor({ kind: "photo", index, value: structuredClone(photo) })} className="rounded-full"><Pencil /> Edit</Button>
                   <DeleteButton label="photo" onDelete={() => setContent((current) => ({ ...current, photos: current.photos.filter((_, itemIndex) => itemIndex !== index) }))} />
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[28px] border border-black/[.07] bg-white p-5 shadow-[0_16px_48px_rgba(0,0,0,.045)] sm:p-7">
+            <div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="flex items-center gap-2 text-xl font-extrabold"><Camera size={20} className="text-[#df1f2d]" /> Instagram fallback posts</h2><p className="mt-1 text-[12px] text-black/42">{content.instagramPosts.length} posts · shown whenever the live Instagram connection is unavailable</p></div><Button type="button" variant="outline" onClick={openNewInstagram} className="rounded-full font-extrabold"><Plus /> Add</Button></div>
+            <div className="space-y-3">
+              {!content.instagramPosts.length && <EmptyState label="Instagram posts" />}
+              {content.instagramPosts.map((post, index) => (
+                <article key={post.id} className="flex flex-wrap items-center gap-4 rounded-[18px] border border-black/[.07] bg-[#fafaf8] p-3.5">
+                  <img src={post.imageUrl || "/lf-logo.png"} alt="" className="h-16 w-16 rounded-xl bg-white object-cover" />
+                  <div className="min-w-0 flex-1"><div className="text-[10px] font-extrabold uppercase tracking-[.11em] text-[#df1f2d]">{post.mediaType.replace("_", " ")}</div><h3 dir="rtl" className="mt-1 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{post.caption.ar}</h3><p className="mt-1 truncate text-[10px] text-black/35">{post.permalink}</p></div>
+                  <Button type="button" size="sm" variant="outline" onClick={() => setEditor({ kind: "instagram", index, value: structuredClone(post) })} className="rounded-full"><Pencil /> Edit</Button>
+                  <DeleteButton label="Instagram post" onDelete={() => setContent((current) => ({ ...current, instagramPosts: current.instagramPosts.filter((_, itemIndex) => itemIndex !== index) }))} />
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[28px] border border-black/[.07] bg-white p-5 shadow-[0_16px_48px_rgba(0,0,0,.045)] sm:p-7">
+            <div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="flex items-center gap-2 text-xl font-extrabold"><Radio size={20} className="text-[#df1f2d]" /> Media partner links</h2><p className="mt-1 text-[12px] text-black/42">{content.mediaPartners.length} destinations displayed beneath Instagram</p></div><Button type="button" variant="outline" onClick={openNewPartner} className="rounded-full font-extrabold"><Plus /> Add</Button></div>
+            <div className="space-y-3">
+              {!content.mediaPartners.length && <EmptyState label="Media partners" />}
+              {content.mediaPartners.map((partner, index) => (
+                <article key={partner.id} className="flex flex-wrap items-center gap-4 rounded-[18px] border border-black/[.07] bg-[#fafaf8] p-3.5">
+                  <img src={partner.logoUrl || "/lf-logo.png"} alt="" className="h-14 w-20 rounded-xl bg-white object-contain p-2 ring-1 ring-black/5" />
+                  <div className="min-w-0 flex-1"><div className="text-[10px] font-extrabold uppercase tracking-[.11em] text-[#df1f2d]">Media partner</div><h3 dir="rtl" className="mt-1 truncate text-right text-[14px] font-extrabold">{partner.name.ar}</h3><p className="mt-1 truncate text-[10px] text-black/35">{partner.url}</p></div>
+                  <Button type="button" size="sm" variant="outline" onClick={() => setEditor({ kind: "partner", index, value: structuredClone(partner) })} className="rounded-full"><Pencil /> Edit</Button>
+                  <DeleteButton label="media partner" onDelete={() => setContent((current) => ({ ...current, mediaPartners: current.mediaPartners.filter((_, itemIndex) => itemIndex !== index) }))} />
                 </article>
               ))}
             </div>
@@ -313,6 +397,8 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
           <div className="grid gap-3 py-3 sm:grid-cols-2">
             <button type="button" onClick={openNewSong} className="rounded-[22px] border border-black/[.08] bg-[#fafaf8] p-6 text-left transition hover:-translate-y-0.5 hover:border-[#df1f2d]/35 hover:bg-red-50"><Music2 className="text-[#df1f2d]" /><span className="mt-5 block text-lg font-extrabold">Song / audio</span><span className="mt-1 block text-xs leading-5 text-black/45">Add a title and audio file URL.</span></button>
             <button type="button" onClick={openNewPhoto} className="rounded-[22px] border border-black/[.08] bg-[#fafaf8] p-6 text-left transition hover:-translate-y-0.5 hover:border-[#df1f2d]/35 hover:bg-red-50"><ImageIcon className="text-[#df1f2d]" /><span className="mt-5 block text-lg font-extrabold">Homepage photo</span><span className="mt-1 block text-xs leading-5 text-black/45">Add an image, credit and source.</span></button>
+            <button type="button" onClick={openNewInstagram} className="rounded-[22px] border border-black/[.08] bg-[#fafaf8] p-6 text-left transition hover:-translate-y-0.5 hover:border-[#df1f2d]/35 hover:bg-red-50"><Camera className="text-[#df1f2d]" /><span className="mt-5 block text-lg font-extrabold">Instagram post</span><span className="mt-1 block text-xs leading-5 text-black/45">Add a fallback post, image and Instagram link.</span></button>
+            <button type="button" onClick={openNewPartner} className="rounded-[22px] border border-black/[.08] bg-[#fafaf8] p-6 text-left transition hover:-translate-y-0.5 hover:border-[#df1f2d]/35 hover:bg-red-50"><Radio className="text-[#df1f2d]" /><span className="mt-5 block text-lg font-extrabold">Media partner</span><span className="mt-1 block text-xs leading-5 text-black/45">Add a logo, description and destination link.</span></button>
           </div>
         </DialogContent>
       </Dialog>
@@ -326,14 +412,30 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
                 <DialogDescription>Update every field for this item. Documents are uploaded directly—no PDF link is needed.</DialogDescription>
               </DialogHeader>
               <div className="space-y-5 py-3">
-                <LocalizedFields id={`${editor.kind}-title`} label="Title" value={editor.value.title} onChange={(title) => setEditor({ ...editor, value: { ...editor.value, title } } as ItemEditor)} />
+                {(editor.kind === "song" || editor.kind === "photo" || editor.kind === "document") && <LocalizedFields id={`${editor.kind}-title`} label="Title" value={editor.value.title} onChange={(title) => setEditor({ ...editor, value: { ...editor.value, title } } as ItemEditor)} />}
+                {editor.kind === "instagram" && <LocalizedFields id="instagram-caption" label="Caption" value={editor.value.caption} onChange={(caption) => setEditor({ ...editor, value: { ...editor.value, caption } })} />}
+                {editor.kind === "partner" && <><LocalizedFields id="partner-name" label="Name" value={editor.value.name} onChange={(name) => setEditor({ ...editor, value: { ...editor.value, name } })} /><LocalizedFields id="partner-description" label="Description" value={editor.value.description} onChange={(description) => setEditor({ ...editor, value: { ...editor.value, description } })} /></>}
                 {editor.kind === "song" && <div className="space-y-2"><Label htmlFor="song-audio">Audio URL</Label><Input id="song-audio" value={editor.value.audioUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, audioUrl: event.target.value } })} placeholder="https://…/song.mp3" className="h-11 rounded-xl" /></div>}
                 {editor.kind === "photo" && (
                   <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2"><Label htmlFor="photo-image">Image URL</Label><Input id="photo-image" value={editor.value.imageUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, imageUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /></div>
+                    <div className="space-y-2"><Label htmlFor="photo-image">Image URL</Label><Input id="photo-image" value={editor.value.imageUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, imageUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /><label htmlFor={`photo-upload-${editor.value.id}`} className="inline-flex cursor-pointer rounded-full border border-black/10 px-4 py-2 text-xs font-extrabold"><ImagePlus className="me-2" size={14} />Upload image</label><Input id={`photo-upload-${editor.value.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setItemImages((current) => ({ ...current, [editor.value.id]: file })); }} /><p className="truncate text-[10px] text-black/40">{itemImages[editor.value.id]?.name || "You may use a URL or upload a file."}</p></div>
                     <div className="space-y-2"><Label htmlFor="photo-source">Source URL</Label><Input id="photo-source" value={editor.value.sourceUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, sourceUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /></div>
                     <div className="space-y-2"><Label htmlFor="photo-credit">Photo credit</Label><Input id="photo-credit" value={editor.value.credit} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, credit: event.target.value } })} className="h-11 rounded-xl" /></div>
                     <div className="space-y-2"><Label htmlFor="photo-fit">Image fit</Label><select id="photo-fit" value={editor.value.fit} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, fit: event.target.value as MediaPhoto["fit"] } })} className="h-11 w-full rounded-xl border border-black/10 bg-white px-3 text-sm"><option value="cover">Crop to fill</option><option value="contain">Show full image</option></select></div>
+                  </div>
+                )}
+                {editor.kind === "instagram" && (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2"><Label htmlFor="instagram-image">Image URL</Label><Input id="instagram-image" value={editor.value.imageUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, imageUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /><label htmlFor={`instagram-upload-${editor.value.id}`} className="inline-flex cursor-pointer rounded-full border border-black/10 px-4 py-2 text-xs font-extrabold"><ImagePlus className="me-2" size={14} />Upload image</label><Input id={`instagram-upload-${editor.value.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setItemImages((current) => ({ ...current, [editor.value.id]: file })); }} /><p className="truncate text-[10px] text-black/40">{itemImages[editor.value.id]?.name || "Use a URL or upload a file."}</p></div>
+                    <div className="space-y-2"><Label htmlFor="instagram-permalink">Instagram permalink</Label><Input id="instagram-permalink" value={editor.value.permalink} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, permalink: event.target.value } })} placeholder="https://www.instagram.com/…" className="h-11 rounded-xl" /></div>
+                    <div className="space-y-2"><Label htmlFor="instagram-date">Published date</Label><Input id="instagram-date" type="date" value={editor.value.publishedAt.slice(0, 10)} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, publishedAt: event.target.value } })} className="h-11 rounded-xl" /></div>
+                    <div className="space-y-2"><Label htmlFor="instagram-type">Media type</Label><select id="instagram-type" value={editor.value.mediaType} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, mediaType: event.target.value as MediaInstagramPost["mediaType"] } })} className="h-11 w-full rounded-xl border border-black/10 bg-white px-3 text-sm"><option value="IMAGE">Image</option><option value="VIDEO">Video / reel</option><option value="CAROUSEL_ALBUM">Carousel</option></select></div>
+                  </div>
+                )}
+                {editor.kind === "partner" && (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2"><Label htmlFor="partner-url">Destination URL</Label><Input id="partner-url" value={editor.value.url} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, url: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /></div>
+                    <div className="space-y-2"><Label htmlFor="partner-logo">Logo URL</Label><Input id="partner-logo" value={editor.value.logoUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, logoUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /><label htmlFor={`partner-upload-${editor.value.id}`} className="inline-flex cursor-pointer rounded-full border border-black/10 px-4 py-2 text-xs font-extrabold"><ImagePlus className="me-2" size={14} />Upload logo</label><Input id={`partner-upload-${editor.value.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setItemImages((current) => ({ ...current, [editor.value.id]: file })); }} /><p className="truncate text-[10px] text-black/40">{itemImages[editor.value.id]?.name || "Use a URL or upload a file."}</p></div>
                   </div>
                 )}
                 {editor.kind === "document" && (

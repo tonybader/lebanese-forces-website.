@@ -26,9 +26,29 @@ export type MediaDocument = {
   coverUrl: string;
 };
 
+export type MediaInstagramPost = {
+  id: string;
+  caption: MediaLocalizedText;
+  imageUrl: string;
+  permalink: string;
+  publishedAt: string;
+  mediaType: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
+};
+
+export type MediaPartner = {
+  id: string;
+  name: MediaLocalizedText;
+  description: MediaLocalizedText;
+  url: string;
+  logoUrl: string;
+};
+
 export type MediaContent = {
   updatedAt: string;
   officialYouTubeUrl: string;
+  instagramProfileUrl: string;
+  instagramPosts: MediaInstagramPost[];
+  mediaPartners: MediaPartner[];
   songs: MediaSong[];
   photos: MediaPhoto[];
   documents: MediaDocument[];

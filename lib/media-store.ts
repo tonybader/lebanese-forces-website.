@@ -4,7 +4,9 @@ import seedMediaData from "@/data/media.json";
 import type {
   MediaContent,
   MediaDocument,
+  MediaInstagramPost,
   MediaLocalizedText,
+  MediaPartner,
   MediaPhoto,
   MediaSong,
 } from "@/lib/media-types";
@@ -109,6 +111,45 @@ function normalizeDocument(value: unknown, index: number): MediaDocument | null 
   };
 }
 
+function normalizeInstagramPost(value: unknown, index: number): MediaInstagramPost | null {
+  if (!value || typeof value !== "object") return null;
+  const item = value as Partial<MediaInstagramPost>;
+  const caption = localized(item.caption);
+  const imageUrl = safeUrl(item.imageUrl);
+  const permalink = safeUrl(item.permalink);
+  const publishedAt = cleanText(item.publishedAt, "", 80);
+  if (!imageUrl || !permalink) return null;
+  return {
+    id: cleanText(item.id, `instagram-${index}`, 100),
+    caption,
+    imageUrl,
+    permalink,
+    publishedAt,
+    mediaType: item.mediaType === "VIDEO"
+      ? "VIDEO"
+      : item.mediaType === "CAROUSEL_ALBUM"
+        ? "CAROUSEL_ALBUM"
+        : "IMAGE",
+  };
+}
+
+function normalizePartner(value: unknown, index: number): MediaPartner | null {
+  if (!value || typeof value !== "object") return null;
+  const item = value as Partial<MediaPartner>;
+  const name = localized(item.name);
+  const description = localized(item.description);
+  const url = safeUrl(item.url);
+  const logoUrl = safeUrl(item.logoUrl);
+  if (!name.ar || !url || !logoUrl) return null;
+  return {
+    id: cleanText(item.id, `partner-${index}`, 100),
+    name,
+    description,
+    url,
+    logoUrl,
+  };
+}
+
 export function normalizeMedia(value: unknown): MediaContent {
   const fallback = seedMediaData as MediaContent;
   const candidate = value && typeof value === "object" ? value as Partial<MediaContent> : {};
@@ -121,10 +162,19 @@ export function normalizeMedia(value: unknown): MediaContent {
   const documents = Array.isArray(candidate.documents)
     ? candidate.documents.map(normalizeDocument).filter((item): item is MediaDocument => Boolean(item)).slice(0, 80)
     : fallback.documents;
+  const instagramPosts = Array.isArray(candidate.instagramPosts)
+    ? candidate.instagramPosts.map(normalizeInstagramPost).filter((item): item is MediaInstagramPost => Boolean(item)).slice(0, 12)
+    : fallback.instagramPosts;
+  const mediaPartners = Array.isArray(candidate.mediaPartners)
+    ? candidate.mediaPartners.map(normalizePartner).filter((item): item is MediaPartner => Boolean(item)).slice(0, 12)
+    : fallback.mediaPartners;
 
   return {
     updatedAt: cleanText(candidate.updatedAt, fallback.updatedAt, 80),
     officialYouTubeUrl: safeUrl(candidate.officialYouTubeUrl, fallback.officialYouTubeUrl),
+    instagramProfileUrl: safeUrl(candidate.instagramProfileUrl, fallback.instagramProfileUrl),
+    instagramPosts,
+    mediaPartners: mediaPartners.length ? mediaPartners : fallback.mediaPartners,
     songs: songs.length ? songs : fallback.songs,
     photos: photos.length ? photos : fallback.photos,
     documents,

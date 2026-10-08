@@ -240,6 +240,29 @@
       "fr": "Emblème des Forces Libanaises"
     }
   },
+  "support": {
+    "kicker": {
+      "ar": "معاً من أجل لبنان",
+      "en": "Together for Lebanon",
+      "fr": "Ensemble pour le Liban"
+    },
+    "title": {
+      "ar": "ساهم في استمرار المسيرة",
+      "en": "Help carry the mission forward",
+      "fr": "Faites vivre notre engagement"
+    },
+    "text": {
+      "ar": "دعمكم يساهم في تطوير العمل العام، وتعزيز التواصل، وإيصال صوت القوات اللبنانية إلى كل لبناني.",
+      "en": "Your support helps strengthen public engagement, expand communication and carry the Lebanese Forces' message to every Lebanese citizen.",
+      "fr": "Votre soutien renforce l'action publique, développe la communication et porte le message des Forces Libanaises auprès de chaque Libanais."
+    },
+    "buttonLabel": {
+      "ar": "ساهم الآن",
+      "en": "Support us",
+      "fr": "Nous soutenir"
+    },
+    "url": "#contact"
+  },
   "vision": {
     "kicker": {
       "ar": "الحزب",
@@ -671,6 +694,44 @@
       "fr": "Découvrez le Comité exécutif, les députés des Forces Libanaises et les ministres actuels."
     }
   },
+  "secretariat": [
+    {
+      "id": "emil-moukarzel",
+      "name": { "ar": "اميل مكرزل", "en": "Emil Moukarzel", "fr": "Emil Moukarzel" },
+      "role": { "ar": "الأمين العام", "en": "Secretary-General", "fr": "Secrétaire général" },
+      "imageUrl": "/lf-logo.png"
+    },
+    {
+      "id": "georges-eid",
+      "name": { "ar": "جورج عيد", "en": "Georges Eid", "fr": "Georges Eid" },
+      "role": { "ar": "الأمين المساعد لشؤون المناطق", "en": "Assistant Secretary-General for Regional Affairs", "fr": "Secrétaire général adjoint chargé des régions" },
+      "imageUrl": "/lf-logo.png"
+    },
+    {
+      "id": "nabil-abou-jaoude",
+      "name": { "ar": "نبيل ابو جودة", "en": "Nabil Abou Jaoude", "fr": "Nabil Abou Jaoude" },
+      "role": { "ar": "الأمين المساعد لشؤون المصالح", "en": "Assistant Secretary-General for Professional Sectors", "fr": "Secrétaire général adjoint chargé des secteurs professionnels" },
+      "imageUrl": "/lf-logo.png"
+    },
+    {
+      "id": "imad-wakim",
+      "name": { "ar": "عماد واكيم", "en": "Imad Wakim", "fr": "Imad Wakim" },
+      "role": { "ar": "الأمين المساعد لشؤون الانتشار", "en": "Assistant Secretary-General for Diaspora Affairs", "fr": "Secrétaire général adjoint chargé de la diaspora" },
+      "imageUrl": "/lf-logo.png"
+    },
+    {
+      "id": "rafik-chahine",
+      "name": { "ar": "رفيق شاهين", "en": "Rafik Chahine", "fr": "Rafik Chahine" },
+      "role": { "ar": "الأمين المساعد لشؤون الادارة", "en": "Assistant Secretary-General for Administration", "fr": "Secrétaire général adjoint chargé de l’administration" },
+      "imageUrl": "/lf-logo.png"
+    },
+    {
+      "id": "tony-bader",
+      "name": { "ar": "طوني بدر", "en": "Tony Bader", "fr": "Tony Bader" },
+      "role": { "ar": "معاون الأمين العام لشؤون الانتخابات", "en": "Assistant to the Secretary-General for Electoral Affairs", "fr": "Adjoint au secrétaire général chargé des affaires électorales" },
+      "imageUrl": "/lf-logo.png"
+    }
+  ],
   "publications": {
     "kicker": {
       "ar": "مكتبة الحزب",

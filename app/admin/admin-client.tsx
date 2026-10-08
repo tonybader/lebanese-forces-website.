@@ -37,6 +37,7 @@ type PendingImage = { file: File; preview: string };
 const sections: { key: HomepageSectionKey; label: string; hint: string }[] = [
   { key: "navigation", label: "Header & navigation", hint: "Menu labels in all three languages" },
   { key: "hero", label: "Hero", hint: "Opening title, introduction and image" },
+  { key: "support", label: "Support callout", hint: "Message, button label and donation link" },
   { key: "highlights", label: "Facts & values", hint: "Homepage numbers and value cards" },
   { key: "interface", label: "Buttons & subtitles", hint: "Calls to action and supporting labels" },
   { key: "news", label: "Latest news", hint: "News section heading" },
@@ -45,6 +46,7 @@ const sections: { key: HomepageSectionKey; label: string; hint: string }[] = [
   { key: "president", label: "Party president", hint: "Biography summary and photograph" },
   { key: "presidentPage", label: "Dr Geagea full page", hint: "Full biography, copy and milestones" },
   { key: "leadership", label: "Leadership", hint: "Executive and parliamentary section" },
+  { key: "secretariat", label: "General Secretariat", hint: "Names, roles and photographs" },
   { key: "people", label: "MPs & ministers", hint: "Photos, names, offices, CVs and socials" },
   { key: "publications", label: "Publications", hint: "Documents and library introduction" },
   { key: "media", label: "Media", hint: "Songs, video and photo introduction" },
@@ -226,6 +228,7 @@ export function HomepageDashboard({
   const [presidentImage, setPresidentImage] = useState<File | null>(null);
   const [personImages, setPersonImages] = useState<Record<string, PendingImage>>({});
   const [historyImages, setHistoryImages] = useState<Record<string, PendingImage>>({});
+  const [secretariatImages, setSecretariatImages] = useState<Record<string, PendingImage>>({});
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
 
@@ -300,13 +303,17 @@ export function HomepageDashboard({
     }
   };
 
-  const selectIndexedImage = async (kind: "person" | "history", id: string, file: File | undefined) => {
+  const selectIndexedImage = async (kind: "person" | "history" | "secretariat", id: string, file: File | undefined) => {
     if (!file) return;
     setNotice(null);
     try {
       const optimized = await optimizeImage(file);
       const selection = { file: optimized, preview: URL.createObjectURL(optimized) };
-      const update = kind === "person" ? setPersonImages : setHistoryImages;
+      const update = kind === "person"
+        ? setPersonImages
+        : kind === "history"
+          ? setHistoryImages
+          : setSecretariatImages;
       update((current) => {
         if (current[id]?.preview) URL.revokeObjectURL(current[id].preview);
         return { ...current, [id]: selection };
@@ -335,6 +342,26 @@ export function HomepageDashboard({
   const deleteHistoryMilestone = (index: number) => setContent((current) => current.historyTimeline.length <= 1 ? current : ({
     ...current,
     historyTimeline: current.historyTimeline.filter((_, itemIndex) => itemIndex !== index),
+  }));
+
+  const updateSecretariatMember = (index: number, field: "name" | "role" | "imageUrl", value: string) => setContent((current) => {
+    const next = structuredClone(current);
+    if (field === "imageUrl") next.secretariat[index].imageUrl = value;
+    else next.secretariat[index][field][language] = value;
+    return next;
+  });
+  const addSecretariatMember = () => setContent((current) => ({
+    ...current,
+    secretariat: [...current.secretariat, {
+      id: `secretariat-${crypto.randomUUID().slice(0, 8)}`,
+      name: { ar: "اسم جديد", en: "New member", fr: "Nouveau membre" },
+      role: { ar: "المهمة", en: "Role", fr: "Fonction" },
+      imageUrl: "/lf-logo.png",
+    }],
+  }));
+  const deleteSecretariatMember = (index: number) => setContent((current) => current.secretariat.length <= 1 ? current : ({
+    ...current,
+    secretariat: current.secretariat.filter((_, itemIndex) => itemIndex !== index),
   }));
 
   const setPresidentPageText = (field: Exclude<keyof HomepageContent["presidentPage"], "milestones" | "sourceUrl">, value: string) => setContent((current) => {
@@ -378,6 +405,7 @@ export function HomepageDashboard({
       if (presidentImage) form.set("presidentImage", presidentImage);
       Object.entries(personImages).forEach(([slug, image]) => form.set(`personImage:${slug}`, image.file));
       Object.entries(historyImages).forEach(([id, image]) => form.set(`historyImage:${id}`, image.file));
+      Object.entries(secretariatImages).forEach(([id, image]) => form.set(`secretariatImage:${id}`, image.file));
       const response = await fetch("/api/homepage", { method: "PUT", body: form });
       const data = (await response.json()) as { content?: HomepageContent; error?: string };
       if (!response.ok || !data.content) throw new Error(data.error || "The homepage could not be saved.");
@@ -386,8 +414,10 @@ export function HomepageDashboard({
       setPresidentImage(null);
       Object.values(personImages).forEach((image) => URL.revokeObjectURL(image.preview));
       Object.values(historyImages).forEach((image) => URL.revokeObjectURL(image.preview));
+      Object.values(secretariatImages).forEach((image) => URL.revokeObjectURL(image.preview));
       setPersonImages({});
       setHistoryImages({});
+      setSecretariatImages({});
       setNotice({ kind: "success", text: "Homepage changes were saved. Vercel will publish the new version automatically." });
     } catch (caught) {
       setNotice({ kind: "error", text: caught instanceof Error ? caught.message : "The homepage could not be saved." });
@@ -447,6 +477,22 @@ export function HomepageDashboard({
       return (
         <section className="soft-grid min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-7 sm:p-10 lg:p-14">
           <div className="mx-auto max-w-4xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">BUTTONS & SUPPORTING TEXT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit subtitles and calls to action</h2><div className="mt-8 grid gap-4 sm:grid-cols-2">{interfaceFields.map((item) => <label key={item.key} className={`rounded-[18px] border border-black/[.07] bg-white p-4 ${item.key === "contactText" ? "sm:col-span-2" : ""}`}><span className="text-[11px] font-extrabold text-black/42">{item.label}</span>{item.key === "contactText" ? <textarea dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 min-h-28 w-full rounded-xl border border-black/10 bg-[#fafaf8] p-3 text-sm leading-6 outline-none" /> : <Input dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 h-11 rounded-xl" />}</label>)}</div></div>
+        </section>
+      );
+    }
+    if (activeSection === "support") {
+      return (
+        <section className="relative min-h-[590px] overflow-hidden rounded-[28px] bg-[#191919] p-7 text-white sm:p-11 lg:p-16">
+          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#df1f2d]/30 blur-3xl" />
+          <div className="relative mx-auto flex min-h-[440px] max-w-5xl flex-col justify-center" dir={rtl ? "rtl" : "ltr"}>
+            <EditableText value={content.support.kicker[language]} onChange={(value) => setLocalized("support", "kicker", value)} label="Support label" multiline={false} className="w-fit text-[12px] font-extrabold uppercase tracking-[.12em] text-[#ff6570]" />
+            <EditableText value={content.support.title[language]} onChange={(value) => setLocalized("support", "title", value)} label="Support title" className="section-title mt-5 max-w-4xl text-[clamp(2.5rem,6vw,5.5rem)] font-extrabold leading-[1.14]" />
+            <EditableText value={content.support.text[language]} onChange={(value) => setLocalized("support", "text", value)} label="Support description" className="mt-6 max-w-3xl text-[17px] leading-9 text-white/62" />
+            <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-end" dir="ltr">
+              <label className="min-w-0 flex-1"><span className="text-[10px] font-extrabold text-white/35">DONATION PLATFORM URL</span><Input value={content.support.url} onChange={(event) => setContent((current) => ({ ...current, support: { ...current.support, url: event.target.value } }))} placeholder="https://…" className="mt-2 h-12 border-white/10 bg-white/[.06] text-white" /></label>
+              <div className="shrink-0" dir={rtl ? "rtl" : "ltr"}><div className="mb-2 text-[10px] font-extrabold text-white/35">BUTTON LABEL</div><EditableText value={content.support.buttonLabel[language]} onChange={(value) => setLocalized("support", "buttonLabel", value)} label="Support button" multiline={false} className="rounded-full bg-[#df1f2d] px-6 py-3 text-[13px] font-extrabold shadow-lg" /></div>
+            </div>
+          </div>
         </section>
       );
     }
@@ -523,6 +569,37 @@ export function HomepageDashboard({
                     </div>
                   </div>
                 </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+    if (activeSection === "secretariat") {
+      return (
+        <section className="min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><UserRound size={16} /> GENERAL SECRETARIAT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the General Secretariat</h2><p className="mt-2 text-sm leading-6 text-black/45">Edit each name and role directly, replace the photograph, add a member or remove an outdated entry.</p></div>
+              <Button type="button" onClick={addSecretariatMember} className="rounded-full bg-[#191919] font-extrabold hover:bg-[#333]"><Plus /> Add member</Button>
+            </div>
+            <div className="mt-8 grid gap-4 lg:grid-cols-2">
+              {content.secretariat.map((person, index) => (
+                <article key={person.id} dir={rtl ? "rtl" : "ltr"} className="overflow-hidden rounded-[26px] border border-black/[.07] bg-white shadow-sm">
+                  <div className="grid sm:grid-cols-[190px_1fr]">
+                    <div className="relative min-h-[230px] overflow-hidden bg-[#ecece8]">
+                      <img src={secretariatImages[person.id]?.preview || person.imageUrl} alt="" className="absolute inset-0 h-full w-full bg-white object-cover object-top" />
+                      <label htmlFor={`secretariat-image-${person.id}`} className="absolute inset-x-3 bottom-3 cursor-pointer rounded-full bg-[#191919]/90 px-4 py-2.5 text-center text-[11px] font-extrabold text-white"><ImagePlus className="me-2 inline" size={14} />Replace photo</label>
+                      <Input id={`secretariat-image-${person.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => void selectIndexedImage("secretariat", person.id, event.target.files?.[0])} />
+                    </div>
+                    <div className="flex min-w-0 flex-col p-5 sm:p-6">
+                      <EditableText value={person.name[language]} onChange={(value) => updateSecretariatMember(index, "name", value)} label="Member name" multiline={false} className="section-title text-[24px] font-extrabold leading-tight" />
+                      <EditableText value={person.role[language]} onChange={(value) => updateSecretariatMember(index, "role", value)} label="Member role" className="mt-3 min-h-16 text-[14px] leading-7 text-black/50" />
+                      <label className="mt-5 text-[9px] font-extrabold text-black/35" dir="ltr">IMAGE URL<Input value={person.imageUrl} onChange={(event) => updateSecretariatMember(index, "imageUrl", event.target.value)} className="mt-2 h-10 rounded-xl text-[11px]" /></label>
+                      <Button type="button" size="sm" variant="ghost" disabled={content.secretariat.length <= 1} onClick={() => deleteSecretariatMember(index)} className="mt-auto w-fit rounded-full text-red-600 hover:bg-red-50 hover:text-red-700"><Trash2 size={14} /> Delete</Button>
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
           </div>

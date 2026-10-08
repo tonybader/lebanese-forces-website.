@@ -34,6 +34,19 @@ export type HomepageHistoryMilestone = {
   body: HomepageLocalizedText;
   imageUrl: string;
 };
+export type HomepageSecretariatMember = {
+  id: string;
+  name: HomepageLocalizedText;
+  role: HomepageLocalizedText;
+  imageUrl: string;
+};
+export type HomepageSupportSection = {
+  kicker: HomepageLocalizedText;
+  title: HomepageLocalizedText;
+  text: HomepageLocalizedText;
+  buttonLabel: HomepageLocalizedText;
+  url: string;
+};
 export type HomepagePresidentMilestone = {
   id: string;
   year: string;
@@ -83,6 +96,7 @@ export type HomepageContent = {
     imageUrl: string;
     imageAlt: HomepageLocalizedText;
   };
+  support: HomepageSupportSection;
   vision: HomepageTextSection;
   news: HomepageTextSection;
   history: HomepageTextSection;
@@ -100,6 +114,7 @@ export type HomepageContent = {
   };
   presidentPage: HomepagePresidentPage;
   leadership: HomepageTextSection;
+  secretariat: HomepageSecretariatMember[];
   publications: HomepageTextSection;
   media: HomepageTextSection;
   footer: {
@@ -110,6 +125,7 @@ export type HomepageContent = {
 export type HomepageSectionKey =
   | "navigation"
   | "hero"
+  | "support"
   | "highlights"
   | "interface"
   | "news"
@@ -118,6 +134,7 @@ export type HomepageSectionKey =
   | "president"
   | "presidentPage"
   | "leadership"
+  | "secretariat"
   | "people"
   | "publications"
   | "media"

@@ -37,7 +37,7 @@ const copy = {
   ar: {
     kicker: "غرفة الأخبار",
     title: "الأخبار والبيانات والمواقف",
-    intro: "تابع آخر بيانات الحزب والرئيس، مواقف النواب والوزراء، نشاطات الحزب والانتشار.",
+    intro: "تابع آخر بيانات الحزب والرئيس، مواقف النواب والوزراء، المقالات الخاصة ونشاطات الحزب والانتشار.",
     back: "العودة إلى الرئيسية",
     read: "اقرأ الخبر",
     empty: "لا توجد مواد منشورة ضمن هذا التصنيف بعد.",
@@ -54,7 +54,7 @@ const copy = {
   en: {
     kicker: "Newsroom",
     title: "News, statements and positions",
-    intro: "Follow the latest party and president statements, MPs’ and ministers’ positions, party news and diaspora activity.",
+    intro: "Follow the latest statements, MPs’ and ministers’ positions, special articles, party news and diaspora activity.",
     back: "Back to homepage",
     read: "Read article",
     empty: "No stories have been published in this section yet.",
@@ -71,7 +71,7 @@ const copy = {
   fr: {
     kicker: "Salle de presse",
     title: "Actualités, communiqués et positions",
-    intro: "Suivez les communiqués du parti et de son président, les positions des députés et ministres, ainsi que les activités du parti et de la diaspora.",
+    intro: "Suivez les communiqués, les positions des députés et ministres, les articles spéciaux et les activités du parti et de la diaspora.",
     back: "Retour à l’accueil",
     read: "Lire l’article",
     empty: "Aucun contenu n’a encore été publié dans cette rubrique.",

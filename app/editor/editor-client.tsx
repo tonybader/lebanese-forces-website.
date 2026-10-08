@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  BookOpen,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -81,6 +82,12 @@ const channelOptions = [
     label: "Party news",
     description: "Party news, meetings and activities",
     icon: PartyPopper,
+  },
+  {
+    value: "special" as const,
+    label: "Special articles",
+    description: "Analysis, opinion and long-form articles",
+    icon: BookOpen,
   },
   {
     value: "diaspora" as const,
