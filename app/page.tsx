@@ -31,8 +31,10 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ArticleTagLinks } from "@/components/article-tag-links";
+import { ActionCenter } from "@/components/action-center";
 import { ContactForm } from "@/components/contact-form";
 import { HeroV2 } from "@/components/hero-v2";
+import { WhereWeStandPreview } from "@/components/where-we-stand-preview";
 import {
   Collapsible,
   CollapsibleContent,
@@ -68,6 +70,12 @@ type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
 
 const text = (value: Localized, lang: Lang) => value[lang];
+
+const navigationAdditions: Record<Lang, [string, string][]> = {
+  ar: [["stand", "مواقفنا"], ["actions", "شارك معنا"]],
+  en: [["stand", "Where we stand"], ["actions", "Take action"]],
+  fr: [["stand", "Nos positions"], ["actions", "Agir"]],
+};
 
 const ui = {
   ar: {
@@ -819,9 +827,11 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const [instagramPosts, setInstagramPosts] = useState<MediaInstagramPost[]>(
     () => (seedMediaData as MediaContent).instagramPosts || [],
   );
+  const baseNavigation = homepage.navigation.map((item) => [item.id, homepageText(item.label, lang)] as [string, string]);
+  const extraNavigation = navigationAdditions[lang].filter(([id]) => !homepage.navigation.some((item) => item.id === id));
   const t = {
     ...ui[lang],
-    nav: homepage.navigation.map((item) => [item.id, homepageText(item.label, lang)] as [string, string]),
+    nav: baseNavigation.length ? [baseNavigation[0], ...extraNavigation, ...baseNavigation.slice(1)] : extraNavigation,
     stats: homepage.stats.map((item) => [item.value, homepageText(item.label, lang)] as [string, string]),
     values: homepage.values.map((item) => [homepageText(item.title, lang), homepageText(item.text, lang)] as [string, string]),
     historyCta: homepageText(homepage.interfaceText.historyCta, lang),
@@ -1014,7 +1024,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   };
 
   return (
-    <main dir={rtl ? "rtl" : "ltr"} className="min-h-screen overflow-x-hidden bg-[#f7f7f5] text-[#171717]">
+    <main dir={rtl ? "rtl" : "ltr"} className="site-shell min-h-screen overflow-x-hidden">
       {heroVariant === "v2" ? (
         <HeroV2
           activeSection={activeSection}
@@ -1194,6 +1204,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           </div>
         </div>
       </section>
+
+      <WhereWeStandPreview lang={lang} />
+      <ActionCenter lang={lang} />
 
       <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <div className="mb-10 flex items-end justify-between gap-5">

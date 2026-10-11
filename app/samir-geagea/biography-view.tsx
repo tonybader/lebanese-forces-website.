@@ -142,8 +142,8 @@ export function BiographyView({ imageUrl, socials, content }: { imageUrl: string
   }, [language, rtl]);
 
   return (
-    <main dir={rtl ? "rtl" : "ltr"} className="min-h-screen bg-[#f7f7f5] text-[#171717]">
-      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[#f7f7f5]/90 backdrop-blur-2xl">
+    <main dir={rtl ? "rtl" : "ltr"} className="theme-page min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[color-mix(in_srgb,var(--site-bg)_90%,transparent)] backdrop-blur-2xl">
         <div className="mx-auto flex h-[74px] max-w-[1320px] items-center gap-4 px-5 lg:px-8">
           <a href="/" className="flex items-center gap-3"><img src="/lf-logo.png" alt="Lebanese Forces" className="h-11 w-11 rounded-full bg-white object-contain shadow-sm" /><span className="hidden text-[15px] font-extrabold sm:block">القوات اللبنانية</span></a>
           <div className="ms-auto flex items-center gap-1 rounded-full border border-black/[.08] bg-white p-1 shadow-sm"><Globe2 className="ms-2 text-black/35" size={14} />{(["ar", "en", "fr"] as Language[]).map((code) => <button key={code} onClick={() => setLanguage(code)} className={`rounded-full px-3 py-1.5 text-[10px] font-extrabold transition ${language === code ? "bg-[#191919] text-white" : "text-black/40"}`}>{code.toUpperCase()}</button>)}</div>
@@ -181,7 +181,7 @@ export function BiographyView({ imageUrl, socials, content }: { imageUrl: string
         <div className="mx-auto max-w-[1180px] px-5 py-16 lg:px-8 lg:py-24">
           <div className="flex items-center gap-3 text-[#df1f2d]"><CalendarDays size={20} /><span className="text-[12px] font-extrabold">{t.kicker}</span></div>
           <h2 className="section-title mt-4 text-[clamp(2.2rem,5vw,4.8rem)] font-extrabold">{t.timelineTitle}</h2>
-          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.id} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[#f7f7f5] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#ff6570]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
+          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.id} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[var(--site-bg)] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#ff6570]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
           <a href={content.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-bold text-black/40 transition hover:text-[#df1f2d]">{t.source}<ExternalLink size={14} /></a>
         </div>
       </section>

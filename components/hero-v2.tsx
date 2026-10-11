@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import styles from "@/components/hero-v2.module.css";
 
 export type HeroV2Language = "ar" | "en" | "fr";
@@ -231,7 +232,7 @@ const content = {
   },
 } as const;
 
-const preferredDesktopSections = new Set(["home", "history", "president", "news"]);
+const preferredDesktopSections = ["home", "stand", "actions", "history", "president", "news"];
 
 export function HeroV2({
   activeSection,
@@ -253,7 +254,9 @@ export function HeroV2({
   const heroRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const desktopNav = nav.filter(([id]) => preferredDesktopSections.has(id));
+  const desktopNav = preferredDesktopSections
+    .map((id) => nav.find(([candidate]) => candidate === id))
+    .filter((item): item is [string, string] => Boolean(item));
   const autoHold = paused || hovered || focused || reducedMotion || detail !== null;
   const slide = copy.slides[activeSlide];
 
@@ -344,6 +347,7 @@ export function HeroV2({
             <Link className={`${styles.toolButton} ${styles.searchButton}`} href="/news" aria-label={copy.search}>
               <Search size={17} />
             </Link>
+            <ThemeToggle compact className={styles.headerThemeToggle} />
             <div className={styles.languageMenu}>
               <button
                 className={`${styles.toolButton} ${styles.languageButton}`}
@@ -504,16 +508,16 @@ export function HeroV2({
       <Dialog open={detail !== null} onOpenChange={(open) => !open && setDetail(null)}>
         <DialogContent
           dir={lang === "ar" ? "rtl" : "ltr"}
-          className="max-h-[85vh] max-w-[730px] overflow-y-auto border-white/15 bg-[#101716] p-0 text-white sm:max-w-[730px]"
+          className="hero-detail-dialog max-h-[85vh] max-w-[730px] overflow-y-auto p-0 sm:max-w-[730px]"
         >
           {activeDetail && (
             <div className="p-7 sm:p-11">
               <DialogHeader className="text-start">
                 <span className={styles.detailTag}>{activeDetail.tag}</span>
-                <DialogTitle className="mt-4 text-[clamp(2rem,5vw,2.8rem)] font-extrabold leading-[1.4] text-white">
+                <DialogTitle className="hero-detail-title mt-4 text-[clamp(2rem,5vw,2.8rem)] font-extrabold leading-[1.4]">
                   {activeDetail.title}
                 </DialogTitle>
-                <DialogDescription className="mt-3 text-[1rem] leading-8 text-white/65">
+                <DialogDescription className="hero-detail-description mt-3 text-[1rem] leading-8">
                   {activeDetail.intro}
                 </DialogDescription>
               </DialogHeader>

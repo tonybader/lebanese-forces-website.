@@ -32,8 +32,8 @@ export function ArticleView({ article }: { article: Article }) {
   }, [language, rtl]);
 
   return (
-    <main dir={rtl ? "rtl" : "ltr"} className="min-h-screen bg-[#f7f7f5] text-[#171717]">
-      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[#f7f7f5]/90 backdrop-blur-2xl">
+    <main dir={rtl ? "rtl" : "ltr"} className="theme-page min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[color-mix(in_srgb,var(--site-bg)_90%,transparent)] backdrop-blur-2xl">
         <div className="mx-auto flex h-[74px] max-w-[1180px] items-center gap-4 px-5 lg:px-8">
           <a href="/" className="flex items-center gap-3">
             <img src="/lf-logo.png" alt="Lebanese Forces" className="h-11 w-11 rounded-full bg-white object-contain shadow-sm" />

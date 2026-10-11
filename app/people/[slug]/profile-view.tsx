@@ -52,8 +52,8 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
   }, [language, rtl]);
 
   return (
-    <main dir={rtl ? "rtl" : "ltr"} className="min-h-screen bg-[#f7f7f5] text-[#171717]">
-      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[#f7f7f5]/90 backdrop-blur-2xl">
+    <main dir={rtl ? "rtl" : "ltr"} className="theme-page min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-black/[.06] bg-[color-mix(in_srgb,var(--site-bg)_90%,transparent)] backdrop-blur-2xl">
         <div className="mx-auto flex h-[74px] max-w-[1180px] items-center gap-4 px-5 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
             <img src="/lf-logo.png" alt="Lebanese Forces" className="h-11 w-11 rounded-full bg-white object-contain shadow-sm" />
@@ -74,7 +74,7 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
 
           <div className="mt-8 overflow-hidden rounded-[34px] bg-[#191919] text-white shadow-[0_30px_85px_rgba(0,0,0,.16)]">
             <div className="grid lg:grid-cols-[.78fr_1.22fr]">
-              <div className="relative min-h-[430px] overflow-hidden bg-[#ecece8] lg:min-h-[680px]">
+              <div className="relative min-h-[430px] overflow-hidden bg-[var(--site-surface-soft)] lg:min-h-[680px]">
                 <img src={profile.imageUrl} alt={profileText(profile.name, language)} className="absolute inset-0 h-full w-full object-cover object-top" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               </div>
