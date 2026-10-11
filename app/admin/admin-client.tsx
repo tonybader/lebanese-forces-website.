@@ -62,9 +62,6 @@ const interfaceFields: Array<{ key: keyof HomepageContent["interfaceText"]; labe
   { key: "songsTitle", label: "Songs subtitle" },
   { key: "videosTitle", label: "Videos subtitle" },
   { key: "photosTitle", label: "Photos subtitle" },
-  { key: "contactKicker", label: "Contact label" },
-  { key: "contactTitle", label: "Contact title" },
-  { key: "contactText", label: "Contact description" },
 ];
 
 async function optimizeImage(file: File): Promise<File> {

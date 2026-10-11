@@ -46,8 +46,6 @@ const content = {
     visionAction: "اكتشف رؤيتنا",
     causeAction: "القضية التي تجمعنا",
     footerLabel: ["ثوابتنا.", "طريقنا إلى الغد."],
-    caption: ["من هذه الأرض.", "لأجل هذا الوطن."],
-    captionSmall: "جذورنا هنا. ومستقبلنا هنا.",
     pause: "إيقاف تبديل الرسائل تلقائياً",
     play: "تشغيل تبديل الرسائل تلقائياً",
     currentLabel: "النسخة السابقة",
@@ -111,8 +109,6 @@ const content = {
     visionAction: "Discover our vision",
     causeAction: "The cause that unites us",
     footerLabel: ["Our constants.", "Our path forward."],
-    caption: ["From this land.", "For this nation."],
-    captionSmall: "Our roots are here. Our future is here.",
     pause: "Pause automatic messages",
     play: "Play automatic messages",
     currentLabel: "Classic version",
@@ -176,8 +172,6 @@ const content = {
     visionAction: "Découvrir notre vision",
     causeAction: "La cause qui nous unit",
     footerLabel: ["Nos constantes.", "Notre chemin vers demain."],
-    caption: ["De cette terre.", "Pour cette nation."],
-    captionSmall: "Nos racines sont ici. Notre avenir aussi.",
     pause: "Suspendre le défilement automatique",
     play: "Reprendre le défilement automatique",
     currentLabel: "Version classique",
@@ -232,7 +226,7 @@ const content = {
   },
 } as const;
 
-const preferredDesktopSections = ["home", "stand", "actions", "history", "president", "news"];
+const preferredDesktopSections = ["home", "stand", "history", "president", "news", "actions"];
 
 export function HeroV2({
   activeSection,
@@ -456,11 +450,6 @@ export function HeroV2({
                 {copy.causeAction}
               </button>
             </div>
-          </div>
-          <div className={styles.visualCaption} aria-hidden="true">
-            <div className={styles.captionLine} />
-            <p>{copy.caption[0]}<br />{copy.caption[1]}</p>
-            <span>{copy.captionSmall}</span>
           </div>
         </div>
 

@@ -64,14 +64,6 @@
         "en": "Media",
         "fr": "Médias"
       }
-    },
-    {
-      "id": "contact",
-      "label": {
-        "ar": "تواصل معنا",
-        "en": "Contact",
-        "fr": "Contact"
-      }
     }
   ],
   "stats": [
@@ -261,7 +253,7 @@
       "en": "Support us",
       "fr": "Nous soutenir"
     },
-    "url": "#contact"
+    "url": "#actions"
   },
   "vision": {
     "kicker": {

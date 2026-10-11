@@ -10,7 +10,7 @@ import {
   Edit3,
   ExternalLink,
   ImagePlus,
-  Inbox,
+  Landmark,
   Loader2,
   LockKeyhole,
   LogOut,
@@ -18,7 +18,6 @@ import {
   Megaphone,
   MessageSquareQuote,
   Newspaper,
-  PartyPopper,
   Plane,
   Pin,
   Plus,
@@ -82,7 +81,7 @@ const channelOptions = [
     value: "party" as const,
     label: "Party news",
     description: "Party news, meetings and activities",
-    icon: PartyPopper,
+    icon: Landmark,
   },
   {
     value: "special" as const,
@@ -692,7 +691,6 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
         </a>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/media">Media & documents <ImagePlus /></a></Button>
-          <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/submissions">Submissions <Inbox /></a></Button>
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/actions">Take action <ClipboardList /></a></Button>
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/news" target="_blank">View news <ExternalLink /></a></Button>
           <Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#df1f2d]"><LogOut /> Sign out</Button>

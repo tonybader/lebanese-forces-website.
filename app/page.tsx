@@ -13,13 +13,13 @@ import {
   Globe2,
   HeartHandshake,
   ImageIcon,
+  Landmark,
   Library,
   MapPin,
   Megaphone,
   Menu,
   MessageSquareQuote,
   Music2,
-  PartyPopper,
   Play,
   Plane,
   Quote,
@@ -32,7 +32,6 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { ArticleTagLinks } from "@/components/article-tag-links";
 import { ActionCenter } from "@/components/action-center";
-import { ContactForm } from "@/components/contact-form";
 import { HeroV2 } from "@/components/hero-v2";
 import { WhereWeStandPreview } from "@/components/where-we-stand-preview";
 import {
@@ -88,7 +87,6 @@ const ui = {
       ["diaspora", "الانتشار"],
       ["publications", "المنشورات"],
       ["media", "الميديا"],
-      ["contact", "تواصل معنا"],
     ],
     eyebrow: "القوات اللبنانية",
     title: "تاريخٌ من المقاومة.\nمشروعٌ من أجل الدولة.",
@@ -188,7 +186,6 @@ const ui = {
       ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Media"],
-      ["contact", "Contact"],
     ],
     eyebrow: "Lebanese Forces",
     title: "A history of resistance.\nA project for the state.",
@@ -288,7 +285,6 @@ const ui = {
       ["diaspora", "Diaspora"],
       ["publications", "Publications"],
       ["media", "Médias"],
-      ["contact", "Contact"],
     ],
     eyebrow: "Forces Libanaises",
     title: "Une histoire de résistance.\nUn projet pour l’État.",
@@ -414,7 +410,7 @@ const newsChannelPresentation: Record<ArticleChannel, {
       en: "Meetings, visits and party activities from across Lebanon.",
       fr: "Réunions, visites et activités du parti dans tout le Liban.",
     },
-    icon: PartyPopper,
+    icon: Landmark,
   },
   special: {
     title: { ar: "مقالات خاصة", en: "Special articles", fr: "Articles spéciaux" },
@@ -827,11 +823,23 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const [instagramPosts, setInstagramPosts] = useState<MediaInstagramPost[]>(
     () => (seedMediaData as MediaContent).instagramPosts || [],
   );
-  const baseNavigation = homepage.navigation.map((item) => [item.id, homepageText(item.label, lang)] as [string, string]);
-  const extraNavigation = navigationAdditions[lang].filter(([id]) => !homepage.navigation.some((item) => item.id === id));
+  const sourceNavigation = homepage.navigation
+    .filter((item) => item.id !== "contact")
+    .map((item) => [item.id, homepageText(item.label, lang)] as [string, string]);
+  const additionMap = new Map(navigationAdditions[lang]);
+  const homeNavigation = sourceNavigation.find(([id]) => id === "home");
+  const standNavigation = sourceNavigation.find(([id]) => id === "stand") || ["stand", additionMap.get("stand") || "Where we stand"] as [string, string];
+  const actionNavigation = sourceNavigation.find(([id]) => id === "actions") || ["actions", additionMap.get("actions") || "Take action"] as [string, string];
+  const middleNavigation = sourceNavigation.filter(([id]) => !["home", "stand", "actions"].includes(id));
+  const normalizedNavigation = [
+    ...(homeNavigation ? [homeNavigation] : []),
+    standNavigation,
+    ...middleNavigation,
+    actionNavigation,
+  ];
   const t = {
     ...ui[lang],
-    nav: baseNavigation.length ? [baseNavigation[0], ...extraNavigation, ...baseNavigation.slice(1)] : extraNavigation,
+    nav: normalizedNavigation,
     stats: homepage.stats.map((item) => [item.value, homepageText(item.label, lang)] as [string, string]),
     values: homepage.values.map((item) => [homepageText(item.title, lang), homepageText(item.text, lang)] as [string, string]),
     historyCta: homepageText(homepage.interfaceText.historyCta, lang),
@@ -888,6 +896,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const siteMinisters = ministers.map(applyPersonOverride);
   const tracks = media.songs;
   const photos = media.photos;
+  const supportUrl = homepage.support.url === "#contact" ? "#actions" : homepage.support.url;
   const siteTimeline = homepage.historyTimeline?.length ? homepage.historyTimeline : defaultTimeline;
   const currentTimeline = useMemo(
     () => siteTimeline.find((item) => item.id === activeYear) || siteTimeline[0],
@@ -1197,7 +1206,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                 <p className="mt-3 max-w-2xl text-[13px] font-normal leading-7 text-white/58 sm:text-[14px]">{homepageText(homepage.support.text, lang)}</p>
               </div>
             </div>
-            <a href={homepage.support.url} target={homepage.support.url.startsWith("http") ? "_blank" : undefined} rel={homepage.support.url.startsWith("http") ? "noreferrer" : undefined} className="inline-flex min-h-13 shrink-0 items-center gap-3 rounded-full bg-[#df1f2d] px-6 py-3 text-[13px] font-extrabold text-white shadow-[0_12px_30px_rgba(223,31,45,.28)] transition hover:-translate-y-0.5 hover:bg-white hover:text-[#191919]">
+            <a href={supportUrl} target={supportUrl.startsWith("http") ? "_blank" : undefined} rel={supportUrl.startsWith("http") ? "noreferrer" : undefined} className="inline-flex min-h-13 shrink-0 items-center gap-3 rounded-full bg-[#df1f2d] px-6 py-3 text-[13px] font-extrabold text-white shadow-[0_12px_30px_rgba(223,31,45,.28)] transition hover:-translate-y-0.5 hover:bg-white hover:text-[#191919]">
               {homepageText(homepage.support.buttonLabel, lang)}
               <ArrowUpLeft size={17} />
             </a>
@@ -1206,7 +1215,6 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       </section>
 
       <WhereWeStandPreview lang={lang} />
-      <ActionCenter lang={lang} />
 
       <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <div className="mb-10 flex items-end justify-between gap-5">
@@ -1560,54 +1568,52 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="instagram" className="relative overflow-hidden bg-[#f0f0ec] px-5 py-16 lg:px-8 lg:py-20">
-        <div className="absolute -start-56 top-20 h-96 w-96 rounded-full bg-[#df1f2d]/10 blur-3xl" />
-        <div className="relative mx-auto max-w-[1120px]">
-          <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+      <section id="instagram" className="relative overflow-hidden border-t border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-12 lg:px-8 lg:py-14">
+        <div className="absolute -end-44 -top-44 h-80 w-80 rounded-full bg-[#df1f2d]/8 blur-3xl" />
+        <div className="relative mx-auto max-w-[1180px]">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div className="max-w-2xl" data-reveal>
-              <div className="arabic-safe mb-3 flex items-center gap-3 text-[12px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
-                <span className="h-2 w-2 rounded-full bg-[#df1f2d]" />
-                {t.instagramKicker}
+              <div className="arabic-safe mb-2.5 flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
+                <Camera size={15} />{t.instagramKicker}
               </div>
-              <h2 className="section-title text-[clamp(1.9rem,3.6vw,3.2rem)] font-extrabold leading-[1.15] tracking-[-.035em] text-[#171717]">{t.instagramTitle}</h2>
-              <p className="mt-3 max-w-xl text-[14px] font-normal leading-7 text-black/55 sm:text-[15px]">{t.instagramText}</p>
+              <h2 className="section-title text-[clamp(1.7rem,3vw,2.65rem)] font-extrabold leading-[1.2] tracking-[-.03em]">{t.instagramTitle}</h2>
+              <p className="mt-2 max-w-xl text-[13px] font-normal leading-6 text-[var(--site-muted)]">{t.instagramText}</p>
             </div>
-            <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-3 rounded-full bg-[#191919] px-5 py-3 text-[12px] font-extrabold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#df1f2d]">
-              <Camera size={17} />{t.followInstagram}<ArrowUpLeft size={15} />
+            <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2.5 rounded-full border border-black/[.08] bg-[var(--site-surface)] px-4 py-2.5 text-[11px] font-extrabold shadow-sm transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:text-[#df1f2d]">
+              {t.followInstagram}<ArrowUpLeft size={14} />
             </a>
           </div>
 
-          <div className="mt-8 grid gap-3 md:grid-cols-3" data-reveal>
+          <div className="mt-6 grid gap-4 md:grid-cols-3" data-reveal>
             {instagramPosts.slice(0, 3).map((post) => (
-              <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" className="group relative aspect-square overflow-hidden rounded-[22px] bg-[#191919] shadow-[0_12px_35px_rgba(0,0,0,.1)]">
-                <img src={post.imageUrl} alt={mediaText(post.caption, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/15" />
-                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-white/92 text-[#df1f2d] shadow-lg"><Camera size={16} /></span>
-                  {post.mediaType === "VIDEO" && <span className="grid h-9 w-9 place-items-center rounded-full bg-black/35 text-white backdrop-blur"><Play size={13} fill="currentColor" /></span>}
-                </div>
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                  <div className="text-[10px] font-bold text-white/48">{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</div>
-                  <p className="mt-2 line-clamp-2 text-[13px] font-bold leading-6 text-white sm:text-[14px]">{mediaText(post.caption, lang)}</p>
-                </div>
+              <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-[var(--site-surface)] shadow-[0_10px_30px_var(--site-shadow)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_var(--site-shadow)]">
+                <span className="relative block aspect-[4/3] overflow-hidden bg-[#e8e8e4]">
+                  <img src={post.imageUrl} alt={mediaText(post.caption, lang)} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]" />
+                  <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/94 text-[#df1f2d] shadow-md"><Camera size={14} /></span>
+                  {post.mediaType === "VIDEO" && <span className="absolute end-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-[#191919]/78 text-white backdrop-blur"><Play size={11} fill="currentColor" /></span>}
+                </span>
+                <span className="block p-4">
+                  <span className="flex items-center justify-between gap-3 text-[9px] font-bold text-[var(--site-muted)]"><span>{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</span><ArrowUpLeft size={13} className="text-[#df1f2d]" /></span>
+                  <span className="mt-2 line-clamp-2 block text-[12px] font-bold leading-6">{mediaText(post.caption, lang)}</span>
+                </span>
               </a>
             ))}
           </div>
 
           {media.mediaPartners.length > 0 && (
-            <div className="mt-10 border-t border-black/[.08] pt-7" data-reveal>
-              <div className="mb-5 flex items-center gap-3 text-[13px] font-extrabold"><Radio size={18} className="text-[#df1f2d]" />{t.mediaPartners}</div>
+            <div className="mt-7 border-t border-black/[.07] pt-5" data-reveal>
+              <div className="mb-4 flex items-center gap-2.5 text-[11px] font-extrabold"><Radio size={15} className="text-[#df1f2d]" />{t.mediaPartners}</div>
               <div className="grid gap-3 md:grid-cols-2">
                 {media.mediaPartners.map((partner) => (
-                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[110px] items-center gap-4 rounded-[22px] border border-black/[.07] bg-white p-4 shadow-[0_8px_28px_rgba(0,0,0,.04)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.09)]">
-                    <span className="grid h-[72px] w-[88px] shrink-0 place-items-center overflow-hidden rounded-[16px] bg-white p-2.5 ring-1 ring-black/[.06]">
+                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[86px] items-center gap-3 rounded-[19px] border border-black/[.07] bg-[var(--site-surface)] p-3 shadow-[0_7px_22px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
+                    <span className="grid h-[58px] w-[72px] shrink-0 place-items-center overflow-hidden rounded-[13px] bg-white p-2 ring-1 ring-black/[.05]">
                       <img src={partner.logoUrl} alt={mediaText(partner.name, lang)} className="max-h-full max-w-full object-contain" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[16px] font-extrabold">{mediaText(partner.name, lang)}</span>
-                      <span className="mt-1.5 block text-[11px] font-normal leading-5 text-black/45">{mediaText(partner.description, lang)}</span>
+                      <span className="block text-[14px] font-extrabold">{mediaText(partner.name, lang)}</span>
+                      <span className="mt-1 line-clamp-1 block text-[10px] font-normal text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
                     </span>
-                    <ArrowUpLeft size={16} className="shrink-0 text-black/28 transition group-hover:text-[#df1f2d]" />
+                    <ArrowUpLeft size={14} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
                   </a>
                 ))}
               </div>
@@ -1616,12 +1622,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="contact" className="soft-grid px-5 py-24 lg:px-8 lg:py-30">
-        <div className="mx-auto grid max-w-[1180px] items-start gap-10 lg:grid-cols-[.68fr_1.32fr]">
-          <SectionHeading kicker={homepageText(homepage.interfaceText.contactKicker, lang)} title={homepageText(homepage.interfaceText.contactTitle, lang)} description={homepageText(homepage.interfaceText.contactText, lang)} />
-          <ContactForm lang={lang} />
-        </div>
-      </section>
+      <ActionCenter lang={lang} />
 
       <footer className="border-t border-white/10 bg-[#101010] text-white">
         <div className="mx-auto max-w-[1440px] px-5 py-16 lg:px-10">
