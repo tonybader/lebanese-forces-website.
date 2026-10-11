@@ -224,9 +224,9 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
       <div className="absolute inset-0 -z-20 bg-[var(--site-bg)]" />
       <div className="absolute -start-40 top-20 -z-10 h-96 w-96 rounded-full bg-[#df1f2d]/8 blur-3xl" />
       <div className="mx-auto max-w-[1380px]">
-        <div className="max-w-3xl" data-reveal>
+        <div className="max-w-none" data-reveal>
           <div className="arabic-safe mb-4 flex items-center gap-3 text-[12px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]"><HeartHandshake size={18} />{t.kicker}</div>
-          <h2 className="section-title text-[clamp(2.6rem,6vw,5.8rem)] font-extrabold leading-[1.15] tracking-[-.055em]">{t.title}</h2>
+          <h2 className="section-title whitespace-nowrap text-[clamp(1.65rem,5.5vw,5.8rem)] font-extrabold leading-[1.15] tracking-[-.055em]">{t.title}</h2>
           <p className="mt-5 max-w-2xl text-[15px] font-normal leading-8 text-[var(--site-muted)] sm:text-[17px]">{t.description}</p>
         </div>
 
