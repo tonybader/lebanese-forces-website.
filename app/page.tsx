@@ -1568,52 +1568,52 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="instagram" className="relative overflow-hidden border-t border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-12 lg:px-8 lg:py-14">
+      <section id="instagram" className="relative overflow-hidden border-t border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-10 lg:px-8 lg:py-12">
         <div className="absolute -end-44 -top-44 h-80 w-80 rounded-full bg-[#df1f2d]/8 blur-3xl" />
         <div className="relative mx-auto max-w-[1180px]">
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-            <div className="max-w-2xl" data-reveal>
-              <div className="arabic-safe mb-2.5 flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
+          <div className="grid gap-4 lg:grid-cols-[270px_1fr]" data-reveal>
+            <div className="flex flex-col rounded-[24px] border border-black/[.07] bg-[var(--site-surface)] p-6 shadow-[0_10px_30px_var(--site-shadow)]">
+              <div className="arabic-safe flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
                 <Camera size={15} />{t.instagramKicker}
               </div>
-              <h2 className="section-title text-[clamp(1.7rem,3vw,2.65rem)] font-extrabold leading-[1.2] tracking-[-.03em]">{t.instagramTitle}</h2>
-              <p className="mt-2 max-w-xl text-[13px] font-normal leading-6 text-[var(--site-muted)]">{t.instagramText}</p>
-            </div>
-            <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2.5 rounded-full border border-black/[.08] bg-[var(--site-surface)] px-4 py-2.5 text-[11px] font-extrabold shadow-sm transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:text-[#df1f2d]">
-              {t.followInstagram}<ArrowUpLeft size={14} />
-            </a>
-          </div>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-3" data-reveal>
-            {instagramPosts.slice(0, 3).map((post) => (
-              <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-[var(--site-surface)] shadow-[0_10px_30px_var(--site-shadow)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_var(--site-shadow)]">
-                <span className="relative block aspect-[4/3] overflow-hidden bg-[#e8e8e4]">
-                  <img src={post.imageUrl} alt={mediaText(post.caption, lang)} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]" />
-                  <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/94 text-[#df1f2d] shadow-md"><Camera size={14} /></span>
-                  {post.mediaType === "VIDEO" && <span className="absolute end-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-[#191919]/78 text-white backdrop-blur"><Play size={11} fill="currentColor" /></span>}
-                </span>
-                <span className="block p-4">
-                  <span className="flex items-center justify-between gap-3 text-[9px] font-bold text-[var(--site-muted)]"><span>{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</span><ArrowUpLeft size={13} className="text-[#df1f2d]" /></span>
-                  <span className="mt-2 line-clamp-2 block text-[12px] font-bold leading-6">{mediaText(post.caption, lang)}</span>
-                </span>
+              <h2 className="section-title mt-4 text-[clamp(1.7rem,2.8vw,2.35rem)] font-extrabold leading-[1.2] tracking-[-.03em]">{t.instagramTitle}</h2>
+              <p className="mt-3 text-[12px] font-normal leading-6 text-[var(--site-muted)]">{t.instagramText}</p>
+              <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#191919] px-4 py-2.5 text-[10px] font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#df1f2d] lg:mt-auto">
+                {t.followInstagram}<ArrowUpLeft size={13} />
               </a>
-            ))}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {instagramPosts.slice(0, 3).map((post) => (
+                <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" aria-label={mediaText(post.caption, lang)} className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-[var(--site-surface)] shadow-[0_10px_30px_var(--site-shadow)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_42px_var(--site-shadow)]">
+                  <span className="relative block aspect-square overflow-hidden bg-[#d51f2a]">
+                    <img src={post.imageUrl} alt="" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.02]" />
+                    <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/94 text-[#df1f2d] shadow-md"><Camera size={14} /></span>
+                    {post.mediaType === "VIDEO" && <span className="absolute end-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-[#191919]/78 text-white backdrop-blur"><Play size={11} fill="currentColor" /></span>}
+                  </span>
+                  <span className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-[9px] font-bold text-[var(--site-muted)]">
+                    <span>{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</span>
+                    <ArrowUpLeft size={13} className="shrink-0 text-[#df1f2d]" />
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
 
           {media.mediaPartners.length > 0 && (
-            <div className="mt-7 border-t border-black/[.07] pt-5" data-reveal>
-              <div className="mb-4 flex items-center gap-2.5 text-[11px] font-extrabold"><Radio size={15} className="text-[#df1f2d]" />{t.mediaPartners}</div>
-              <div className="grid gap-3 md:grid-cols-2">
+            <div className="mt-5 flex flex-col gap-3 border-t border-black/[.07] pt-5 lg:flex-row lg:items-center" data-reveal>
+              <div className="flex shrink-0 items-center gap-2.5 text-[10px] font-extrabold"><Radio size={14} className="text-[#df1f2d]" />{t.mediaPartners}</div>
+              <div className="grid flex-1 gap-3 sm:grid-cols-2">
                 {media.mediaPartners.map((partner) => (
-                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[86px] items-center gap-3 rounded-[19px] border border-black/[.07] bg-[var(--site-surface)] p-3 shadow-[0_7px_22px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
-                    <span className="grid h-[58px] w-[72px] shrink-0 place-items-center overflow-hidden rounded-[13px] bg-white p-2 ring-1 ring-black/[.05]">
+                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[64px] items-center gap-3 rounded-[17px] border border-black/[.07] bg-[var(--site-surface)] p-2.5 shadow-[0_6px_18px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
+                    <span className="grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-black/[.05]">
                       <img src={partner.logoUrl} alt={mediaText(partner.name, lang)} className="max-h-full max-w-full object-contain" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[14px] font-extrabold">{mediaText(partner.name, lang)}</span>
-                      <span className="mt-1 line-clamp-1 block text-[10px] font-normal text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
+                      <span className="block text-[12px] font-extrabold">{mediaText(partner.name, lang)}</span>
+                      <span className="mt-0.5 line-clamp-1 block text-[9px] font-normal text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
                     </span>
-                    <ArrowUpLeft size={14} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
+                    <ArrowUpLeft size={13} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
                   </a>
                 ))}
               </div>
