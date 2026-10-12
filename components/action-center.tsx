@@ -236,7 +236,7 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
             const lightCard = kind === "newsletter";
             return (
               <button key={kind} onClick={() => openAction(kind)} className={`group relative min-h-[330px] overflow-hidden rounded-[30px] bg-gradient-to-br ${colors[kind]} p-6 text-start shadow-[0_18px_55px_rgba(0,0,0,.12)] transition duration-300 hover:-translate-y-2 hover:shadow-[0_28px_75px_rgba(0,0,0,.18)] sm:p-7 ${lightCard ? "text-[#171717]" : "text-white"}`}>
-                <span className={`grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 ${lightCard ? "bg-white/75 text-[#df1f2d]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
+                <span aria-hidden="true" className={`absolute start-6 top-6 grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 sm:start-7 sm:top-7 ${lightCard ? "bg-white/75 text-[#df1f2d]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
                 <span className={`absolute end-6 top-7 font-mono text-[10px] font-bold ${lightCard ? "text-black/25" : "text-white/30"}`}>0{index + 1}</span>
                 <span className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
                   <span className="section-title block text-[24px] font-extrabold leading-[1.35]">{t.cards[kind][0]}</span>

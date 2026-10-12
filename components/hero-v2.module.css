@@ -60,6 +60,7 @@
   width: 49px;
   height: 49px;
   border-radius: 50%;
+  background: #fff;
   object-fit: cover;
 }
 
@@ -743,29 +744,43 @@
 }
 
 :global(html[data-theme="dark"]) .siteHeader {
-  background: rgba(11, 14, 14, 0.97);
-  box-shadow: none;
+  color: #162019;
+  border-bottom-color: rgba(16, 28, 21, 0.13);
+  background: rgba(249, 247, 241, 0.98);
+  box-shadow: 0 12px 40px rgba(29, 39, 32, 0.08);
 }
 
-:global(html[data-theme="dark"]) .brandEn { color: #acb3b0; }
-:global(html[data-theme="dark"]) .navItem { color: #bdc3c0; }
+:global(html[data-theme="dark"]) .brandEn { color: #737d77; }
+:global(html[data-theme="dark"]) .navItem { color: #59645e; }
 :global(html[data-theme="dark"]) .navItem:hover,
-:global(html[data-theme="dark"]) .navItemActive { color: #fff; }
+:global(html[data-theme="dark"]) .navItemActive { color: #111713; }
 :global(html[data-theme="dark"]) .toolButton,
-:global(html[data-theme="dark"]) .headerThemeToggle { color: #d8ddda; }
+:global(html[data-theme="dark"]) .headerThemeToggle {
+  color: #34423a;
+  border-color: rgba(16, 28, 21, 0.13);
+}
 
-:global(html[data-theme="dark"]) .languagePopover,
+:global(html[data-theme="dark"]) .languagePopover {
+  background: #fffdf8;
+  box-shadow: 0 18px 48px rgba(26, 35, 29, 0.16);
+}
+
 :global(html[data-theme="dark"]) .mobilePanel {
   background: #101514;
   box-shadow: 0 22px 58px rgba(0, 0, 0, 0.5);
 }
 
-:global(html[data-theme="dark"]) .languageOption,
+:global(html[data-theme="dark"]) .languageOption { color: #536159; }
+
 :global(html[data-theme="dark"]) .mobilePanel button,
 :global(html[data-theme="dark"]) .mobilePanel a { color: #bbc3be; }
 
 :global(html[data-theme="dark"]) .languageOption:hover,
-:global(html[data-theme="dark"]) .languageOptionActive,
+:global(html[data-theme="dark"]) .languageOptionActive {
+  color: #162019;
+  background: #f1eee6;
+}
+
 :global(html[data-theme="dark"]) .mobilePanel button:hover,
 :global(html[data-theme="dark"]) .mobilePanel a:hover {
   color: #fff;

@@ -9,7 +9,6 @@ const copy = {
   ar: {
     kicker: "رؤيتنا للبنان",
     title: "أين نقف؟",
-    description: "نعرض هنا ثلاث أولويات من أصل تسعة مواقف متكاملة للدولة والاقتصاد والإنسان. افتح أي موقف لقراءة خلاصته.",
     browse: "عرض المواقف التسعة",
     open: "اقرأ الموقف",
     close: "إخفاء التفاصيل",
@@ -17,7 +16,6 @@ const copy = {
   en: {
     kicker: "Our vision for Lebanon",
     title: "Where we stand",
-    description: "Here are three highlights from nine complete positions on the state, the economy and the individual. Open any position for a brief explanation.",
     browse: "View all nine positions",
     open: "Read the position",
     close: "Hide details",
@@ -25,7 +23,6 @@ const copy = {
   fr: {
     kicker: "Notre vision pour le Liban",
     title: "Nos positions",
-    description: "Voici trois priorités parmi neuf positions complètes sur l’État, l’économie et la personne. Ouvrez-en une pour en lire l’essentiel.",
     browse: "Voir les neuf positions",
     open: "Lire la position",
     close: "Masquer les détails",
@@ -44,8 +41,7 @@ export function WhereWeStandPreview({ lang }: { lang: PositionLanguage }) {
       <div className="absolute -start-52 top-0 h-96 w-96 rounded-full bg-[#0b7740]/7 blur-3xl" />
       <div className="absolute -end-48 bottom-0 h-96 w-96 rounded-full bg-[#df1f2d]/8 blur-3xl" />
       <div className="relative mx-auto max-w-[1280px]">
-        <div className="grid gap-7 lg:grid-cols-[1fr_.78fr] lg:items-end">
-          <div className="max-w-2xl" data-reveal>
+        <div className="max-w-2xl" data-reveal>
             <div className="arabic-safe mb-3 flex items-center gap-3 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#0b7740]"><span className="h-2 w-2 rounded-full bg-[#0b7740]" />{t.kicker}</div>
             <h2 className="section-title text-[clamp(2.25rem,4.5vw,4.25rem)] font-extrabold leading-[1.12] tracking-[-.045em]">{t.title}</h2>
             <Link href="/where-we-stand" className="mt-6 inline-flex w-fit items-center gap-3 rounded-2xl bg-[#df1f2d] px-6 py-4 text-[13px] font-extrabold text-white shadow-[0_14px_34px_rgba(223,31,45,.24)] transition hover:-translate-y-0.5 hover:bg-[#bd1421] hover:shadow-[0_18px_40px_rgba(223,31,45,.3)]">
@@ -53,10 +49,6 @@ export function WhereWeStandPreview({ lang }: { lang: PositionLanguage }) {
               <span className="grid h-7 min-w-7 place-items-center rounded-full bg-white/16 px-1.5 font-mono text-[9px]">09</span>
               <ArrowUpLeft size={16} />
             </Link>
-          </div>
-          <div className="flex flex-col items-start lg:items-end" data-reveal>
-            <p className="max-w-xl text-[14px] font-normal leading-7 text-[var(--site-muted)] lg:text-end sm:text-[15px]">{t.description}</p>
-          </div>
         </div>
 
         <div className="mt-9 grid items-start gap-4 lg:grid-cols-3" data-reveal>

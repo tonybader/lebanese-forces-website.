@@ -211,7 +211,7 @@ export function PositionExplorer() {
                         <span className={`font-mono text-[11px] font-bold ${active ? "text-white/35" : "text-black/25"}`}>{pillar.number}</span>
                       </div>
                       <h2 className="section-title mt-7 text-[22px] font-extrabold leading-[1.45] sm:text-[25px]">{positionText(pillar.title, language)}</h2>
-                      <p className={`mt-3 text-[12px] font-normal leading-7 ${active ? "text-white/55" : "text-black/48"}`}>{positionText(pillar.short, language)}</p>
+                      <p className={`mt-3 line-clamp-4 text-[13px] font-normal leading-7 ${active ? "text-white/62" : "text-black/52"}`}>{positionText(pillar.statement, language)}</p>
                     </button>
                   );
                 })}

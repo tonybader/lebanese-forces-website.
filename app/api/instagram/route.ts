@@ -19,7 +19,9 @@ function response(posts: MediaInstagramPost[], source: "instagram" | "editor") {
     { posts, source },
     {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
       },
     },
   );
@@ -42,7 +44,7 @@ export async function GET() {
 
     const request = await fetch(endpoint, {
       headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
     if (!request.ok) return response(fallback, "editor");
 

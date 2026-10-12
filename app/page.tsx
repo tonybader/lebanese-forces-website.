@@ -39,7 +39,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -67,6 +67,7 @@ import { ministers, mps, profileText, type PublicProfile } from "@/lib/people";
 
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
+type LeadershipTab = "cabinet" | "parliament" | "secretariat" | "executive";
 
 const text = (value: Localized, lang: Lang) => value[lang];
 
@@ -404,7 +405,7 @@ const newsChannelPresentation: Record<ArticleChannel, {
   },
   party: {
     title: { ar: "آخر أخبار ونشاطات الحزب", en: "Latest party news & activities", fr: "Dernières actualités et activités du parti" },
-    moreTitle: { ar: "أخبار ونشاطات أُخرى", en: "More party news & activities", fr: "Autres actualités et activités" },
+    moreTitle: { ar: "أخبار ونشاطات إضافية", en: "More party news & activities", fr: "Autres actualités et activités" },
     description: {
       ar: "اجتماعات، جولات ونشاطات حزبية من مختلف المناطق.",
       en: "Meetings, visits and party activities from across Lebanon.",
@@ -809,6 +810,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const [activeTrack, setActiveTrack] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [leadershipOpen, setLeadershipOpen] = useState(false);
+  const [leadershipTab, setLeadershipTab] = useState<LeadershipTab>("cabinet");
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [articles, setArticles] = useState<Article[]>(
@@ -1296,23 +1298,6 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section className="px-5 pb-10 lg:px-8 lg:pb-16">
-        <div className="relative mx-auto grid max-w-[1320px] gap-14 overflow-hidden rounded-[36px] bg-[#191919] px-6 py-16 text-white shadow-[0_30px_80px_rgba(0,0,0,.12)] sm:px-9 lg:grid-cols-[.82fr_1.18fr] lg:px-14 lg:py-20" data-reveal>
-          <div className="absolute -end-32 -top-32 h-96 w-96 rounded-full bg-[#df1f2d]/20 blur-3xl" />
-          <div className="absolute -bottom-40 -start-32 h-80 w-80 rounded-full bg-[#0b7740]/10 blur-3xl" />
-          <SectionHeading kicker={t.visionKicker} title={t.visionTitle} description={t.visionText} light />
-          <div className="relative grid gap-3 sm:grid-cols-3">
-            {t.values.map(([title, body], index) => (
-              <article key={title} className="group flex min-h-[245px] flex-col rounded-[24px] border border-white/[.07] bg-white/[.045] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/45 hover:bg-white/[.075] lg:p-7">
-                <div className="text-xs font-bold text-[#ff6570]">0{index + 1}</div>
-                <h3 className="mt-auto text-[22px] font-extrabold">{title}</h3>
-                <p className="mt-3 text-[14px] font-normal leading-7 text-white/52">{body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="history" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <SectionHeading kicker={t.historyKicker} title={t.historyTitle} description={t.historyText} />
         <div className="soft-shadow mt-12 overflow-hidden rounded-[32px] border border-black/[.06] bg-white" data-reveal>
@@ -1405,12 +1390,21 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         <SectionHeading kicker={t.leadershipKicker} title={t.leadershipTitle} description={t.leadershipText} />
         <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
           {[
-            { label: t.tabs[0], count: siteMinisters.length, images: siteMinisters.map((person) => person.imageUrl) },
-            { label: t.tabs[1], count: siteMps.length, images: siteMps.map((person) => person.imageUrl) },
-            { label: t.tabs[2], count: homepage.secretariat.length, images: homepage.secretariat.map((person) => person.imageUrl) },
-            { label: t.tabs[3], count: 11, images: [] },
+            { value: "cabinet" as const, label: t.tabs[0], count: siteMinisters.length, images: siteMinisters.map((person) => person.imageUrl) },
+            { value: "parliament" as const, label: t.tabs[1], count: siteMps.length, images: siteMps.map((person) => person.imageUrl) },
+            { value: "secretariat" as const, label: t.tabs[2], count: homepage.secretariat.length, images: homepage.secretariat.map((person) => person.imageUrl) },
+            { value: "executive" as const, label: t.tabs[3], count: 11, images: [] },
           ].map((preview, previewIndex) => (
-            <button key={preview.label} type="button" onClick={() => setLeadershipOpen(true)} className="group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border border-black/[.07] bg-white p-5 text-start shadow-[0_8px_30px_rgba(0,0,0,.035)] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg">
+            <button
+              key={preview.value}
+              type="button"
+              aria-expanded={leadershipOpen && leadershipTab === preview.value}
+              onClick={() => {
+                setLeadershipTab(preview.value);
+                setLeadershipOpen(true);
+              }}
+              className={`group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border p-5 text-start transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg ${leadershipOpen && leadershipTab === preview.value ? "border-[#df1f2d]/35 bg-[#df1f2d]/[.035] shadow-lg" : "border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)]"}`}
+            >
               <span><span className="block text-[28px] font-extrabold tabular-nums text-[#df1f2d]">{preview.count}</span><span className="mt-1 block text-[13px] font-extrabold">{preview.label}</span></span>
               {preview.images.length ? (
                 <span className="flex -space-x-3 rtl:space-x-reverse">{preview.images.slice(0, 3).map((imageUrl, imageIndex) => <img key={`${preview.label}-${imageIndex}`} src={imageUrl} alt="" className="h-12 w-12 rounded-full border-2 border-white bg-white object-cover object-top shadow-sm" />)}</span>
@@ -1433,13 +1427,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             <ChevronDown size={20} className={`shrink-0 text-black/38 transition-transform duration-300 ${leadershipOpen ? "rotate-180" : ""}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <Tabs defaultValue="cabinet" dir={rtl ? "rtl" : "ltr"} className="mt-7">
-              <TabsList className="scrollbar-none !h-auto w-full justify-start gap-2 overflow-x-auto rounded-[22px] border border-black/[.06] bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,.035)]">
-                <TabsTrigger value="cabinet" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[0]}</TabsTrigger>
-                <TabsTrigger value="parliament" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[1]}</TabsTrigger>
-                <TabsTrigger value="secretariat" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[2]}</TabsTrigger>
-                <TabsTrigger value="executive" className="!h-auto min-h-[48px] min-w-fit rounded-2xl border-0 px-5 py-2.5 text-[13px] font-bold leading-[1.8] data-[state=active]:bg-[#df1f2d] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_22px_rgba(223,31,45,.2)]">{t.tabs[3]}</TabsTrigger>
-              </TabsList>
+            <Tabs value={leadershipTab} dir={rtl ? "rtl" : "ltr"} className="mt-7">
               <TabsContent value="cabinet" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {siteMinisters.map((person, index) => (
@@ -1602,18 +1590,18 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
           {media.mediaPartners.length > 0 && (
             <div className="mt-5 flex flex-col gap-3 border-t border-black/[.07] pt-5 lg:flex-row lg:items-center" data-reveal>
-              <div className="flex shrink-0 items-center gap-2.5 text-[10px] font-extrabold"><Radio size={14} className="text-[#df1f2d]" />{t.mediaPartners}</div>
+              <div className="flex shrink-0 items-center gap-2.5 text-[12px] font-extrabold"><Radio size={16} className="text-[#df1f2d]" />{t.mediaPartners}</div>
               <div className="grid flex-1 gap-3 sm:grid-cols-2">
                 {media.mediaPartners.map((partner) => (
-                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[64px] items-center gap-3 rounded-[17px] border border-black/[.07] bg-[var(--site-surface)] p-2.5 shadow-[0_6px_18px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
-                    <span className="grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-black/[.05]">
+                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[72px] items-center gap-3.5 rounded-[17px] border border-black/[.07] bg-[var(--site-surface)] p-3 shadow-[0_6px_18px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
+                    <span className="grid h-12 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-black/[.05]">
                       <img src={partner.logoUrl} alt={mediaText(partner.name, lang)} className="max-h-full max-w-full object-contain" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[12px] font-extrabold">{mediaText(partner.name, lang)}</span>
-                      <span className="mt-0.5 line-clamp-1 block text-[9px] font-normal text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
+                      <span className="block text-[15px] font-extrabold leading-6">{mediaText(partner.name, lang)}</span>
+                      <span className="mt-0.5 line-clamp-1 block text-[11px] font-normal leading-5 text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
                     </span>
-                    <ArrowUpLeft size={13} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
+                    <ArrowUpLeft size={15} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
                   </a>
                 ))}
               </div>
