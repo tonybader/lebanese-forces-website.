@@ -84,12 +84,12 @@ export async function POST(request: Request) {
   if (!kinds.has(kind)) return NextResponse.json({ error: "Please choose a valid action." }, { status: 400 });
   if (email && !/^\S+@\S+\.\S+$/.test(email)) return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   if (kind === "newsletter") {
-    if (!email) return NextResponse.json({ error: "An email address is required for the newsletter." }, { status: 400 });
+    if (!email || !phone) return NextResponse.json({ error: "An email address and phone number are required for the newsletter." }, { status: 400 });
   } else if (!name || (!email && !phone) || !region) {
     return NextResponse.json({ error: "Please add your name, region, and at least one contact method." }, { status: 400 });
   }
-  if (kind === "idea" && (!topic || message.length < 10)) return NextResponse.json({ error: "Please choose a topic and describe your idea." }, { status: 400 });
-  if (kind === "volunteer" && (!topic || !availability)) return NextResponse.json({ error: "Please choose a topic and your availability." }, { status: 400 });
+  if (kind === "idea" && (!topic || message.length < 10)) return NextResponse.json({ error: "Please enter a topic and describe your idea." }, { status: 400 });
+  if (kind === "volunteer" && (!topic || !availability)) return NextResponse.json({ error: "Please enter a topic and your availability." }, { status: 400 });
   if (!verifyCaptcha(clean(payload.captchaToken, 1000), clean(payload.captchaAnswer, 20))) {
     return NextResponse.json({ error: "The security answer is incorrect or expired." }, { status: 400 });
   }

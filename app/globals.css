@@ -279,6 +279,41 @@ a:focus-visible {
   box-shadow: 0 30px 90px var(--site-shadow) !important;
 }
 
+.site-shell .action-card--light {
+  color: #171717 !important;
+}
+
+.site-shell .action-card--light .action-card__icon {
+  color: #df1f2d !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+}
+
+.site-shell .action-card--light .action-card__number {
+  color: rgba(23, 23, 23, 0.34) !important;
+}
+
+.site-shell .action-card--light .action-card__description {
+  color: rgba(23, 23, 23, 0.62) !important;
+}
+
+.site-shell .action-card--light .action-card__cta {
+  color: #ffffff !important;
+  background: #191919 !important;
+}
+
+@keyframes position-detail-enter {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.position-detail-enter {
+  animation: position-detail-enter 300ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .position-detail-enter { animation: none; }
+}
+
 .scrollbar-none { scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 

@@ -69,9 +69,10 @@ function normalizeSong(value: unknown, index: number): MediaSong | null {
   if (!value || typeof value !== "object") return null;
   const item = value as Partial<MediaSong>;
   const audioUrl = safeUrl(item.audioUrl);
+  const videoUrl = safeUrl(item.videoUrl);
   const title = localized(item.title);
-  if (!audioUrl || !title.ar) return null;
-  return { id: cleanText(item.id, `song-${index}`, 100), title, audioUrl };
+  if ((!audioUrl && !videoUrl) || !title.ar) return null;
+  return { id: cleanText(item.id, `song-${index}`, 100), title, audioUrl, ...(videoUrl ? { videoUrl } : {}) };
 }
 
 function normalizePhoto(value: unknown, index: number): MediaPhoto | null {

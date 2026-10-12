@@ -6,6 +6,7 @@ export type MediaSong = {
   id: string;
   title: MediaLocalizedText;
   audioUrl: string;
+  videoUrl?: string;
 };
 
 export type MediaPhoto = {

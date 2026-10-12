@@ -37,7 +37,6 @@ import { WhereWeStandPreview } from "@/components/where-we-stand-preview";
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
@@ -70,6 +69,21 @@ type Localized = { ar: string; en: string; fr: string };
 type LeadershipTab = "cabinet" | "parliament" | "secretariat" | "executive";
 
 const text = (value: Localized, lang: Lang) => value[lang];
+
+function youtubeEmbedUrl(value?: string): string {
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    const videoId = url.hostname === "youtu.be"
+      ? url.pathname.slice(1)
+      : url.searchParams.get("v") || url.pathname.split("/").filter(Boolean).at(-1) || "";
+    return /^[A-Za-z0-9_-]{11}$/.test(videoId)
+      ? `https://www.youtube-nocookie.com/embed/${videoId}`
+      : "";
+  } catch {
+    return "";
+  }
+}
 
 const navigationAdditions: Record<Lang, [string, string][]> = {
   ar: [["stand", "مواقفنا"], ["actions", "شارك معنا"]],
@@ -145,7 +159,7 @@ const ui = {
     collapseLeadership: "إخفاء القيادة والكتل",
     newsKicker: "متابعة",
     newsTitle: "أخبار ومواقف",
-    newsText: "أحدث النشاطات والمواقف والملفات من الموقع الرسمي للقوات اللبنانية.",
+    newsText: "أحدث النشاطات والمواقف من الموقع الرسمي للقوات اللبنانية.",
     read: "اقرأ الخبر",
     browseSection: "عرض كل المواد",
     noStories: "لا توجد مواد منشورة في هذا القسم بعد.",
@@ -1400,8 +1414,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               type="button"
               aria-expanded={leadershipOpen && leadershipTab === preview.value}
               onClick={() => {
+                const isActive = leadershipOpen && leadershipTab === preview.value;
                 setLeadershipTab(preview.value);
-                setLeadershipOpen(true);
+                setLeadershipOpen(!isActive);
               }}
               className={`group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border p-5 text-start transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg ${leadershipOpen && leadershipTab === preview.value ? "border-[#df1f2d]/35 bg-[#df1f2d]/[.035] shadow-lg" : "border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)]"}`}
             >
@@ -1415,19 +1430,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             </button>
           ))}
         </div>
-        <Collapsible open={leadershipOpen} onOpenChange={setLeadershipOpen} className="mt-4">
-          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-5 rounded-[24px] border border-black/[.07] bg-white px-5 py-5 text-start shadow-[0_10px_35px_rgba(0,0,0,.045)] transition hover:border-[#df1f2d]/25 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)] sm:px-7">
-            <span className="flex items-center gap-4">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#191919] text-white transition group-hover:bg-[#df1f2d]"><Users size={20} /></span>
-              <span>
-                <span className="block text-[16px] font-extrabold">{leadershipOpen ? t.collapseLeadership : t.expandLeadership}</span>
-                <span className="mt-1 block text-[12px] font-normal text-black/40">{t.tabs.join(" · ")}</span>
-              </span>
-            </span>
-            <ChevronDown size={20} className={`shrink-0 text-black/38 transition-transform duration-300 ${leadershipOpen ? "rotate-180" : ""}`} />
-          </CollapsibleTrigger>
+        <Collapsible open={leadershipOpen} onOpenChange={setLeadershipOpen} className="mt-1">
           <CollapsibleContent>
-            <Tabs value={leadershipTab} dir={rtl ? "rtl" : "ltr"} className="mt-7">
+            <Tabs value={leadershipTab} dir={rtl ? "rtl" : "ltr"} className="mt-5">
               <TabsContent value="cabinet" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {siteMinisters.map((person, index) => (
@@ -1484,7 +1489,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                   <span className="text-xs font-extrabold text-black/22 group-hover:text-white/28">0{index + 1}</span>
                 </div>
                 <div className="mt-auto pt-14">
-                  <h3 className="section-title text-[clamp(1.7rem,2.8vw,2.55rem)] font-extrabold leading-[1.25]">{text(library.title, lang)}</h3>
+                  <h3 className="section-title text-[clamp(1.35rem,2vw,1.9rem)] font-extrabold leading-[1.3]">{text(library.title, lang)}</h3>
                   <p className="mt-3 text-[13px] leading-7 text-black/45 group-hover:text-white/48">{text(library.description, lang)}</p>
                   <div className="mt-7 flex items-center justify-between border-t border-black/[.07] pt-5 text-[12px] font-extrabold group-hover:border-white/12">
                     <span>{lang === "ar" ? `عرض ${count} مستندات` : lang === "fr" ? `Voir ${count} documents` : `View ${count} documents`}</span>
@@ -1519,7 +1524,19 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                   </button>
                 ))}
               </div>
-              {tracks[activeTrack] && <audio key={tracks[activeTrack].audioUrl} controls preload="none" className="mt-7 w-full"><source src={tracks[activeTrack].audioUrl} type="audio/mpeg" /></audio>}
+              {tracks[activeTrack]?.videoUrl && youtubeEmbedUrl(tracks[activeTrack].videoUrl) ? (
+                <iframe
+                  key={tracks[activeTrack].videoUrl}
+                  src={youtubeEmbedUrl(tracks[activeTrack].videoUrl)}
+                  title={mediaText(tracks[activeTrack].title, lang)}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="mt-7 aspect-video w-full rounded-2xl border border-white/12 bg-black shadow-lg"
+                />
+              ) : tracks[activeTrack]?.audioUrl ? (
+                <audio key={tracks[activeTrack].audioUrl} controls preload="none" className="mt-7 w-full"><source src={tracks[activeTrack].audioUrl} type="audio/mpeg" /></audio>
+              ) : null}
             </div>
 
             <a href={media.officialYouTubeUrl} target="_blank" rel="noreferrer" className="group relative min-h-[430px] overflow-hidden rounded-[30px] border border-white/[.07] bg-white/[.045] p-7 transition duration-300 hover:border-white/15 hover:bg-white/[.065] lg:p-9">

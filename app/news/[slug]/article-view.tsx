@@ -74,7 +74,7 @@ export function ArticleView({ article }: { article: Article }) {
         </div>
 
         <div className="mx-auto max-w-[880px] px-5 py-14 lg:px-8 lg:py-20">
-          <div className="space-y-7 text-[17px] leading-[2.05] text-black/75 sm:text-[19px]">
+          <div className="space-y-5 text-[17px] leading-[1.9] text-black/75 sm:text-[19px]">
             {localizedBody.split(/\n{2,}/).filter(Boolean).map((paragraph, index) => (
               <p key={index} className="whitespace-pre-line">{paragraph}</p>
             ))}

@@ -143,7 +143,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
 
   const openNewSong = () => {
     setNewMediaOpen(false);
-    setEditor({ kind: "song", index: null, value: { id: uid("song"), title: blankTitle(), audioUrl: "" } });
+    setEditor({ kind: "song", index: null, value: { id: uid("song"), title: blankTitle(), audioUrl: "", videoUrl: "" } });
   };
   const openNewPhoto = () => {
     setNewMediaOpen(false);
@@ -260,7 +260,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
   };
 
   const itemIsValid = Boolean(editor && (() => {
-    if (editor.kind === "song") return editor.value.title.ar.trim() && editor.value.audioUrl.trim();
+    if (editor.kind === "song") return editor.value.title.ar.trim() && (editor.value.audioUrl.trim() || editor.value.videoUrl?.trim());
     if (editor.kind === "photo") return editor.value.title.ar.trim() && (editor.value.imageUrl.trim() || Boolean(itemImages[editor.value.id]));
     if (editor.kind === "instagram") return editor.value.caption.ar.trim() && editor.value.permalink.trim() && (editor.value.imageUrl.trim() || Boolean(itemImages[editor.value.id]));
     if (editor.kind === "partner") return editor.value.name.ar.trim() && editor.value.url.trim() && (editor.value.logoUrl.trim() || Boolean(itemImages[editor.value.id]));
@@ -326,7 +326,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
               {content.songs.map((song, index) => (
                 <article key={song.id} className="flex flex-wrap items-center gap-4 rounded-[18px] border border-black/[.07] bg-[#fafaf8] p-3.5">
                   <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#191919] text-white"><Music2 size={19} /></span>
-                  <div className="min-w-0 flex-1"><div className="text-[10px] font-extrabold uppercase tracking-[.11em] text-[#df1f2d]">Song</div><h3 dir="rtl" className="mt-1 truncate text-right text-[14px] font-extrabold">{song.title.ar}</h3><p className="mt-1 truncate text-[10px] text-black/35">{song.audioUrl}</p></div>
+                  <div className="min-w-0 flex-1"><div className="text-[10px] font-extrabold uppercase tracking-[.11em] text-[#df1f2d]">Song</div><h3 dir="rtl" className="mt-1 truncate text-right text-[14px] font-extrabold">{song.title.ar}</h3><p className="mt-1 truncate text-[10px] text-black/35">{song.audioUrl || song.videoUrl}</p></div>
                   <Button type="button" size="sm" variant="outline" onClick={() => setEditor({ kind: "song", index, value: structuredClone(song) })} className="rounded-full"><Pencil /> Edit</Button>
                   <DeleteButton label="song" onDelete={() => setContent((current) => ({ ...current, songs: current.songs.filter((_, itemIndex) => itemIndex !== index) }))} />
                 </article>
@@ -415,7 +415,7 @@ export function MediaEditor({ initialContent, publishingConfigured }: { initialC
                 {(editor.kind === "song" || editor.kind === "photo" || editor.kind === "document") && <LocalizedFields id={`${editor.kind}-title`} label="Title" value={editor.value.title} onChange={(title) => setEditor({ ...editor, value: { ...editor.value, title } } as ItemEditor)} />}
                 {editor.kind === "instagram" && <LocalizedFields id="instagram-caption" label="Caption" value={editor.value.caption} onChange={(caption) => setEditor({ ...editor, value: { ...editor.value, caption } })} />}
                 {editor.kind === "partner" && <><LocalizedFields id="partner-name" label="Name" value={editor.value.name} onChange={(name) => setEditor({ ...editor, value: { ...editor.value, name } })} /><LocalizedFields id="partner-description" label="Description" value={editor.value.description} onChange={(description) => setEditor({ ...editor, value: { ...editor.value, description } })} /></>}
-                {editor.kind === "song" && <div className="space-y-2"><Label htmlFor="song-audio">Audio URL</Label><Input id="song-audio" value={editor.value.audioUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, audioUrl: event.target.value } })} placeholder="https://…/song.mp3" className="h-11 rounded-xl" /></div>}
+                {editor.kind === "song" && <div className="grid gap-4 md:grid-cols-2"><div className="space-y-2"><Label htmlFor="song-audio">Audio URL</Label><Input id="song-audio" value={editor.value.audioUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, audioUrl: event.target.value } })} placeholder="https://…/song.mp3" className="h-11 rounded-xl" /></div><div className="space-y-2"><Label htmlFor="song-video">YouTube video URL</Label><Input id="song-video" value={editor.value.videoUrl || ""} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, videoUrl: event.target.value } })} placeholder="https://www.youtube.com/watch?v=…" className="h-11 rounded-xl" /></div><p className="text-[11px] leading-5 text-black/45 md:col-span-2">Provide either a direct audio file or a YouTube video. The website will use the video when both are present.</p></div>}
                 {editor.kind === "photo" && (
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2"><Label htmlFor="photo-image">Image URL</Label><Input id="photo-image" value={editor.value.imageUrl} onChange={(event) => setEditor({ ...editor, value: { ...editor.value, imageUrl: event.target.value } })} placeholder="https://…" className="h-11 rounded-xl" /><label htmlFor={`photo-upload-${editor.value.id}`} className="inline-flex cursor-pointer rounded-full border border-black/10 px-4 py-2 text-xs font-extrabold"><ImagePlus className="me-2" size={14} />Upload image</label><Input id={`photo-upload-${editor.value.id}`} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setItemImages((current) => ({ ...current, [editor.value.id]: file })); }} /><p className="truncate text-[10px] text-black/40">{itemImages[editor.value.id]?.name || "You may use a URL or upload a file."}</p></div>

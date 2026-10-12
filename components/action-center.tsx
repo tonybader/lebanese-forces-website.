@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { positionPillars, positionText, type PositionLanguage } from "@/lib/positions";
+import type { PositionLanguage } from "@/lib/positions";
 
 type ActionKind = "enroll" | "idea" | "volunteer" | "newsletter";
 
@@ -38,10 +38,10 @@ const copy = {
       name: "الاسم الكامل",
       email: "البريد الإلكتروني",
       phone: "رقم الهاتف",
-      region: "المنطقة",
-      chooseRegion: "اختر المنطقة",
+      region: "القضاء",
+      chooseRegion: "اختر القضاء",
       topic: "الموضوع",
-      chooseTopic: "اختر موضوعاً",
+      topicPlaceholder: "اكتب الموضوع أو المجال",
       birth: "تاريخ الميلاد (اختياري)",
       profession: "المهنة أو مجال الخبرة (اختياري)",
       idea: "اشرح فكرتك",
@@ -72,10 +72,10 @@ const copy = {
       name: "Full name",
       email: "Email address",
       phone: "Phone number",
-      region: "Region",
-      chooseRegion: "Choose a region",
+      region: "District",
+      chooseRegion: "Choose a district",
       topic: "Topic",
-      chooseTopic: "Choose a topic",
+      topicPlaceholder: "Write the topic or field",
       birth: "Date of birth (optional)",
       profession: "Profession or area of expertise (optional)",
       idea: "Describe your idea",
@@ -106,10 +106,10 @@ const copy = {
       name: "Nom complet",
       email: "Adresse e-mail",
       phone: "Numéro de téléphone",
-      region: "Région",
-      chooseRegion: "Choisir une région",
+      region: "Caza / district",
+      chooseRegion: "Choisir un district",
       topic: "Sujet",
-      chooseTopic: "Choisir un sujet",
+      topicPlaceholder: "Écrivez le sujet ou le domaine",
       birth: "Date de naissance (facultatif)",
       profession: "Profession ou domaine d’expertise (facultatif)",
       idea: "Décrivez votre idée",
@@ -137,10 +137,10 @@ const colors = {
   newsletter: "from-[#f0e9dc] to-[#ddd4c5]",
 } as const;
 
-const regions = {
-  ar: ["بيروت", "جبل لبنان", "الشمال", "البقاع", "الجنوب", "الانتشار"],
-  en: ["Beirut", "Mount Lebanon", "North Lebanon", "Bekaa", "South Lebanon", "Diaspora"],
-  fr: ["Beyrouth", "Mont-Liban", "Liban-Nord", "Békaa", "Liban-Sud", "Diaspora"],
+const districts = {
+  ar: ["بيروت", "عكار", "طرابلس", "المنية - الضنية", "زغرتا", "بشري", "الكورة", "البترون", "كسروان", "جبيل", "المتن", "بعبدا", "عاليه", "الشوف", "زحلة", "البقاع الغربي", "راشيا", "بعلبك", "الهرمل", "صيدا", "جزين", "صور", "بنت جبيل", "النبطية", "مرجعيون", "حاصبيا", "الانتشار / خارج لبنان"],
+  en: ["Beirut", "Akkar", "Tripoli", "Minieh–Danniyeh", "Zgharta", "Bsharri", "Koura", "Batroun", "Keserwan", "Jbeil", "Metn", "Baabda", "Aley", "Chouf", "Zahle", "Western Bekaa", "Rashaya", "Baalbek", "Hermel", "Sidon", "Jezzine", "Tyre", "Bint Jbeil", "Nabatieh", "Marjayoun", "Hasbaya", "Diaspora / Outside Lebanon"],
+  fr: ["Beyrouth", "Akkar", "Tripoli", "Minié–Danniyeh", "Zgharta", "Bécharré", "Koura", "Batroun", "Kesrouan", "Jbeil", "Metn", "Baabda", "Aley", "Chouf", "Zahlé", "Békaa-Ouest", "Rachaya", "Baalbek", "Hermel", "Saïda", "Jezzine", "Tyr", "Bint Jbeil", "Nabatiyé", "Marjayoun", "Hasbaya", "Diaspora / Hors du Liban"],
 } as const;
 
 const availability = {
@@ -235,13 +235,13 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
             const Icon = icons[kind];
             const lightCard = kind === "newsletter";
             return (
-              <button key={kind} onClick={() => openAction(kind)} className={`group relative min-h-[330px] overflow-hidden rounded-[30px] bg-gradient-to-br ${colors[kind]} p-6 text-start shadow-[0_18px_55px_rgba(0,0,0,.12)] transition duration-300 hover:-translate-y-2 hover:shadow-[0_28px_75px_rgba(0,0,0,.18)] sm:p-7 ${lightCard ? "text-[#171717]" : "text-white"}`}>
-                <span aria-hidden="true" className={`absolute start-6 top-6 grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 sm:start-7 sm:top-7 ${lightCard ? "bg-white/75 text-[#df1f2d]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
-                <span className={`absolute end-6 top-7 font-mono text-[10px] font-bold ${lightCard ? "text-black/25" : "text-white/30"}`}>0{index + 1}</span>
+              <button key={kind} onClick={() => openAction(kind)} className={`action-card group relative min-h-[330px] overflow-hidden rounded-[30px] bg-gradient-to-br ${colors[kind]} p-6 text-start shadow-[0_18px_55px_rgba(0,0,0,.12)] transition duration-300 hover:-translate-y-2 hover:shadow-[0_28px_75px_rgba(0,0,0,.18)] sm:p-7 ${lightCard ? "action-card--light text-[#171717]" : "text-white"}`}>
+                <span aria-hidden="true" className={`action-card__icon absolute start-6 top-6 grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 sm:start-7 sm:top-7 ${lightCard ? "bg-white/75 text-[#df1f2d]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
+                <span className={`action-card__number absolute end-6 top-7 font-mono text-[10px] font-bold ${lightCard ? "text-black/25" : "text-white/30"}`}>0{index + 1}</span>
                 <span className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
-                  <span className="section-title block text-[24px] font-extrabold leading-[1.35]">{t.cards[kind][0]}</span>
-                  <span className={`mt-3 block text-[12px] font-normal leading-7 ${lightCard ? "text-black/50" : "text-white/55"}`}>{t.cards[kind][1]}</span>
-                  <span className={`mt-6 inline-flex h-10 w-10 items-center justify-center rounded-full transition group-hover:translate-x-[-3px] ${lightCard ? "bg-[#191919] text-white" : "bg-white text-[#171717]"}`}><Send size={15} /></span>
+                  <span className="action-card__title section-title block text-[24px] font-extrabold leading-[1.35]">{t.cards[kind][0]}</span>
+                  <span className={`action-card__description mt-3 block text-[12px] font-normal leading-7 ${lightCard ? "text-black/50" : "text-white/55"}`}>{t.cards[kind][1]}</span>
+                  <span className={`action-card__cta mt-6 inline-flex h-10 w-10 items-center justify-center rounded-full transition group-hover:translate-x-[-3px] ${lightCard ? "bg-[#191919] text-white" : "bg-white text-[#171717]"}`}><Send size={15} /></span>
                 </span>
               </button>
             );
@@ -263,11 +263,11 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
               <div className="mt-7 grid gap-4 sm:grid-cols-2">
                 <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.name}<input name="name" required={selected !== "newsletter"} maxLength={120} className={field} /></label>
                 <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.email}<input name="email" type="email" required={selected === "newsletter"} maxLength={180} className={field} /></label>
-                {selected !== "newsletter" && <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.phone}<input name="phone" type="tel" maxLength={80} className={field} /><span className="mt-1 block text-[9px] font-normal opacity-65">{t.form.contactHint}</span></label>}
-                <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.region}<select name="region" required={selected !== "newsletter"} defaultValue="" className={field}><option value="">{t.form.chooseRegion}</option>{regions[lang].map((region) => <option key={region} value={region}>{region}</option>)}</select></label>
+                <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.phone}<input name="phone" type="tel" required={selected === "newsletter"} maxLength={80} className={field} />{selected !== "newsletter" && <span className="mt-1 block text-[9px] font-normal opacity-65">{t.form.contactHint}</span>}</label>
+                <label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.region}<select name="region" required={selected !== "newsletter"} defaultValue="" className={field}><option value="">{t.form.chooseRegion}</option>{districts[lang].map((district) => <option key={district} value={district}>{district}</option>)}</select></label>
 
                 {selected === "enroll" && <><label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.birth}<input name="dateOfBirth" type="date" className={field} /></label><label className="text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.profession}<input name="profession" maxLength={200} className={field} /></label></>}
-                {(selected === "idea" || selected === "volunteer") && <label className="text-[11px] font-extrabold text-[var(--site-muted)] sm:col-span-2">{t.form.topic}<select name="topic" required defaultValue="" className={field}><option value="" disabled>{t.form.chooseTopic}</option>{positionPillars.map((pillar) => <option key={pillar.id} value={positionText(pillar.title, lang)}>{positionText(pillar.title, lang)}</option>)}</select></label>}
+                {(selected === "idea" || selected === "volunteer") && <label className="text-[11px] font-extrabold text-[var(--site-muted)] sm:col-span-2">{t.form.topic}<input name="topic" required maxLength={240} placeholder={t.form.topicPlaceholder} className={field} /></label>}
                 {selected === "volunteer" && <label className="text-[11px] font-extrabold text-[var(--site-muted)] sm:col-span-2">{t.form.availability}<select name="availability" required defaultValue="" className={field}><option value="" disabled>{t.form.chooseAvailability}</option>{availability[lang].map((item) => <option key={item} value={item}>{item}</option>)}</select></label>}
                 {selected === "newsletter" && <label className="text-[11px] font-extrabold text-[var(--site-muted)] sm:col-span-2">{t.form.preferredLanguage}<select name="preferredLanguage" defaultValue={lang} className={field}><option value="ar">العربية</option><option value="en">English</option><option value="fr">Français</option></select></label>}
               </div>

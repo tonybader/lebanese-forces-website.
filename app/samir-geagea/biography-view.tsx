@@ -174,7 +174,7 @@ export function BiographyView({ imageUrl, socials, content }: { imageUrl: string
 
       <section className="mx-auto grid max-w-[1180px] gap-12 px-5 py-16 lg:grid-cols-[.65fr_1.35fr] lg:px-8 lg:py-24">
         <div><div className="grid h-14 w-14 place-items-center rounded-full bg-[#df1f2d] text-white"><Quote size={22} /></div><h2 className="section-title mt-6 text-[clamp(2.2rem,5vw,4.6rem)] font-extrabold leading-[1.2]">{t.storyTitle}</h2></div>
-        <div className="space-y-7 text-[17px] leading-[2.05] text-black/68 sm:text-[19px]">{t.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+        <div className="space-y-5 text-[17px] leading-[1.9] text-black/68 sm:text-[19px]">{t.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
       </section>
 
       <section className="border-y border-black/[.06] bg-white">
