@@ -17,6 +17,7 @@ import {
   articleChannelHref,
   articleChannelText,
   articleHref,
+  articleImageObjectPosition,
   articleText,
   formatArticleDate,
   getArticleChannel,
@@ -214,7 +215,7 @@ export function NewsList({
               return (
                 <article key={article.id} className={`group overflow-hidden rounded-[28px] border border-black/[.07] bg-white shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/25 hover:shadow-[0_24px_65px_rgba(0,0,0,.1)] ${featured ? "md:col-span-2 xl:col-span-2 xl:grid xl:grid-cols-[1.08fr_.92fr]" : ""}`}>
                   <a href={href} className={`relative block overflow-hidden bg-[#191919] ${featured ? "min-h-[330px]" : "aspect-[16/10]"}`}>
-                    <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                    <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" style={{ objectPosition: articleImageObjectPosition(article) }} />
                     <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
                     {article.pinned && <span className="absolute start-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#cd1e25] px-3 py-1.5 text-[10px] font-extrabold text-white shadow-lg"><Pin size={11} fill="currentColor" />{language === "ar" ? "مثبّت" : language === "fr" ? "Épinglé" : "Pinned"}</span>}
                   </a>

@@ -54,6 +54,7 @@ import {
   articleChannelHref,
   articleChannelText,
   articleHref,
+  articleImageObjectPosition,
   articleText,
   formatArticleDate,
   getArticleChannel,
@@ -829,7 +830,7 @@ function NewsChannelPanel({
       {lead ? (
         <div className="flex flex-1 flex-col">
           <a href={articleHref(lead)} className="group relative block aspect-[16/9] overflow-hidden bg-[#191919]">
-            <img src={lead.imageUrl} alt={articleText(lead.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <img src={lead.imageUrl} alt={articleText(lead.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" style={{ objectPosition: articleImageObjectPosition(lead) }} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
           </a>
           <div className="flex flex-1 flex-col p-6 sm:p-7">

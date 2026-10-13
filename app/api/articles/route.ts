@@ -40,6 +40,13 @@ function tagList(form: FormData, key: string): string[] {
   }
 }
 
+function imagePositionValue(form: FormData, key: string): number {
+  const raw = value(form, key).trim();
+  if (!raw) return 50;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 50;
+}
+
 export async function POST(request: Request) {
   if (!hasValidRequestOrigin(request)) {
     return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
@@ -90,6 +97,10 @@ export async function POST(request: Request) {
       activityTypes: tagList(form, "activityTypes"),
       people: tagList(form, "people"),
       pinned: value(form, "pinned") === "true",
+      imagePosition: {
+        x: imagePositionValue(form, "imagePositionX"),
+        y: imagePositionValue(form, "imagePositionY"),
+      },
       image: {
         bytes: new Uint8Array(await image.arrayBuffer()),
         contentType: image.type,

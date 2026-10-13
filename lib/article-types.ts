@@ -16,6 +16,11 @@ export type LocalizedArticleText = {
   fr: string;
 };
 
+export type ArticleImagePosition = {
+  x: number;
+  y: number;
+};
+
 export type Article = {
   id: string;
   slug: string;
@@ -25,6 +30,7 @@ export type Article = {
   category: LocalizedArticleText;
   imageUrl: string;
   imageAlt: LocalizedArticleText;
+  imagePosition?: ArticleImagePosition;
   externalUrl?: string;
   sourceUrl?: string;
   pinned?: boolean;
@@ -33,6 +39,24 @@ export type Article = {
   activityTypes?: string[];
   people?: string[];
 };
+
+export function getArticleImagePosition(
+  article: Pick<Article, "imagePosition">,
+): ArticleImagePosition {
+  const x = Number(article.imagePosition?.x);
+  const y = Number(article.imagePosition?.y);
+  return {
+    x: Number.isFinite(x) ? Math.min(100, Math.max(0, x)) : 50,
+    y: Number.isFinite(y) ? Math.min(100, Math.max(0, y)) : 50,
+  };
+}
+
+export function articleImageObjectPosition(
+  article: Pick<Article, "imagePosition">,
+): string {
+  const position = getArticleImagePosition(article);
+  return `${position.x}% ${position.y}%`;
+}
 
 const channelLabels: Record<ArticleChannel, LocalizedArticleText> = {
   statements: {

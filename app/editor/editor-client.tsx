@@ -16,6 +16,7 @@ import {
   MapPin,
   Megaphone,
   MessageSquareQuote,
+  Move,
   Newspaper,
   Plane,
   Pin,
@@ -27,6 +28,7 @@ import {
   Trash2,
   UploadCloud,
   UserRound,
+  RotateCcw,
   X,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -51,9 +53,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import type { Article, ArticleChannel, ArticleLanguage } from "@/lib/article-types";
 import {
+  articleImageObjectPosition,
   articleChannelText,
   articleHref,
   formatArticleDate,
+  getArticleImagePosition,
   getArticleChannel,
 } from "@/lib/article-types";
 import { publicProfiles } from "@/lib/people";
@@ -62,6 +66,8 @@ type TranslationState = Record<ArticleLanguage, string>;
 type Notice = { kind: "success" | "error"; text: string } | null;
 
 const emptyTranslations = (): TranslationState => ({ ar: "", en: "", fr: "" });
+const centeredImagePosition = () => ({ x: 50, y: 50 });
+const clampImagePosition = (value: number) => Math.min(100, Math.max(0, value));
 
 const channelOptions = [
   {
@@ -425,6 +431,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const [titleAssistantMessage, setTitleAssistantMessage] = useState<{ language: ArticleLanguage; text: string } | null>(null);
   const [titleSuggestionLoading, setTitleSuggestionLoading] = useState<ArticleLanguage | null>(null);
   const [image, setImage] = useState<File | null>(null);
+  const [imagePosition, setImagePosition] = useState(centeredImagePosition);
+  const [draggingImage, setDraggingImage] = useState(false);
   const [editing, setEditing] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [articleSearch, setArticleSearch] = useState("");
@@ -434,6 +442,13 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice>(null);
   const [fileKey, setFileKey] = useState(0);
+  const imageDragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
 
   const objectUrl = useMemo(() => (image ? URL.createObjectURL(image) : ""), [image]);
   const previewUrl = objectUrl || editing?.imageUrl || "";
@@ -484,6 +499,9 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setTagAssistantMessage("");
     setTitleAssistantMessage(null);
     setImage(null);
+    setImagePosition(centeredImagePosition());
+    setDraggingImage(false);
+    imageDragRef.current = null;
     setFileKey((value) => value + 1);
   };
 
@@ -499,6 +517,9 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setTagAssistantMessage("");
     setTitleAssistantMessage(null);
     setImage(null);
+    setImagePosition(getArticleImagePosition(article));
+    setDraggingImage(false);
+    imageDragRef.current = null;
     setFileKey((value) => value + 1);
     setNotice(null);
     window.setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
@@ -509,6 +530,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     setNotice(null);
     try {
       setImage(await optimizeImage(file));
+      setImagePosition(centeredImagePosition());
     } catch (caught) {
       setNotice({ kind: "error", text: caught instanceof Error ? caught.message : "The image could not be prepared." });
     }
@@ -536,6 +558,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
       form.set("activityTypes", JSON.stringify(parseTagText(activityTypes)));
       form.set("people", JSON.stringify(parseTagText(people)));
       form.set("pinned", String(pinned));
+      form.set("imagePositionX", String(imagePosition.x));
+      form.set("imagePositionY", String(imagePosition.y));
       const response = await fetch(
         editing ? `/api/articles/${encodeURIComponent(editing.id)}` : "/api/articles",
         { method: editing ? "PUT" : "POST", body: form },
@@ -580,6 +604,39 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
     language: ArticleLanguage,
     value: string,
   ) => setter((current) => ({ ...current, [language]: value }));
+
+  const beginImageDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!previewUrl || (event.target as HTMLElement).closest("button, label, input")) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    imageDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: imagePosition.x,
+      originY: imagePosition.y,
+    };
+    setDraggingImage(true);
+  };
+
+  const moveImage = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = imageDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const frame = event.currentTarget.getBoundingClientRect();
+    setImagePosition({
+      x: clampImagePosition(drag.originX - ((event.clientX - drag.startX) / frame.width) * 100),
+      y: clampImagePosition(drag.originY - ((event.clientY - drag.startY) / frame.height) * 100),
+    });
+  };
+
+  const endImageDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (imageDragRef.current?.pointerId !== event.pointerId) return;
+    imageDragRef.current = null;
+    setDraggingImage(false);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
 
   const analyzeArticleTags = async () => {
     const localSuggestions = suggestTags(title, body, channel);
@@ -744,10 +801,41 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
 
             <div>
               <Label htmlFor="article-image" className="mb-3 block font-extrabold">Cover photograph {editing ? "(optional)" : "*"}</Label>
-              <label htmlFor="article-image" className="group relative grid aspect-[16/7.5] cursor-pointer place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#cd1e25]/50">
-                {previewUrl ? <><img src={previewUrl} alt="Article preview" className="absolute inset-0 h-full w-full object-cover" /><span className="absolute inset-0 bg-black/24 transition group-hover:bg-black/34" /><span className="relative rounded-full bg-white/92 px-5 py-3 text-[13px] font-extrabold shadow-lg"><ImagePlus className="mr-2 inline" size={17} /> Change photo</span></> : <span className="text-center"><span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-white text-[#cd1e25] shadow-md"><ImagePlus size={22} /></span><span className="mt-4 block text-[15px] font-extrabold">Choose a photo</span><span className="mt-1 block text-[12px] text-black/40">JPG, PNG or WebP</span></span>}
-              </label>
+              <div
+                className={`group relative grid aspect-[16/7.5] touch-none select-none place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#cd1e25]/50 ${previewUrl ? draggingImage ? "cursor-grabbing" : "cursor-grab" : ""}`}
+                onPointerDown={beginImageDrag}
+                onPointerMove={moveImage}
+                onPointerUp={endImageDrag}
+                onPointerCancel={endImageDrag}
+                onDoubleClick={() => previewUrl && setImagePosition(centeredImagePosition())}
+              >
+                {previewUrl ? (
+                  <>
+                    <img
+                      src={previewUrl}
+                      alt="Article crop preview"
+                      draggable={false}
+                      className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+                      style={{ objectPosition: `${imagePosition.x}% ${imagePosition.y}%` }}
+                    />
+                    <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/25" />
+                    <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-black/70 px-4 py-2 text-[11px] font-extrabold text-white shadow-lg backdrop-blur-sm"><Move size={14} /> Drag photo to reposition</span>
+                    <label htmlFor="article-image" className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/94 px-4 py-2 text-[11px] font-extrabold text-[#191919] shadow-lg transition hover:bg-[#cd1e25] hover:text-white"><ImagePlus className="mr-1.5 inline" size={15} /> Change photo</label>
+                  </>
+                ) : (
+                  <label htmlFor="article-image" className="absolute inset-0 grid cursor-pointer place-items-center text-center">
+                    <span><span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-white text-[#cd1e25] shadow-md"><ImagePlus size={22} /></span><span className="mt-4 block text-[15px] font-extrabold">Choose a photo</span><span className="mt-1 block text-[12px] text-black/40">JPG, PNG or WebP</span></span>
+                  </label>
+                )}
+              </div>
               <Input key={fileKey} id="article-image" className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void selectImage(event.target.files?.[0])} />
+              {previewUrl && (
+                <div className="mt-3 grid gap-3 rounded-[18px] border border-black/[.07] bg-[#fafaf8] p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                  <label className="text-[11px] font-extrabold text-black/55">Horizontal framing <span className="float-right text-black/30">{Math.round(imagePosition.x)}%</span><input dir="ltr" type="range" min="0" max="100" value={imagePosition.x} onChange={(event) => setImagePosition((current) => ({ ...current, x: Number(event.target.value) }))} className="mt-2 block w-full accent-[#cd1e25]" /></label>
+                  <label className="text-[11px] font-extrabold text-black/55">Vertical framing <span className="float-right text-black/30">{Math.round(imagePosition.y)}%</span><input dir="ltr" type="range" min="0" max="100" value={imagePosition.y} onChange={(event) => setImagePosition((current) => ({ ...current, y: Number(event.target.value) }))} className="mt-2 block w-full accent-[#cd1e25]" /></label>
+                  <Button type="button" variant="outline" onClick={() => setImagePosition(centeredImagePosition())} className="rounded-full"><RotateCcw size={14} /> Center</Button>
+                </div>
+              )}
             </div>
 
             <Tabs defaultValue="ar" dir="ltr">
@@ -801,7 +889,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           <div className="mt-6 max-h-[900px] space-y-3 overflow-y-auto pr-1">
             {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : !pagedArticles.length ? <div className="rounded-[20px] border border-dashed border-white/10 px-5 py-12 text-center text-sm text-white/35">No matching articles.</div> : pagedArticles.map((article, index) => (
               <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#cd1e25] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
-                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#cd1e25]">#{(visibleArticlePage - 1) * articlePageSize + index + 1}</span><span className="rounded-full bg-[#cd1e25]/18 px-2 py-0.5 font-bold text-[#cd1e25]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" style={{ objectPosition: articleImageObjectPosition(article) }} /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#cd1e25]">#{(visibleArticlePage - 1) * articlePageSize + index + 1}</span><span className="rounded-full bg-[#cd1e25]/18 px-2 py-0.5 font-bold text-[#cd1e25]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
                 {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].slice(0, 5).map((tag, tagIndex) => <span key={`${tag}-${tagIndex}`} className="rounded-full bg-white/[.07] px-2.5 py-1 text-[10px] font-bold text-white/50">{tag}</span>)}

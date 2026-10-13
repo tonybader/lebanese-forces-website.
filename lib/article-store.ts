@@ -3,10 +3,12 @@ import "server-only";
 import seedArticleData from "@/data/articles.json";
 import {
   articleChannelCategory,
+  getArticleImagePosition,
   getArticleChannel,
   isArticleChannel,
   type Article,
   type ArticleChannel,
+  type ArticleImagePosition,
   type LocalizedArticleText,
 } from "@/lib/article-types";
 
@@ -29,6 +31,7 @@ export type NewArticleInput = {
   activityTypes: string[];
   people: string[];
   pinned: boolean;
+  imagePosition: ArticleImagePosition;
   image: {
     bytes: Uint8Array;
     contentType: string;
@@ -44,6 +47,7 @@ export type UpdateArticleInput = {
   activityTypes: string[];
   people: string[];
   pinned: boolean;
+  imagePosition: ArticleImagePosition;
   image?: {
     bytes: Uint8Array;
     contentType: string;
@@ -122,6 +126,7 @@ function normalizeArticles(value: unknown): Article[] {
         activityTypes: cleanTags(article.activityTypes),
         people: cleanTags(article.people),
         pinned: article.pinned === true,
+        imagePosition: getArticleImagePosition(article),
         category:
           article.category && typeof article.category.ar === "string"
             ? article.category
@@ -324,6 +329,7 @@ export async function createArticle(input: NewArticleInput): Promise<Article> {
       .map(encodeURIComponent)
       .join("/")}`,
     imageAlt: cleanLocalized(input.title),
+    imagePosition: getArticleImagePosition({ imagePosition: input.imagePosition }),
     channel: input.channel,
     regions: cleanTags(input.regions),
     activityTypes: cleanTags(input.activityTypes),
@@ -392,6 +398,7 @@ export async function updateArticle(input: UpdateArticleInput): Promise<Article>
     category: articleChannelCategory(input.channel),
     imageUrl,
     imageAlt: cleanLocalized(input.title),
+    imagePosition: getArticleImagePosition({ imagePosition: input.imagePosition }),
     channel: input.channel,
     regions: cleanTags(input.regions),
     activityTypes: cleanTags(input.activityTypes),

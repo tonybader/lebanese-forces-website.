@@ -7,6 +7,7 @@ import type { Article, ArticleLanguage } from "@/lib/article-types";
 import {
   articleChannelHref,
   articleChannelText,
+  articleImageObjectPosition,
   articleText,
   formatArticleDate,
   getArticleChannel,
@@ -68,7 +69,7 @@ export function ArticleView({ article }: { article: Article }) {
 
         <div className="mx-auto mt-12 max-w-[1280px] px-5 lg:px-8">
           <div className="relative aspect-[16/8.4] min-h-[320px] overflow-hidden rounded-[30px] bg-[#191919] shadow-[0_25px_75px_rgba(0,0,0,.13)] sm:rounded-[38px]">
-            <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover" />
+            <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: articleImageObjectPosition(article) }} />
             <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
           </div>
         </div>

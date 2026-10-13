@@ -28,6 +28,13 @@ function tagList(form: FormData, key: string): string[] {
   }
 }
 
+function imagePositionValue(form: FormData, key: string): number {
+  const raw = value(form, key).trim();
+  if (!raw) return 50;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 50;
+}
+
 async function isAuthorized(): Promise<boolean> {
   const cookieStore = await cookies();
   return (
@@ -85,6 +92,10 @@ export async function PUT(request: Request, { params }: RouteContext) {
       activityTypes: tagList(form, "activityTypes"),
       people: tagList(form, "people"),
       pinned: value(form, "pinned") === "true",
+      imagePosition: {
+        x: imagePositionValue(form, "imagePositionX"),
+        y: imagePositionValue(form, "imagePositionY"),
+      },
       image,
     });
     return NextResponse.json({ article });
