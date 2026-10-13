@@ -220,7 +220,7 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
   const SelectedActionIcon = selected ? icons[selected] : HeartHandshake;
 
   return (
-    <section id="actions" className="relative overflow-hidden px-5 py-24 lg:px-8 lg:py-30">
+    <section id="actions" className="relative overflow-hidden px-5 py-16 lg:px-8 lg:py-20">
       <div className="absolute inset-0 -z-20 bg-[var(--site-bg)]" />
       <div className="absolute -start-40 top-20 -z-10 h-96 w-96 rounded-full bg-[#cd1e25]/8 blur-3xl" />
       <div className="mx-auto max-w-[1380px]">
@@ -230,7 +230,7 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
           <p className="mt-5 max-w-2xl text-[15px] font-normal leading-8 text-[var(--site-muted)] sm:text-[17px]">{t.description}</p>
         </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-reveal>
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-reveal>
           {kinds.map((kind, index) => {
             const Icon = icons[kind];
             const lightCard = kind === "newsletter";

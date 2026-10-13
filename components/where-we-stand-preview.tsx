@@ -37,7 +37,7 @@ export function WhereWeStandPreview({ lang }: { lang: PositionLanguage }) {
   const t = copy[lang];
 
   return (
-    <section id="stand" className="relative overflow-hidden border-y border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-16 lg:px-8 lg:py-20">
+    <section id="stand" className="relative overflow-hidden border-y border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-12 lg:px-8 lg:py-16">
       <div className="absolute -start-52 top-0 h-96 w-96 rounded-full bg-[#1a5632]/7 blur-3xl" />
       <div className="absolute -end-48 bottom-0 h-96 w-96 rounded-full bg-[#cd1e25]/8 blur-3xl" />
       <div className="relative mx-auto max-w-[1280px]">
@@ -51,7 +51,7 @@ export function WhereWeStandPreview({ lang }: { lang: PositionLanguage }) {
             </Link>
         </div>
 
-        <div className="mt-9 grid items-start gap-4 lg:grid-cols-3" data-reveal>
+        <div className="mt-8 grid items-start gap-4 lg:grid-cols-3" data-reveal>
           {featured.map((pillar, index) => {
             const Icon = icons[index];
             const active = activeIndex === index;

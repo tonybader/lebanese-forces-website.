@@ -67,7 +67,10 @@ import { ministers, mps, profileText, type PublicProfile } from "@/lib/people";
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
 type LeadershipTab = "cabinet" | "parliament" | "secretariat" | "executive";
+type StatementScope = "president" | "media";
+type PositionScope = "ministers" | "mps";
 type PartyScope = "lebanon" | "diaspora";
+type NewsFilter = StatementScope | PositionScope | PartyScope;
 
 const text = (value: Localized, lang: Lang) => value[lang];
 
@@ -164,6 +167,10 @@ const ui = {
     read: "اقرأ الخبر",
     browseSection: "عرض كل المواد",
     noStories: "لا توجد مواد منشورة في هذا القسم بعد.",
+    statementPresident: "رئيس الحزب",
+    statementMedia: "الدائرة الإعلامية",
+    positionMinisters: "الوزراء",
+    positionMps: "النواب",
     partyLebanon: "لبنان",
     partyDiaspora: "الانتشار",
     instagramKicker: "منصاتنا الرقمية",
@@ -265,6 +272,10 @@ const ui = {
     read: "Read article",
     browseSection: "View all coverage",
     noStories: "No stories have been published in this section yet.",
+    statementPresident: "Party president",
+    statementMedia: "Media Office",
+    positionMinisters: "Ministers",
+    positionMps: "MPs",
     partyLebanon: "Lebanon",
     partyDiaspora: "Diaspora",
     instagramKicker: "Our digital channels",
@@ -366,6 +377,10 @@ const ui = {
     read: "Lire l’article",
     browseSection: "Voir toute l’actualité",
     noStories: "Aucun contenu n’a encore été publié dans cette rubrique.",
+    statementPresident: "Président du parti",
+    statementMedia: "Bureau de presse",
+    positionMinisters: "Ministres",
+    positionMps: "Députés",
     partyLebanon: "Liban",
     partyDiaspora: "Diaspora",
     instagramKicker: "Nos canaux numériques",
@@ -425,7 +440,7 @@ const newsChannelPresentation: Record<Exclude<ArticleChannel, "diaspora">, {
     icon: MessageSquareQuote,
   },
   party: {
-    title: { ar: "آخر أخبار ونشاطات الحزب في لبنان والانتشار", en: "Latest party news & activities in Lebanon and the diaspora", fr: "Dernières actualités et activités du parti au Liban et dans la diaspora" },
+    title: { ar: "آخر أخبار ونشاطات الحزب", en: "Latest party news & activities", fr: "Dernières actualités et activités du parti" },
     moreTitle: { ar: "أخبار ونشاطات إضافية", en: "More party news & activities", fr: "Autres actualités et activités" },
     description: {
       ar: "اجتماعات، جولات ونشاطات حزبية من لبنان ومراكز الانتشار حول العالم.",
@@ -435,6 +450,46 @@ const newsChannelPresentation: Record<Exclude<ArticleChannel, "diaspora">, {
     icon: Landmark,
   },
 };
+
+function normalizeNewsLookup(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/\p{M}/gu, "")
+    .replace(/ـ/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function articleLookupText(article: Article): string {
+  return normalizeNewsLookup([
+    ...(article.people || []),
+    article.title.ar,
+    article.title.en,
+    article.title.fr,
+  ].join(" "));
+}
+
+function articleMatchesProfiles(article: Article, profiles: PublicProfile[]): boolean {
+  const searchable = articleLookupText(article);
+  return profiles.some((profile) => [
+    ...profile.aliases,
+    profile.name.ar,
+    profile.name.en,
+    profile.name.fr,
+  ].some((alias) => searchable.includes(normalizeNewsLookup(alias))));
+}
+
+function isPartyPresidentStatement(article: Article): boolean {
+  const people = normalizeNewsLookup((article.people || []).join(" "));
+  const presidentNames = ["سمير جعجع", "Samir Geagea"];
+  if (people) {
+    return presidentNames.some((name) => people.includes(normalizeNewsLookup(name)));
+  }
+
+  const title = normalizeNewsLookup(Object.values(article.title).join(" "));
+  return title.includes("جعجع") || title.includes("geagea");
+}
 
 const defaultTimeline: { id: string; year: string; title: Localized; body: Localized; imageUrl: string }[] = [
   {
@@ -718,9 +773,10 @@ function NewsChannelPanel({
   readLabel,
   browseLabel,
   emptyLabel,
-  partyScope,
-  partyScopeLabels,
-  onPartyScopeChange,
+  browseChannel,
+  filterOptions,
+  activeFilter,
+  onFilterChange,
 }: {
   channel: Exclude<ArticleChannel, "diaspora">;
   stories: Article[];
@@ -728,41 +784,38 @@ function NewsChannelPanel({
   readLabel: string;
   browseLabel: string;
   emptyLabel: string;
-  partyScope?: PartyScope;
-  partyScopeLabels?: Record<PartyScope, string>;
-  onPartyScopeChange?: (scope: PartyScope) => void;
+  browseChannel?: ArticleChannel;
+  filterOptions: { value: NewsFilter; label: string }[];
+  activeFilter: NewsFilter;
+  onFilterChange: (filter: NewsFilter) => void;
 }) {
   const presentation = newsChannelPresentation[channel];
   const Icon = presentation.icon;
   const lead = stories[0];
-  const browseChannel: ArticleChannel = channel === "party" && partyScope === "diaspora"
-    ? "diaspora"
-    : channel;
+  const targetChannel = browseChannel || channel;
 
   return (
     <section className="flex min-h-[620px] flex-col overflow-hidden rounded-[30px] border border-black/[.07] bg-white shadow-[0_15px_50px_rgba(0,0,0,.055)]" data-reveal>
-      <div className="border-b border-black/[.06] p-6 sm:p-7">
+      <div className="flex flex-col border-b border-black/[.06] p-6 sm:p-7 lg:min-h-[300px]">
         <div className="flex items-start justify-between gap-4">
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f4f4f1] text-[#cd1e25]"><Icon size={20} /></span>
           <span className="text-[10px] font-extrabold uppercase tracking-[.12em] text-black/25">{articleChannelText(channel, lang)}</span>
         </div>
-        <h3 className="section-title mt-5 text-[clamp(1.45rem,2.6vw,2rem)] font-extrabold leading-[1.35]">{text(presentation.title, lang)}</h3>
-        {channel === "party" && partyScope && partyScopeLabels && onPartyScopeChange && (
-          <div className="mt-4 inline-flex w-fit rounded-full border border-black/[.08] bg-[#f4f4f1] p-1" role="group" aria-label={text(presentation.title, lang)}>
-            {(["lebanon", "diaspora"] as PartyScope[]).map((scope) => (
+        <h3 className="section-title mt-4 min-h-[4.9rem] text-[clamp(1.4rem,2.25vw,1.85rem)] font-extrabold leading-[1.32]">{text(presentation.title, lang)}</h3>
+        <div className="mt-3 grid min-h-10 w-full grid-cols-2 rounded-full border border-black/[.08] bg-[#f4f4f1] p-1" role="group" aria-label={text(presentation.title, lang)}>
+          {filterOptions.map((option) => (
               <button
-                key={scope}
+                key={option.value}
                 type="button"
-                aria-pressed={partyScope === scope}
-                onClick={() => onPartyScopeChange(scope)}
-                className={`rounded-full px-4 py-2 text-[11px] font-extrabold transition ${partyScope === scope ? "bg-[#cd1e25] text-white shadow-sm" : "text-black/45 hover:text-[#cd1e25]"}`}
+                aria-pressed={activeFilter === option.value}
+                onClick={() => onFilterChange(option.value)}
+                className={`min-h-8 rounded-full px-3 py-1.5 text-[10px] font-extrabold leading-5 transition sm:text-[11px] ${activeFilter === option.value ? "bg-[#cd1e25] text-white shadow-sm" : "text-black/45 hover:text-[#cd1e25]"}`}
               >
-                {partyScopeLabels[scope]}
+                {option.label}
               </button>
-            ))}
-          </div>
-        )}
-        <p className="mt-3 min-h-[52px] text-[13px] leading-6 text-black/45">{text(presentation.description, lang)}</p>
+          ))}
+        </div>
+        <p className="mt-2.5 min-h-12 text-[13px] leading-6 text-black/45">{text(presentation.description, lang)}</p>
       </div>
 
       {lead ? (
@@ -795,7 +848,7 @@ function NewsChannelPanel({
         <div className="grid flex-1 place-items-center p-8 text-center text-[13px] leading-7 text-black/38">{emptyLabel}</div>
       )}
 
-      <a href={articleChannelHref(browseChannel)} className="flex items-center justify-between border-t border-black/[.06] px-6 py-4 text-[12px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white sm:px-7">
+      <a href={articleChannelHref(targetChannel)} className="flex items-center justify-between border-t border-black/[.06] px-6 py-4 text-[12px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white sm:px-7">
         {browseLabel}<ArrowLeft size={15} />
       </a>
     </section>
@@ -811,6 +864,8 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [leadershipOpen, setLeadershipOpen] = useState(false);
   const [leadershipTab, setLeadershipTab] = useState<LeadershipTab>("cabinet");
+  const [statementScope, setStatementScope] = useState<StatementScope>("president");
+  const [positionScope, setPositionScope] = useState<PositionScope>("ministers");
   const [partyScope, setPartyScope] = useState<PartyScope>("lebanon");
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -918,6 +973,15 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
     ));
     return grouped;
   }, [articles]);
+  const statementStories = articlesByChannel.statements.filter((article) => (
+    statementScope === "president"
+      ? isPartyPresidentStatement(article)
+      : !isPartyPresidentStatement(article)
+  ));
+  const positionStories = articlesByChannel.positions.filter((article) => {
+    const belongsToMinister = articleMatchesProfiles(article, ministers);
+    return positionScope === "ministers" ? belongsToMinister : !belongsToMinister;
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -1198,7 +1262,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </>
       )}
 
-      <section aria-label={homepageText(homepage.support.title, lang)} className="relative z-10 px-5 pt-8 lg:px-8 lg:pt-10">
+      <section aria-label={homepageText(homepage.support.title, lang)} className="relative z-10 px-5 pt-6 lg:px-8 lg:pt-8">
         <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[30px] bg-[#191919] px-6 py-7 text-white shadow-[0_22px_70px_rgba(0,0,0,.14)] sm:px-9 sm:py-9" data-reveal>
           <div className="absolute -end-20 -top-24 h-64 w-64 rounded-full bg-[#cd1e25]/35 blur-3xl" />
           <div className="absolute -bottom-28 start-1/3 h-56 w-56 rounded-full bg-[#1a5632]/20 blur-3xl" />
@@ -1221,39 +1285,64 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
       <WhereWeStandPreview lang={lang} />
 
-      <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
-        <div className="mb-10 flex items-end justify-between gap-5">
+      <section id="news" className="mx-auto max-w-[1380px] px-5 py-16 lg:px-8 lg:py-20">
+        <div className="mb-8 flex items-end justify-between gap-5">
           <SectionHeading kicker={t.latestKicker} title={t.latest} description={t.newsText} />
           <Link href="/news" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
             {t.allNews}
             <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
           </Link>
         </div>
-        <div className="grid gap-5 lg:grid-cols-3">
-          {(["statements", "positions", "party"] as const).map((channel) => (
-            <NewsChannelPanel
-              key={channel}
-              channel={channel}
-              stories={(channel === "party" && partyScope === "diaspora"
-                ? articlesByChannel.diaspora
-                : articlesByChannel[channel]).slice(0, 3)}
-              lang={lang}
-              readLabel={t.read}
-              browseLabel={t.browseSection}
-              emptyLabel={t.noStories}
-              {...(channel === "party" ? {
-                partyScope,
-                partyScopeLabels: { lebanon: t.partyLebanon, diaspora: t.partyDiaspora },
-                onPartyScopeChange: setPartyScope,
-              } : {})}
-            />
-          ))}
+        <div className="grid items-stretch gap-5 lg:grid-cols-3">
+          <NewsChannelPanel
+            channel="statements"
+            stories={statementStories.slice(0, 3)}
+            lang={lang}
+            readLabel={t.read}
+            browseLabel={t.browseSection}
+            emptyLabel={t.noStories}
+            filterOptions={[
+              { value: "president", label: t.statementPresident },
+              { value: "media", label: t.statementMedia },
+            ]}
+            activeFilter={statementScope}
+            onFilterChange={(filter) => setStatementScope(filter as StatementScope)}
+          />
+          <NewsChannelPanel
+            channel="positions"
+            stories={positionStories.slice(0, 3)}
+            lang={lang}
+            readLabel={t.read}
+            browseLabel={t.browseSection}
+            emptyLabel={t.noStories}
+            filterOptions={[
+              { value: "ministers", label: t.positionMinisters },
+              { value: "mps", label: t.positionMps },
+            ]}
+            activeFilter={positionScope}
+            onFilterChange={(filter) => setPositionScope(filter as PositionScope)}
+          />
+          <NewsChannelPanel
+            channel="party"
+            stories={(partyScope === "diaspora" ? articlesByChannel.diaspora : articlesByChannel.party).slice(0, 3)}
+            lang={lang}
+            readLabel={t.read}
+            browseLabel={t.browseSection}
+            emptyLabel={t.noStories}
+            browseChannel={partyScope === "diaspora" ? "diaspora" : "party"}
+            filterOptions={[
+              { value: "lebanon", label: t.partyLebanon },
+              { value: "diaspora", label: t.partyDiaspora },
+            ]}
+            activeFilter={partyScope}
+            onFilterChange={(filter) => setPartyScope(filter as PartyScope)}
+          />
         </div>
       </section>
 
-      <section id="history" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
+      <section id="history" className="mx-auto max-w-[1380px] px-5 py-16 lg:px-8 lg:py-20">
         <SectionHeading kicker={t.historyKicker} title={t.historyTitle} description={t.historyText} />
-        <div className="soft-shadow mt-12 overflow-hidden rounded-[32px] border border-black/[.06] bg-white" data-reveal>
+        <div className="soft-shadow mt-10 overflow-hidden rounded-[32px] border border-black/[.06] bg-white" data-reveal>
           <div className="scrollbar-none flex overflow-x-auto border-b border-black/[.06] p-3.5">
             {siteTimeline.map((item) => (
               <button
@@ -1292,7 +1381,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="president" className="px-5 py-10 lg:px-8 lg:py-16">
+      <section id="president" className="px-5 py-8 lg:px-8 lg:py-12">
         <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] text-white shadow-[0_30px_85px_rgba(0,0,0,.15)]" data-reveal>
           <div className="absolute -end-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#cd1e25]/30 blur-3xl" />
           <div className="relative grid items-stretch lg:grid-cols-[.92fr_1.08fr]">
@@ -1339,9 +1428,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </div>
       </section>
 
-      <section id="leadership" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
+      <section id="leadership" className="mx-auto max-w-[1380px] px-5 py-16 lg:px-8 lg:py-20">
         <SectionHeading kicker={t.leadershipKicker} title={t.leadershipTitle} description={t.leadershipText} />
-        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
           {[
             { value: "cabinet" as const, label: t.tabs[0], count: siteMinisters.length, images: siteMinisters.map((person) => person.imageUrl) },
             { value: "parliament" as const, label: t.tabs[1], count: siteMps.length, images: siteMps.map((person) => person.imageUrl) },
@@ -1415,9 +1504,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
         </Collapsible>
       </section>
 
-      <section id="publications" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
+      <section id="publications" className="mx-auto max-w-[1380px] px-5 py-16 lg:px-8 lg:py-20">
         <SectionHeading kicker={t.publicationsKicker} title={t.publicationsTitle} description={t.publicationsText} />
-        <div className="mt-12 grid gap-4 lg:grid-cols-3" data-reveal>
+        <div className="mt-10 grid gap-4 lg:grid-cols-3" data-reveal>
           {publicationLibraries.map((library, index) => {
             const Icon = library.icon;
             const count = media.documents.filter((document) => document.section === library.section).length;
@@ -1443,9 +1532,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
       <section id="media" className="relative overflow-hidden bg-[#191919] text-white">
         <div className="absolute -end-56 top-28 h-[520px] w-[520px] rounded-full bg-[#cd1e25]/12 blur-3xl" />
-        <div className="relative mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
+        <div className="relative mx-auto max-w-[1380px] px-5 py-16 lg:px-8 lg:py-20">
           <SectionHeading kicker={t.mediaKicker} title={t.mediaTitle} description={t.mediaText} light />
-          <div className="mt-12 grid gap-5 lg:grid-cols-[.92fr_1.08fr]" data-reveal>
+          <div className="mt-10 grid gap-5 lg:grid-cols-[.92fr_1.08fr]" data-reveal>
             <div className="rounded-[30px] bg-gradient-to-br from-[#cd1e25] to-[#cd1e25] p-7 shadow-[0_24px_60px_rgba(0,0,0,.22)] lg:p-9">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3"><Music2 size={22} /><h3 className="text-[22px] font-extrabold">{t.songs}</h3></div>
@@ -1494,7 +1583,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             </a>
           </div>
 
-          <div className="mt-16 flex items-end justify-between gap-5">
+          <div className="mt-12 flex items-end justify-between gap-5">
             <h3 className="text-3xl font-extrabold">{t.photos}</h3>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-3" data-reveal>
