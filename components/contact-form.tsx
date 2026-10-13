@@ -104,7 +104,7 @@ export function ContactForm({ lang }: { lang: Lang }) {
     }
   };
 
-  const field = "h-13 w-full rounded-2xl border border-black/[.09] bg-white px-4 text-[14px] outline-none transition focus:border-[#df1f2d]/45 focus:ring-4 focus:ring-[#df1f2d]/8";
+  const field = "h-13 w-full rounded-2xl border border-black/[.09] bg-white px-4 text-[14px] outline-none transition focus:border-[#cd1e25]/45 focus:ring-4 focus:ring-[#cd1e25]/8";
   return (
     <form onSubmit={submit} className="rounded-[30px] border border-black/[.07] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,.055)] sm:p-8">
       <div className="grid gap-4 md:grid-cols-2">
@@ -114,13 +114,13 @@ export function ContactForm({ lang }: { lang: Lang }) {
         <label className="text-[12px] font-extrabold text-black/55">{t.email}<input name="email" type="email" required maxLength={180} className={`${field} mt-2`} /></label>
         <label className="text-[12px] font-extrabold text-black/55">{t.region}<select name="region" required defaultValue="" className={`${field} mt-2`}><option value="" disabled>{t.choose}</option>{regions.map((region) => <option key={region} value={region}>{region}</option>)}</select></label>
       </div>
-      <label className="mt-4 block text-[12px] font-extrabold text-black/55">{t.message}<textarea name="message" required minLength={10} maxLength={5000} rows={6} className="mt-2 w-full resize-y rounded-2xl border border-black/[.09] bg-white px-4 py-4 text-[14px] leading-7 outline-none transition focus:border-[#df1f2d]/45 focus:ring-4 focus:ring-[#df1f2d]/8" /></label>
+      <label className="mt-4 block text-[12px] font-extrabold text-black/55">{t.message}<textarea name="message" required minLength={10} maxLength={5000} rows={6} className="mt-2 w-full resize-y rounded-2xl border border-black/[.09] bg-white px-4 py-4 text-[14px] leading-7 outline-none transition focus:border-[#cd1e25]/45 focus:ring-4 focus:ring-[#cd1e25]/8" /></label>
       <div className="mt-4 flex flex-col gap-3 rounded-[20px] bg-[#f5f5f2] p-4 sm:flex-row sm:items-end">
-        <label className="flex-1 text-[12px] font-extrabold text-black/55">{t.captcha}: <span dir="ltr" className="text-[#df1f2d]">{captcha?.question || "…"}</span><input name="captchaAnswer" inputMode="numeric" required className={`${field} mt-2 bg-white`} placeholder={t.answer} /></label>
-        <button type="button" onClick={() => void loadCaptcha()} className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-4 text-[11px] font-extrabold text-black/45 transition hover:bg-white hover:text-[#df1f2d]"><RefreshCw size={14} />{t.retry}</button>
+        <label className="flex-1 text-[12px] font-extrabold text-black/55">{t.captcha}: <span dir="ltr" className="text-[#cd1e25]">{captcha?.question || "…"}</span><input name="captchaAnswer" inputMode="numeric" required className={`${field} mt-2 bg-white`} placeholder={t.answer} /></label>
+        <button type="button" onClick={() => void loadCaptcha()} className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-4 text-[11px] font-extrabold text-black/45 transition hover:bg-white hover:text-[#cd1e25]"><RefreshCw size={14} />{t.retry}</button>
       </div>
       {status && <div role="status" className={`mt-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-[12px] font-bold leading-6 ${status.kind === "success" ? "bg-emerald-50 text-emerald-800" : "bg-red-50 text-red-700"}`}>{status.kind === "success" ? <CheckCircle2 className="mt-0.5 shrink-0" size={16} /> : <MessageSquareText className="mt-0.5 shrink-0" size={16} />}{status.text}</div>}
-      <button type="submit" disabled={submitting || !captcha} className="mt-6 inline-flex h-13 w-full items-center justify-center gap-2 rounded-full bg-[#191919] px-7 text-[13px] font-extrabold text-white transition hover:bg-[#df1f2d] disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">{submitting ? <Loader2 className="animate-spin" size={17} /> : <Send size={17} />}{t.submit}</button>
+      <button type="submit" disabled={submitting || !captcha} className="mt-6 inline-flex h-13 w-full items-center justify-center gap-2 rounded-full bg-[#191919] px-7 text-[13px] font-extrabold text-white transition hover:bg-[#cd1e25] disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">{submitting ? <Loader2 className="animate-spin" size={17} /> : <Send size={17} />}{t.submit}</button>
     </form>
   );
 }

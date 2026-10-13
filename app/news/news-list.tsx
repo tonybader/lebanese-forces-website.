@@ -37,7 +37,7 @@ const copy = {
   ar: {
     kicker: "غرفة الأخبار",
     title: "الأخبار والبيانات والمواقف",
-    intro: "تابع آخر بيانات الحزب والرئيس، مواقف النواب والوزراء، المقالات الخاصة ونشاطات الحزب والانتشار.",
+    intro: "تابع آخر بيانات الحزب والرئيس، مواقف النواب والوزراء، ونشاطات الحزب في لبنان والانتشار.",
     back: "العودة إلى الرئيسية",
     read: "اقرأ الخبر",
     empty: "لا توجد مواد منشورة ضمن هذا التصنيف بعد.",
@@ -54,7 +54,7 @@ const copy = {
   en: {
     kicker: "Newsroom",
     title: "News, statements and positions",
-    intro: "Follow the latest statements, MPs’ and ministers’ positions, special articles, party news and diaspora activity.",
+    intro: "Follow the latest statements, MPs’ and ministers’ positions, and party activity in Lebanon and the diaspora.",
     back: "Back to homepage",
     read: "Read article",
     empty: "No stories have been published in this section yet.",
@@ -71,7 +71,7 @@ const copy = {
   fr: {
     kicker: "Salle de presse",
     title: "Actualités, communiqués et positions",
-    intro: "Suivez les communiqués, les positions des députés et ministres, les articles spéciaux et les activités du parti et de la diaspora.",
+    intro: "Suivez les communiqués, les positions des députés et ministres, et les activités du parti au Liban et dans la diaspora.",
     back: "Retour à l’accueil",
     read: "Lire l’article",
     empty: "Aucun contenu n’a encore été publié dans cette rubrique.",
@@ -166,9 +166,9 @@ export function NewsList({
 
       <section className="soft-grid border-b border-black/[.05]">
         <div className="mx-auto max-w-[1380px] px-5 py-14 lg:px-8 lg:py-20">
-          <a href="/" className="inline-flex items-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#df1f2d]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</a>
+          <a href="/" className="inline-flex items-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#cd1e25]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</a>
           <div className="mt-10 max-w-5xl">
-            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><span className="h-2 w-2 rounded-full bg-[#df1f2d]" />{t.kicker}</div>
+            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><span className="h-2 w-2 rounded-full bg-[#cd1e25]" />{t.kicker}</div>
             <h1 className="section-title mt-5 text-[clamp(2.6rem,6vw,6rem)] font-extrabold leading-[1.14] tracking-[-.045em]">{t.title}</h1>
             <p className="mt-5 max-w-4xl text-[16px] leading-8 text-black/50 sm:text-[18px]">{t.intro}</p>
           </div>
@@ -176,29 +176,29 @@ export function NewsList({
       </section>
 
       <section className="mx-auto max-w-[1380px] px-5 pt-10 lg:px-8 lg:pt-14">
-        <form action="/news" className="mb-8 flex max-w-3xl items-center gap-3 rounded-[20px] border border-black/[.08] bg-white p-2 shadow-[0_10px_30px_rgba(0,0,0,.04)] focus-within:border-[#df1f2d]/30">
+        <form action="/news" className="mb-8 flex max-w-3xl items-center gap-3 rounded-[20px] border border-black/[.08] bg-white p-2 shadow-[0_10px_30px_rgba(0,0,0,.04)] focus-within:border-[#cd1e25]/30">
           <Search size={19} className="ms-3 shrink-0 text-black/35" />
           <input name="q" defaultValue={filters.q || ""} aria-label={t.search} placeholder={t.searchPlaceholder} className="h-11 min-w-0 flex-1 bg-transparent px-1 text-[14px] font-bold outline-none placeholder:text-black/28" />
-          <button type="submit" className="h-11 shrink-0 rounded-xl bg-[#191919] px-5 text-[12px] font-extrabold text-white transition hover:bg-[#df1f2d]">{t.search}</button>
+          <button type="submit" className="h-11 shrink-0 rounded-xl bg-[#191919] px-5 text-[12px] font-extrabold text-white transition hover:bg-[#cd1e25]">{t.search}</button>
         </form>
         <div className="flex items-center gap-2 text-[12px] font-extrabold text-black/45"><SlidersHorizontal size={15} />{t.filter}</div>
         <nav className="mt-4 flex flex-wrap gap-2" aria-label={t.filter}>
-          <a href="/news" className={`rounded-full border px-4 py-2.5 text-[12px] font-extrabold transition ${!filters.channel && !tagFilter ? "border-[#191919] bg-[#191919] text-white" : "border-black/[.08] bg-white text-black/50 hover:border-[#df1f2d]/30 hover:text-[#df1f2d]"}`}>{t.all}</a>
+          <a href="/news" className={`rounded-full border px-4 py-2.5 text-[12px] font-extrabold transition ${!filters.channel && !tagFilter ? "border-[#191919] bg-[#191919] text-white" : "border-black/[.08] bg-white text-black/50 hover:border-[#cd1e25]/30 hover:text-[#cd1e25]"}`}>{t.all}</a>
           {ARTICLE_CHANNELS.map((channel) => (
-            <a key={channel} href={articleChannelHref(channel)} className={`rounded-full border px-4 py-2.5 text-[12px] font-extrabold transition ${filters.channel === channel ? "border-[#df1f2d] bg-[#df1f2d] text-white" : "border-black/[.08] bg-white text-black/50 hover:border-[#df1f2d]/30 hover:text-[#df1f2d]"}`}>{articleChannelText(channel, language)}</a>
+            <a key={channel} href={articleChannelHref(channel)} className={`rounded-full border px-4 py-2.5 text-[12px] font-extrabold transition ${filters.channel === channel ? "border-[#cd1e25] bg-[#cd1e25] text-white" : "border-black/[.08] bg-white text-black/50 hover:border-[#cd1e25]/30 hover:text-[#cd1e25]"}`}>{articleChannelText(channel, language)}</a>
           ))}
         </nav>
 
         {tagFilter && (
-          <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#df1f2d]/15 bg-red-50 px-5 py-4 text-[13px]">
+          <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#cd1e25]/15 bg-red-50 px-5 py-4 text-[13px]">
             <span className="text-black/48">{t.showing} <strong className="text-[#191919]">{tagFilter.label}: {tagFilter.value}</strong></span>
-            <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#df1f2d] shadow-sm"><X size={13} />{t.clear}</a>
+            <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#cd1e25] shadow-sm"><X size={13} />{t.clear}</a>
           </div>
         )}
         {filters.q && (
-          <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#df1f2d]/15 bg-red-50 px-5 py-4 text-[13px]">
+          <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#cd1e25]/15 bg-red-50 px-5 py-4 text-[13px]">
             <span className="text-black/48">{t.showing} <strong className="text-[#191919]">“{filters.q}”</strong></span>
-            <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#df1f2d] shadow-sm"><X size={13} />{t.clear}</a>
+            <a href="/news" className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-extrabold text-[#cd1e25] shadow-sm"><X size={13} />{t.clear}</a>
           </div>
         )}
       </section>
@@ -212,18 +212,18 @@ export function NewsList({
               const featured = index === 0;
               const href = articleHref(article);
               return (
-                <article key={article.id} className={`group overflow-hidden rounded-[28px] border border-black/[.07] bg-white shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_24px_65px_rgba(0,0,0,.1)] ${featured ? "md:col-span-2 xl:col-span-2 xl:grid xl:grid-cols-[1.08fr_.92fr]" : ""}`}>
+                <article key={article.id} className={`group overflow-hidden rounded-[28px] border border-black/[.07] bg-white shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/25 hover:shadow-[0_24px_65px_rgba(0,0,0,.1)] ${featured ? "md:col-span-2 xl:col-span-2 xl:grid xl:grid-cols-[1.08fr_.92fr]" : ""}`}>
                   <a href={href} className={`relative block overflow-hidden bg-[#191919] ${featured ? "min-h-[330px]" : "aspect-[16/10]"}`}>
                     <img src={article.imageUrl} alt={articleText(article.imageAlt, language)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-                    {article.pinned && <span className="absolute start-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#df1f2d] px-3 py-1.5 text-[10px] font-extrabold text-white shadow-lg"><Pin size={11} fill="currentColor" />{language === "ar" ? "مثبّت" : language === "fr" ? "Épinglé" : "Pinned"}</span>}
+                    {article.pinned && <span className="absolute start-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#cd1e25] px-3 py-1.5 text-[10px] font-extrabold text-white shadow-lg"><Pin size={11} fill="currentColor" />{language === "ar" ? "مثبّت" : language === "fr" ? "Épinglé" : "Pinned"}</span>}
                   </a>
                   <div className={`flex flex-col ${featured ? "p-7 sm:p-9 lg:p-11" : "p-6"}`}>
-                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#df1f2d]"><CalendarDays size={14} /><a href={articleChannelHref(getArticleChannel(article))} className="hover:underline">{articleChannelText(getArticleChannel(article), language)}</a><span className="text-black/15">·</span>{formatArticleDate(article.publishedAt, language)}</div>
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#cd1e25]"><CalendarDays size={14} /><a href={articleChannelHref(getArticleChannel(article))} className="hover:underline">{articleChannelText(getArticleChannel(article), language)}</a><span className="text-black/15">·</span>{formatArticleDate(article.publishedAt, language)}</div>
                     <h2 className={`section-title mt-4 font-extrabold leading-[1.45] ${featured ? "text-[clamp(1.65rem,3vw,2.65rem)]" : "text-[18px]"}`}><a href={href}>{articleText(article.title, language)}</a></h2>
                     <p className={`mt-3 line-clamp-3 text-black/48 ${featured ? "text-[15px] leading-8" : "text-[13px] leading-7"}`}>{articleText(article.body, language)}</p>
                     <div className="mt-5"><ArticleTagLinks article={article} language={language} compact={!featured} /></div>
-                    <a href={href} className="mt-auto flex items-center gap-2 pt-7 text-[13px] font-extrabold text-black/55 transition group-hover:text-[#df1f2d]">{t.read}<ArrowUpLeft size={16} /></a>
+                    <a href={href} className="mt-auto flex items-center gap-2 pt-7 text-[13px] font-extrabold text-black/55 transition group-hover:text-[#cd1e25]">{t.read}<ArrowUpLeft size={16} /></a>
                   </div>
                 </article>
               );

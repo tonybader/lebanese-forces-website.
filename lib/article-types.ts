@@ -4,7 +4,6 @@ export const ARTICLE_CHANNELS = [
   "statements",
   "positions",
   "party",
-  "special",
   "diaspora",
 ] as const;
 
@@ -50,11 +49,6 @@ const channelLabels: Record<ArticleChannel, LocalizedArticleText> = {
     ar: "أخبار ونشاطات الحزب",
     en: "Party news & activities",
     fr: "Actualités et activités du parti",
-  },
-  special: {
-    ar: "مقالات خاصة",
-    en: "Special articles",
-    fr: "Articles spéciaux",
   },
   diaspora: {
     ar: "نشاطات الانتشار",

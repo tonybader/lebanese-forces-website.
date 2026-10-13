@@ -40,7 +40,7 @@ export function ArticleView({ article }: { article: Article }) {
             <span className="hidden text-[15px] font-extrabold sm:block">القوات اللبنانية</span>
           </a>
           <nav className="ms-auto flex items-center gap-2">
-            <a href="/#news" className="hidden text-[12px] font-bold text-black/45 hover:text-[#df1f2d] sm:block">{t.back}</a>
+            <a href="/#news" className="hidden text-[12px] font-bold text-black/45 hover:text-[#cd1e25] sm:block">{t.back}</a>
             <div className="flex items-center gap-1 rounded-full border border-black/[.08] bg-white p-1 shadow-sm">
               <Globe2 className="ms-2 text-black/35" size={14} />
               {(["ar", "en", "fr"] as ArticleLanguage[]).map((code) => (
@@ -54,12 +54,12 @@ export function ArticleView({ article }: { article: Article }) {
       <article>
         <div className="mx-auto max-w-[1180px] px-5 pt-9 lg:px-8 lg:pt-14">
           <div className="flex flex-wrap items-center gap-3 text-[12px] font-bold text-black/42">
-            <a href="/#news" className="inline-flex items-center gap-2 transition hover:text-[#df1f2d]"><ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />{t.back}</a>
+            <a href="/#news" className="inline-flex items-center gap-2 transition hover:text-[#cd1e25]"><ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />{t.back}</a>
             <span className="text-black/15">/</span>
             <span>{t.article}</span>
           </div>
           <div className="mt-10 max-w-5xl">
-            <div className="flex flex-wrap items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><Newspaper size={15} /><a href={articleChannelHref(channel)} className="hover:underline">{articleChannelText(channel, language)}</a><span className="text-black/15">·</span><CalendarDays size={14} />{formatArticleDate(article.publishedAt, language)}</div>
+            <div className="flex flex-wrap items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><Newspaper size={15} /><a href={articleChannelHref(channel)} className="hover:underline">{articleChannelText(channel, language)}</a><span className="text-black/15">·</span><CalendarDays size={14} />{formatArticleDate(article.publishedAt, language)}</div>
             <h1 className="section-title mt-5 max-w-4xl text-[clamp(2rem,4.6vw,4.35rem)] font-extrabold leading-[1.25] tracking-[-.035em]">{articleText(article.title, language)}</h1>
             {isFallback && <div className="mt-5 inline-flex rounded-full bg-amber-100 px-4 py-2 text-[11px] font-bold text-amber-900">{t.fallback}</div>}
             <div className="mt-7"><ArticleTagLinks article={article} language={language} /></div>
@@ -80,12 +80,12 @@ export function ArticleView({ article }: { article: Article }) {
             ))}
           </div>
           {article.sourceUrl && (
-            <a href={article.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-extrabold text-black/42 transition hover:text-[#df1f2d]">
+            <a href={article.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-extrabold text-black/42 transition hover:text-[#cd1e25]">
               {t.source}<ExternalLink size={14} />
             </a>
           )}
           <div className="mt-14 border-t border-black/[.08] pt-8">
-            <a href="/#news" className="inline-flex items-center gap-2 rounded-full bg-[#191919] px-6 py-3 text-[13px] font-extrabold text-white transition hover:bg-[#df1f2d]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</a>
+            <a href="/#news" className="inline-flex items-center gap-2 rounded-full bg-[#191919] px-6 py-3 text-[13px] font-extrabold text-white transition hover:bg-[#cd1e25]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</a>
           </div>
         </div>
       </article>

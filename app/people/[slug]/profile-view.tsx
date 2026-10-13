@@ -70,7 +70,7 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
 
       <article className="px-5 py-10 lg:px-8 lg:py-16">
         <div className="mx-auto max-w-[1180px]">
-          <Link href="/#leadership" className="inline-flex items-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#df1f2d]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</Link>
+          <Link href="/#leadership" className="inline-flex items-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#cd1e25]"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</Link>
 
           <div className="mt-8 overflow-hidden rounded-[34px] bg-[#191919] text-white shadow-[0_30px_85px_rgba(0,0,0,.16)]">
             <div className="grid lg:grid-cols-[.78fr_1.22fr]">
@@ -79,9 +79,9 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               </div>
               <div className="relative flex flex-col justify-center overflow-hidden px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
-                <div className="absolute -end-32 -top-32 h-96 w-96 rounded-full bg-[#df1f2d]/24 blur-3xl" />
+                <div className="absolute -end-32 -top-32 h-96 w-96 rounded-full bg-[#cd1e25]/24 blur-3xl" />
                 <div className="relative">
-                  <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#ff6570]">
+                  <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]">
                     {profile.group === "mp" ? <Landmark size={16} /> : <UserRound size={16} />}
                     {profile.group === "mp" ? t.mp : t.minister}
                   </div>
@@ -110,7 +110,7 @@ export function ProfileView({ profile }: { profile: PublicProfile }) {
                         <ul className="mt-7 space-y-4">
                           {profile.highlights.map((highlight, index) => (
                             <li key={index} className="flex gap-3 text-[14px] leading-7 text-white/60">
-                              <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#df1f2d]" />
+                              <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#cd1e25]" />
                               <span>{profileText(highlight, language)}</span>
                             </li>
                           ))}

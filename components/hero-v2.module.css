@@ -1,6 +1,7 @@
 .shell {
-  --red: #e6212b;
-  --green: #158a51;
+  --red: #cd1e25;
+  --green: #1a5632;
+  --brown: #5c3327;
   --paper: #162019;
   --muted: #647169;
   --black: #f7f4ed;
@@ -231,7 +232,7 @@
 .languageOption:hover,
 .languageOptionActive {
   color: #111713;
-  background: rgba(21, 138, 81, 0.08);
+  background: rgba(26, 86, 50, 0.08);
 }
 
 .mobileMenuButton {
@@ -265,7 +266,7 @@
 .mobilePanel button:hover,
 .mobilePanel a:hover {
   color: #111713;
-  background: rgba(21, 138, 81, 0.07);
+  background: rgba(26, 86, 50, 0.07);
 }
 
 .mobileUtility {
@@ -404,7 +405,7 @@
   height: 3px;
   content: "";
   background: var(--green);
-  box-shadow: 0 5px 0 rgba(21, 138, 81, 0.2);
+  box-shadow: 0 5px 0 rgba(26, 86, 50, 0.2);
 }
 
 .heroTitle {
@@ -470,12 +471,12 @@
 .ctaPrimary {
   border: 1px solid var(--red);
   background: var(--red);
-  box-shadow: 0 8px 34px rgba(230, 33, 43, 0.13);
+  box-shadow: 0 8px 34px rgba(205, 30, 37, 0.13);
 }
 
 .ctaPrimary:hover {
-  border-color: #c91822;
-  background: #c91822;
+  border-color: #cd1e25;
+  background: #cd1e25;
   transform: translateY(-3px);
 }
 
@@ -506,15 +507,6 @@
   align-items: center;
   gap: 32px;
   border-top: 1px solid var(--line);
-}
-
-.footerLabel {
-  width: 112px;
-  flex-shrink: 0;
-  color: #657169;
-  font-size: 0.85rem;
-  font-weight: 700;
-  line-height: 1.8;
 }
 
 .themes {
@@ -630,7 +622,7 @@
 }
 
 .detailTag {
-  color: #8dcca8;
+  color: #1a5632;
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -672,7 +664,6 @@
   .versionLink { padding-inline: 10px; }
   .heroTitle { font-size: 6.7vw; }
   .heroCopy { width: 65%; }
-  .footerLabel { width: 75px; }
   .themeSubtitle { font-size: 0.76rem; }
   .heroFooter { gap: 22px; }
   .themes { gap: 14px; }
@@ -682,7 +673,6 @@
   .desktopNav { display: none; }
   .mobileMenuButton { display: grid; }
   .heroCopy { width: 72%; }
-  .footerLabel { display: none; }
   .heroFooter { min-height: 119px; }
   .theme { gap: 10px; }
   .themeTitle { font-size: 1rem; }
@@ -826,7 +816,6 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-:global(html[data-theme="dark"]) .footerLabel { color: #aeb8b2; }
 :global(html[data-theme="dark"]) .theme { color: #a2ada6; }
 :global(html[data-theme="dark"]) .themeActive,
 :global(html[data-theme="dark"]) .theme:hover { color: #fff; }

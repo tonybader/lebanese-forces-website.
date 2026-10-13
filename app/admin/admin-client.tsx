@@ -131,29 +131,29 @@ export function AdminLogin({
     <AdminFrame>
       <div className="grid min-h-[calc(100vh-3rem)] items-center gap-8 lg:grid-cols-[.95fr_1.05fr]">
         <section className="relative overflow-hidden rounded-[34px] bg-[#191919] p-8 text-white shadow-[0_28px_80px_rgba(0,0,0,.18)] sm:p-11 lg:min-h-[630px]">
-          <div className="absolute -right-28 -top-28 h-80 w-80 rounded-full bg-[#df1f2d]/30 blur-3xl" />
+          <div className="absolute -right-28 -top-28 h-80 w-80 rounded-full bg-[#cd1e25]/30 blur-3xl" />
           <div className="relative flex h-full flex-col">
             <a href="/" className="flex w-fit items-center gap-3">
               <span className="grid h-14 w-14 place-items-center rounded-full bg-white shadow-lg"><img src="/lf-logo.png" alt="Lebanese Forces" className="h-11 w-11 rounded-full object-contain" /></span>
               <span><span className="block text-lg font-extrabold">Lebanese Forces</span><span className="mt-1 block text-[11px] font-bold text-white/40">SITE ADMINISTRATION</span></span>
             </a>
             <div className="relative mt-24 max-w-lg lg:mt-auto lg:pb-8">
-              <div className="mb-5 flex items-center gap-2 text-[12px] font-bold text-[#ff6570]"><LayoutTemplate size={16} /> Administrator access</div>
+              <div className="mb-5 flex items-center gap-2 text-[12px] font-bold text-[#cd1e25]"><LayoutTemplate size={16} /> Administrator access</div>
               <h1 className="section-title text-[clamp(2.4rem,5vw,4.6rem)] font-extrabold leading-[1.2]">Visual homepage editor</h1>
               <p className="mt-5 max-w-md text-[16px] leading-8 text-white/58">Edit text directly in a live preview and replace the homepage photographs.</p>
             </div>
           </div>
         </section>
         <section className="rounded-[30px] border border-black/[.07] bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,.07)] sm:p-10 lg:p-12">
-          <div className="mb-9"><div className="text-[12px] font-extrabold text-[#df1f2d]">ADMIN SIGN IN</div><h2 className="mt-2 text-3xl font-extrabold">Manage the homepage</h2><p className="mt-2 text-[14px] text-black/45">Use the administrator credentials to continue.</p></div>
+          <div className="mb-9"><div className="text-[12px] font-extrabold text-[#cd1e25]">ADMIN SIGN IN</div><h2 className="mt-2 text-3xl font-extrabold">Manage the homepage</h2><p className="mt-2 text-[14px] text-black/45">Use the administrator credentials to continue.</p></div>
           {!configured && <Alert className="mb-6 border-amber-200 bg-amber-50 text-amber-950"><LockKeyhole /><AlertTitle>Admin access needs configuration</AlertTitle><AlertDescription>Add ADMIN_PASSWORD in Vercel, then redeploy.</AlertDescription></Alert>}
           <form onSubmit={submit} className="space-y-5">
             <div className="space-y-2.5"><Label htmlFor="admin-username" className="font-bold">Username</Label><Input id="admin-username" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} className="h-13 rounded-2xl px-4 text-[16px]" required /></div>
             <div className="space-y-2.5"><Label htmlFor="admin-password" className="font-bold">Password</Label><Input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} className="h-13 rounded-2xl px-4 text-[16px]" required /></div>
             {error && <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-[13px] font-bold text-red-700">{error}</p>}
-            <Button type="submit" disabled={loading || !configured} className="h-13 w-full rounded-2xl bg-[#df1f2d] text-[15px] font-extrabold hover:bg-[#c51825]">{loading ? <Loader2 className="animate-spin" /> : <LockKeyhole />} Sign in</Button>
+            <Button type="submit" disabled={loading || !configured} className="h-13 w-full rounded-2xl bg-[#cd1e25] text-[15px] font-extrabold hover:bg-[#cd1e25]">{loading ? <Loader2 className="animate-spin" /> : <LockKeyhole />} Sign in</Button>
           </form>
-          <a href="/" className="mt-7 flex items-center justify-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#df1f2d]"><ArrowLeft size={15} /> Back to website</a>
+          <a href="/" className="mt-7 flex items-center justify-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#cd1e25]"><ArrowLeft size={15} /> Back to website</a>
         </section>
       </div>
     </AdminFrame>
@@ -438,9 +438,9 @@ export function HomepageDashboard({
 
   const genericPreview = (tone: "light" | "dark" = "light") => (
     <section className={`relative min-h-[560px] overflow-hidden rounded-[28px] p-7 sm:p-12 lg:p-16 ${tone === "dark" ? "bg-[#191919] text-white" : "soft-grid bg-[#f7f7f5] text-[#171717]"}`}>
-      {tone === "dark" && <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[#df1f2d]/25 blur-3xl" />}
+      {tone === "dark" && <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[#cd1e25]/25 blur-3xl" />}
       <div className="relative mx-auto flex min-h-[420px] max-w-4xl flex-col justify-center">
-        <EditableText value={localizedValue("kicker")} onChange={(value) => setLocalized(activeSection, "kicker", value)} label="Section label" multiline={false} className={`w-fit px-2 py-1 text-[13px] font-extrabold ${tone === "dark" ? "text-[#ff6570]" : "text-[#df1f2d]"}`} />
+        <EditableText value={localizedValue("kicker")} onChange={(value) => setLocalized(activeSection, "kicker", value)} label="Section label" multiline={false} className={`w-fit px-2 py-1 text-[13px] font-extrabold ${tone === "dark" ? "text-[#cd1e25]" : "text-[#cd1e25]"}`} />
         <EditableText value={localizedValue("title")} onChange={(value) => setLocalized(activeSection, "title", value)} label="Section title" className="section-title mt-5 max-w-3xl px-2 py-1 text-[clamp(2.4rem,6vw,5.6rem)] font-extrabold leading-[1.2]" />
         <EditableText value={localizedValue("text")} onChange={(value) => setLocalized(activeSection, "text", value)} label="Section description" className={`mt-6 max-w-3xl px-2 py-1 text-[17px] leading-9 ${tone === "dark" ? "text-white/62" : "text-black/55"}`} />
         <div className={`mt-12 grid gap-3 sm:grid-cols-3 ${tone === "dark" ? "text-white" : "text-black"}`}>
@@ -454,7 +454,7 @@ export function HomepageDashboard({
     if (activeSection === "navigation") {
       return (
         <section className="soft-grid min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-7 sm:p-10 lg:p-14">
-          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">HEADER NAVIGATION · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit every menu label</h2><p className="mt-2 text-sm text-black/45">The section destinations stay fixed so navigation cannot break; every visible label is editable.</p>
+          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#cd1e25]">HEADER NAVIGATION · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit every menu label</h2><p className="mt-2 text-sm text-black/45">The section destinations stay fixed so navigation cannot break; every visible label is editable.</p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{content.navigation.map((item, index) => <label key={item.id} className="rounded-[18px] border border-black/[.07] bg-white p-4 shadow-sm"><span className="text-[10px] font-extrabold uppercase tracking-[.11em] text-black/35">#{item.id}</span><Input dir={rtl ? "rtl" : "ltr"} value={item.label[language]} onChange={(event) => setNavigationLabel(index, event.target.value)} className="mt-3 h-11 rounded-xl font-extrabold" /></label>)}</div>
           </div>
         </section>
@@ -463,7 +463,7 @@ export function HomepageDashboard({
     if (activeSection === "highlights") {
       return (
         <section className="min-h-[590px] rounded-[28px] bg-[#191919] p-7 text-white sm:p-10 lg:p-14">
-          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#ff6570]">FACTS & VALUES · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit homepage highlights</h2>
+          <div className="mx-auto max-w-5xl"><div className="text-[12px] font-extrabold text-[#cd1e25]">FACTS & VALUES · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit homepage highlights</h2>
             <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{content.stats.map((item, index) => <div key={item.id} className="rounded-[20px] border border-white/10 bg-white/[.06] p-4"><Label className="text-[10px] text-white/38">VALUE</Label><Input value={item.value} onChange={(event) => setStat(index, "value", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-xl font-extrabold text-white" /><Label className="mt-4 block text-[10px] text-white/38">LABEL</Label><Input dir={rtl ? "rtl" : "ltr"} value={item.label[language]} onChange={(event) => setStat(index, "label", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-white" /></div>)}</div>
             <div className="mt-8 grid gap-3 lg:grid-cols-3">{content.values.map((item, index) => <div key={item.id} className="rounded-[22px] border border-white/10 bg-white/[.06] p-5"><Label className="text-[10px] text-white/38">CARD TITLE</Label><Input dir={rtl ? "rtl" : "ltr"} value={item.title[language]} onChange={(event) => setValueCard(index, "title", event.target.value)} className="mt-2 h-11 border-white/10 bg-white/8 text-lg font-extrabold text-white" /><Label className="mt-4 block text-[10px] text-white/38">DESCRIPTION</Label><textarea dir={rtl ? "rtl" : "ltr"} value={item.text[language]} onChange={(event) => setValueCard(index, "text", event.target.value)} className="mt-2 min-h-28 w-full rounded-xl border border-white/10 bg-white/8 p-3 text-sm leading-6 text-white outline-none" /></div>)}</div>
           </div>
@@ -473,21 +473,21 @@ export function HomepageDashboard({
     if (activeSection === "interface") {
       return (
         <section className="soft-grid min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-7 sm:p-10 lg:p-14">
-          <div className="mx-auto max-w-4xl"><div className="text-[12px] font-extrabold text-[#df1f2d]">BUTTONS & SUPPORTING TEXT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit subtitles and calls to action</h2><div className="mt-8 grid gap-4 sm:grid-cols-2">{interfaceFields.map((item) => <label key={item.key} className={`rounded-[18px] border border-black/[.07] bg-white p-4 ${item.key === "contactText" ? "sm:col-span-2" : ""}`}><span className="text-[11px] font-extrabold text-black/42">{item.label}</span>{item.key === "contactText" ? <textarea dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 min-h-28 w-full rounded-xl border border-black/10 bg-[#fafaf8] p-3 text-sm leading-6 outline-none" /> : <Input dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 h-11 rounded-xl" />}</label>)}</div></div>
+          <div className="mx-auto max-w-4xl"><div className="text-[12px] font-extrabold text-[#cd1e25]">BUTTONS & SUPPORTING TEXT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit subtitles and calls to action</h2><div className="mt-8 grid gap-4 sm:grid-cols-2">{interfaceFields.map((item) => <label key={item.key} className={`rounded-[18px] border border-black/[.07] bg-white p-4 ${item.key === "contactText" ? "sm:col-span-2" : ""}`}><span className="text-[11px] font-extrabold text-black/42">{item.label}</span>{item.key === "contactText" ? <textarea dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 min-h-28 w-full rounded-xl border border-black/10 bg-[#fafaf8] p-3 text-sm leading-6 outline-none" /> : <Input dir={rtl ? "rtl" : "ltr"} value={content.interfaceText[item.key][language]} onChange={(event) => setInterfaceLabel(item.key, event.target.value)} className="mt-3 h-11 rounded-xl" />}</label>)}</div></div>
         </section>
       );
     }
     if (activeSection === "support") {
       return (
         <section className="relative min-h-[590px] overflow-hidden rounded-[28px] bg-[#191919] p-7 text-white sm:p-11 lg:p-16">
-          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#df1f2d]/30 blur-3xl" />
+          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#cd1e25]/30 blur-3xl" />
           <div className="relative mx-auto flex min-h-[440px] max-w-5xl flex-col justify-center" dir={rtl ? "rtl" : "ltr"}>
-            <EditableText value={content.support.kicker[language]} onChange={(value) => setLocalized("support", "kicker", value)} label="Support label" multiline={false} className="w-fit text-[12px] font-extrabold uppercase tracking-[.12em] text-[#ff6570]" />
+            <EditableText value={content.support.kicker[language]} onChange={(value) => setLocalized("support", "kicker", value)} label="Support label" multiline={false} className="w-fit text-[12px] font-extrabold uppercase tracking-[.12em] text-[#cd1e25]" />
             <EditableText value={content.support.title[language]} onChange={(value) => setLocalized("support", "title", value)} label="Support title" className="section-title mt-5 max-w-4xl text-[clamp(2.5rem,6vw,5.5rem)] font-extrabold leading-[1.14]" />
             <EditableText value={content.support.text[language]} onChange={(value) => setLocalized("support", "text", value)} label="Support description" className="mt-6 max-w-3xl text-[17px] leading-9 text-white/62" />
             <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-end" dir="ltr">
               <label className="min-w-0 flex-1"><span className="text-[10px] font-extrabold text-white/35">DONATION PLATFORM URL</span><Input value={content.support.url} onChange={(event) => setContent((current) => ({ ...current, support: { ...current.support, url: event.target.value } }))} placeholder="https://…" className="mt-2 h-12 border-white/10 bg-white/[.06] text-white" /></label>
-              <div className="shrink-0" dir={rtl ? "rtl" : "ltr"}><div className="mb-2 text-[10px] font-extrabold text-white/35">BUTTON LABEL</div><EditableText value={content.support.buttonLabel[language]} onChange={(value) => setLocalized("support", "buttonLabel", value)} label="Support button" multiline={false} className="rounded-full bg-[#df1f2d] px-6 py-3 text-[13px] font-extrabold shadow-lg" /></div>
+              <div className="shrink-0" dir={rtl ? "rtl" : "ltr"}><div className="mb-2 text-[10px] font-extrabold text-white/35">BUTTON LABEL</div><EditableText value={content.support.buttonLabel[language]} onChange={(value) => setLocalized("support", "buttonLabel", value)} label="Support button" multiline={false} className="rounded-full bg-[#cd1e25] px-6 py-3 text-[13px] font-extrabold shadow-lg" /></div>
             </div>
           </div>
         </section>
@@ -498,11 +498,11 @@ export function HomepageDashboard({
         <section className="min-h-[620px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
           <div className="mx-auto max-w-6xl">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><CalendarRange size={16} /> HISTORY PAGE · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the interactive timeline</h2><p className="mt-2 text-sm leading-6 text-black/45">Change the section text, every date, title, story and background photograph. Click directly into text to edit it.</p></div>
+              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><CalendarRange size={16} /> HISTORY PAGE · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the interactive timeline</h2><p className="mt-2 text-sm leading-6 text-black/45">Change the section text, every date, title, story and background photograph. Click directly into text to edit it.</p></div>
               <Button type="button" onClick={addHistoryMilestone} className="rounded-full bg-[#191919] font-extrabold hover:bg-[#333]"><Plus /> Add milestone</Button>
             </div>
             <div dir={rtl ? "rtl" : "ltr"} className="mt-8 rounded-[26px] bg-white p-6 shadow-sm sm:p-9">
-              <EditableText value={content.history.kicker[language]} onChange={(value) => setLocalized("history", "kicker", value)} label="History label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#df1f2d]" />
+              <EditableText value={content.history.kicker[language]} onChange={(value) => setLocalized("history", "kicker", value)} label="History label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#cd1e25]" />
               <EditableText value={content.history.title[language]} onChange={(value) => setLocalized("history", "title", value)} label="History title" className="section-title mt-4 max-w-4xl text-[clamp(2.3rem,5vw,4.8rem)] font-extrabold leading-[1.15]" />
               <EditableText value={content.history.text[language]} onChange={(value) => setLocalized("history", "text", value)} label="History introduction" className="mt-5 max-w-4xl text-[16px] leading-8 text-black/55" />
             </div>
@@ -535,7 +535,7 @@ export function HomepageDashboard({
       return (
         <section className="min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
           <div className="mx-auto max-w-5xl">
-            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><UserRound size={16} /> LEADERSHIP DIRECTORY · {language.toUpperCase()}</div>
+            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><UserRound size={16} /> LEADERSHIP DIRECTORY · {language.toUpperCase()}</div>
             <h2 className="mt-2 text-3xl font-extrabold">Edit every public profile</h2>
             <p className="mt-2 text-sm leading-6 text-black/45">Open a person to edit the exact photograph, name, office, introduction, full CV and social accounts shown on their profile page.</p>
             <div className="mt-7 space-y-3">
@@ -544,7 +544,7 @@ export function HomepageDashboard({
                   <summary className="flex cursor-pointer list-none items-center gap-4 px-4 py-3.5 sm:px-5">
                     <img src={personImages[person.slug]?.preview || person.imageUrl} alt="" className="h-14 w-14 rounded-2xl bg-[#ecece8] object-cover object-top" />
                     <span className="min-w-0 flex-1"><span dir={rtl ? "rtl" : "ltr"} className="block truncate text-[15px] font-extrabold">{person.name[language]}</span><span dir={rtl ? "rtl" : "ltr"} className="mt-1 block truncate text-[11px] text-black/38">{person.office[language]}</span></span>
-                    <span className="rounded-full bg-[#f2f2ef] px-3 py-1 text-[10px] font-extrabold text-black/38 group-open:bg-[#df1f2d] group-open:text-white">Edit profile</span>
+                    <span className="rounded-full bg-[#f2f2ef] px-3 py-1 text-[10px] font-extrabold text-black/38 group-open:bg-[#cd1e25] group-open:text-white">Edit profile</span>
                   </summary>
                   <div className="border-t border-black/[.06] p-4 sm:p-6">
                     <div className="grid overflow-hidden rounded-[24px] bg-[#191919] text-white lg:grid-cols-[.42fr_.58fr]">
@@ -557,7 +557,7 @@ export function HomepageDashboard({
                         <EditableText value={person.name[language]} onChange={(value) => setPersonText(index, "name", value)} label="Person name" multiline={false} className="section-title text-[clamp(2rem,4vw,3.6rem)] font-extrabold leading-tight" />
                         <EditableText value={person.office[language]} onChange={(value) => setPersonText(index, "office", value)} label="Person office" multiline={false} className="mt-3 text-[15px] font-bold text-white/58" />
                         <EditableText value={person.summary[language]} onChange={(value) => setPersonText(index, "summary", value)} label="Short profile introduction" className="mt-7 text-[16px] leading-8 text-white/76" />
-                        <div className="mt-7 border-t border-white/10 pt-6"><div className="text-[10px] font-extrabold uppercase tracking-[.12em] text-[#ff6570]">FULL CV / DESCRIPTION</div><EditableText value={person.bio[language]} onChange={(value) => setPersonText(index, "bio", value)} label="Full CV" className="mt-3 min-h-32 whitespace-pre-line text-[14px] leading-8 text-white/62" /></div>
+                        <div className="mt-7 border-t border-white/10 pt-6"><div className="text-[10px] font-extrabold uppercase tracking-[.12em] text-[#cd1e25]">FULL CV / DESCRIPTION</div><EditableText value={person.bio[language]} onChange={(value) => setPersonText(index, "bio", value)} label="Full CV" className="mt-3 min-h-32 whitespace-pre-line text-[14px] leading-8 text-white/62" /></div>
                       </div>
                     </div>
                     <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -577,7 +577,7 @@ export function HomepageDashboard({
         <section className="min-h-[590px] rounded-[28px] bg-[#f7f7f5] p-5 sm:p-8 lg:p-10">
           <div className="mx-auto max-w-6xl">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#df1f2d]"><UserRound size={16} /> GENERAL SECRETARIAT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the General Secretariat</h2><p className="mt-2 text-sm leading-6 text-black/45">Edit each name and role directly, replace the photograph, add a member or remove an outdated entry.</p></div>
+              <div><div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><UserRound size={16} /> GENERAL SECRETARIAT · {language.toUpperCase()}</div><h2 className="mt-2 text-3xl font-extrabold">Edit the General Secretariat</h2><p className="mt-2 text-sm leading-6 text-black/45">Edit each name and role directly, replace the photograph, add a member or remove an outdated entry.</p></div>
               <Button type="button" onClick={addSecretariatMember} className="rounded-full bg-[#191919] font-extrabold hover:bg-[#333]"><Plus /> Add member</Button>
             </div>
             <div className="mt-8 grid gap-4 lg:grid-cols-2">
@@ -607,7 +607,7 @@ export function HomepageDashboard({
       return (
         <section className="soft-grid grid min-h-[590px] items-center gap-9 rounded-[28px] bg-[#f7f7f5] p-7 sm:p-12 lg:grid-cols-[1.08fr_.92fr] lg:p-16">
           <div>
-            <EditableText value={content.hero.eyebrow[language]} onChange={(value) => setLocalized("hero", "eyebrow", value)} label="Hero label" multiline={false} className="w-fit bg-white/80 px-4 py-2 text-[13px] font-extrabold text-[#df1f2d] shadow-sm" />
+            <EditableText value={content.hero.eyebrow[language]} onChange={(value) => setLocalized("hero", "eyebrow", value)} label="Hero label" multiline={false} className="w-fit bg-white/80 px-4 py-2 text-[13px] font-extrabold text-[#cd1e25] shadow-sm" />
             <EditableText value={content.hero.title[language]} onChange={(value) => setLocalized("hero", "title", value)} label="Hero title" className="display-title mt-5 whitespace-pre-line px-2 py-1 text-[clamp(2.5rem,6vw,5.6rem)] font-extrabold leading-[1.14]" />
             <EditableText value={content.hero.intro[language]} onChange={(value) => setLocalized("hero", "intro", value)} label="Hero introduction" className="mt-6 max-w-3xl px-2 py-1 text-[17px] leading-9 text-black/58" />
           </div>
@@ -629,7 +629,7 @@ export function HomepageDashboard({
           </label>
           <Input id="president-image" className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void selectImage("president", event.target.files?.[0])} />
           <div className="relative flex flex-col justify-center p-7 sm:p-12 lg:p-14">
-            <EditableText value={content.president.kicker[language]} onChange={(value) => setLocalized("president", "kicker", value)} label="President label" multiline={false} className="w-fit px-2 py-1 text-[13px] font-extrabold text-[#ff6570]" />
+            <EditableText value={content.president.kicker[language]} onChange={(value) => setLocalized("president", "kicker", value)} label="President label" multiline={false} className="w-fit px-2 py-1 text-[13px] font-extrabold text-[#cd1e25]" />
             <EditableText value={content.president.title[language]} onChange={(value) => setLocalized("president", "title", value)} label="President name" className="section-title mt-4 px-2 py-1 text-[clamp(2.5rem,5vw,5rem)] font-extrabold leading-[1.15]" />
             <EditableText value={content.president.role[language]} onChange={(value) => setLocalized("president", "role", value)} label="President role" className="mt-3 px-2 py-1 text-[17px] font-bold text-white/62" />
             <EditableText value={content.president.bio[language]} onChange={(value) => setLocalized("president", "bio", value)} label="First biography paragraph" className="mt-7 px-2 py-1 text-[15px] leading-8 text-white/66" />
@@ -650,7 +650,7 @@ export function HomepageDashboard({
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-11 lg:p-14">
               <EditableText value={content.presidentPage.backLabel[language]} onChange={(value) => setPresidentPageText("backLabel", value)} label="Back link" multiline={false} className="mb-12 w-fit text-[12px] font-bold text-white/45" />
-              <EditableText value={content.presidentPage.kicker[language]} onChange={(value) => setPresidentPageText("kicker", value)} label="Biography label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#ff6570]" />
+              <EditableText value={content.presidentPage.kicker[language]} onChange={(value) => setPresidentPageText("kicker", value)} label="Biography label" multiline={false} className="w-fit text-[12px] font-extrabold text-[#cd1e25]" />
               <EditableText value={content.presidentPage.title[language]} onChange={(value) => setPresidentPageText("title", value)} label="Biography title" className="section-title mt-5 text-[clamp(3rem,6vw,6rem)] font-extrabold leading-[1.08]" />
               <EditableText value={content.presidentPage.role[language]} onChange={(value) => setPresidentPageText("role", value)} label="Biography role" className="mt-4 text-[17px] font-bold text-white/60" />
               <EditableText value={content.presidentPage.intro[language]} onChange={(value) => setPresidentPageText("intro", value)} label="Biography introduction" className="mt-8 text-[17px] leading-9 text-white/68" />
@@ -670,7 +670,7 @@ export function HomepageDashboard({
               <div className="mt-10 grid gap-3 md:grid-cols-2">
                 {content.presidentPage.milestones.map((item, index) => (
                   <article key={item.id} dir={rtl ? "rtl" : "ltr"} className="group grid grid-cols-[105px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[#f7f7f5]">
-                    <EditableText value={item.year} onChange={(value) => updatePresidentMilestone(index, "year", value)} label="Milestone year" multiline={false} className="grid place-items-center bg-[#191919] p-4 text-center text-[19px] font-extrabold text-[#ff6570]" />
+                    <EditableText value={item.year} onChange={(value) => updatePresidentMilestone(index, "year", value)} label="Milestone year" multiline={false} className="grid place-items-center bg-[#191919] p-4 text-center text-[19px] font-extrabold text-[#cd1e25]" />
                     <div className="p-5 sm:p-6">
                       <EditableText value={item.title[language]} onChange={(value) => updatePresidentMilestone(index, "title", value)} label="Milestone title" className="text-[17px] font-extrabold" />
                       <EditableText value={item.text[language]} onChange={(value) => updatePresidentMilestone(index, "text", value)} label="Milestone details" className="mt-2 min-h-16 text-[14px] leading-7 text-black/50" />
@@ -691,7 +691,7 @@ export function HomepageDashboard({
     if (activeSection === "footer") {
       return (
         <section className="relative grid min-h-[420px] place-items-center overflow-hidden rounded-[28px] bg-[#191919] p-8 text-center text-white">
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#df1f2d]/25 blur-3xl" />
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#cd1e25]/25 blur-3xl" />
           <div className="relative w-full max-w-4xl"><img src="/lf-logo.png" alt="" className="mx-auto h-24 w-24 rounded-full bg-white object-contain p-2" /><EditableText value={content.footer.line[language]} onChange={(value) => setLocalized("footer", "line", value)} label="Footer statement" className="section-title mt-8 px-2 py-1 text-[clamp(2rem,5vw,4rem)] font-extrabold leading-[1.3]" /><div className="mx-auto mt-9 grid max-w-3xl gap-2 sm:grid-cols-2">{(["facebook", "instagram", "x", "youtube", "newsWebsite"] as const).map((social) => <label key={social} className="text-start text-[9px] font-extrabold uppercase text-white/35">{social}<Input value={content.socials[social]} onChange={(event) => setContent((current) => ({ ...current, socials: { ...current.socials, [social]: event.target.value } }))} placeholder="https://…" className="mt-2 h-10 border-white/10 bg-white/[.06] text-[11px] text-white" /></label>)}</div></div>
         </section>
       );
@@ -703,7 +703,7 @@ export function HomepageDashboard({
     <AdminFrame>
       <header className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-black/[.06] bg-white px-5 py-3.5 shadow-[0_10px_35px_rgba(0,0,0,.045)]">
         <a href="/" className="flex items-center gap-3"><img src="/lf-logo.png" alt="Lebanese Forces" className="h-11 w-11 rounded-full object-contain" /><span><span className="block text-[15px] font-extrabold">Homepage editor</span><span className="block text-[10px] font-bold text-black/35">Edit directly in the preview</span></span></a>
-        <div className="flex flex-wrap items-center gap-2"><Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/" target="_blank"><Eye /> View website <ExternalLink /></a></Button><Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#df1f2d]"><LogOut /> Sign out</Button></div>
+        <div className="flex flex-wrap items-center gap-2"><Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/" target="_blank"><Eye /> View website <ExternalLink /></a></Button><Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#cd1e25]"><LogOut /> Sign out</Button></div>
       </header>
 
       {!publishingConfigured && <Alert className="mb-5 border-amber-200 bg-amber-50 text-amber-950"><UploadCloud /><AlertTitle>Publishing is not connected</AlertTitle><AlertDescription>Add GITHUB_CONTENT_TOKEN in Vercel with Contents: Read and write.</AlertDescription></Alert>}
@@ -711,14 +711,14 @@ export function HomepageDashboard({
 
       <div className="grid items-start gap-5 xl:grid-cols-[290px_1fr]">
         <aside className="rounded-[24px] border border-black/[.07] bg-white p-4 shadow-[0_16px_48px_rgba(0,0,0,.05)] xl:sticky xl:top-5">
-          <div className="flex items-center justify-between gap-3 px-2 pb-4"><div><div className="text-[11px] font-extrabold text-[#df1f2d]">PAGE CONTENT</div><h2 className="mt-1 text-xl font-extrabold">Choose a section</h2></div><LayoutTemplate className="text-black/25" /></div>
-          <nav className="space-y-1.5">{sections.map((item) => <button key={item.key} type="button" onClick={() => setActiveSection(item.key)} className={`flex w-full items-center gap-3 rounded-[16px] px-3 py-3 text-left transition ${activeSection === item.key ? "bg-[#191919] text-white shadow-md" : "hover:bg-[#f2f2ef]"}`}><span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-extrabold ${activeSection === item.key ? "bg-[#df1f2d] text-white" : "bg-[#f1f1ee] text-black/35"}`}>{activeSection === item.key ? <Check size={14} /> : sections.indexOf(item) + 1}</span><span><span className="block text-[13px] font-extrabold">{item.label}</span><span className={`mt-0.5 block text-[10px] ${activeSection === item.key ? "text-white/42" : "text-black/38"}`}>{item.hint}</span></span></button>)}</nav>
+          <div className="flex items-center justify-between gap-3 px-2 pb-4"><div><div className="text-[11px] font-extrabold text-[#cd1e25]">PAGE CONTENT</div><h2 className="mt-1 text-xl font-extrabold">Choose a section</h2></div><LayoutTemplate className="text-black/25" /></div>
+          <nav className="space-y-1.5">{sections.map((item) => <button key={item.key} type="button" onClick={() => setActiveSection(item.key)} className={`flex w-full items-center gap-3 rounded-[16px] px-3 py-3 text-left transition ${activeSection === item.key ? "bg-[#191919] text-white shadow-md" : "hover:bg-[#f2f2ef]"}`}><span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-extrabold ${activeSection === item.key ? "bg-[#cd1e25] text-white" : "bg-[#f1f1ee] text-black/35"}`}>{activeSection === item.key ? <Check size={14} /> : sections.indexOf(item) + 1}</span><span><span className="block text-[13px] font-extrabold">{item.label}</span><span className={`mt-0.5 block text-[10px] ${activeSection === item.key ? "text-white/42" : "text-black/38"}`}>{item.hint}</span></span></button>)}</nav>
           <div className="mt-5 border-t border-black/[.07] pt-5"><LanguageSwitch language={language} setLanguage={setLanguage} /><p className="mt-3 px-1 text-[11px] leading-5 text-black/40">Select a language, then click any text in the preview and type.</p></div>
-          <Button type="button" onClick={() => void save()} disabled={saving || !publishingConfigured} className="mt-5 h-12 w-full rounded-2xl bg-[#df1f2d] font-extrabold hover:bg-[#c51825]">{saving ? <Loader2 className="animate-spin" /> : <Save />} Save homepage</Button>
+          <Button type="button" onClick={() => void save()} disabled={saving || !publishingConfigured} className="mt-5 h-12 w-full rounded-2xl bg-[#cd1e25] font-extrabold hover:bg-[#cd1e25]">{saving ? <Loader2 className="animate-spin" /> : <Save />} Save homepage</Button>
         </aside>
 
         <section className="min-w-0 rounded-[28px] border border-black/[.07] bg-white p-3 shadow-[0_18px_55px_rgba(0,0,0,.055)] sm:p-5">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-2"><div><div className="text-[11px] font-extrabold text-[#df1f2d]">LIVE PREVIEW</div><div className="mt-1 text-[13px] font-bold text-black/45">Click highlighted text to edit it</div></div><div className="flex items-center gap-2 rounded-full bg-[#f1f1ee] px-3 py-2 text-[11px] font-bold text-black/45"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Desktop preview</div></div>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-2"><div><div className="text-[11px] font-extrabold text-[#cd1e25]">LIVE PREVIEW</div><div className="mt-1 text-[13px] font-bold text-black/45">Click highlighted text to edit it</div></div><div className="flex items-center gap-2 rounded-full bg-[#f1f1ee] px-3 py-2 text-[11px] font-bold text-black/45"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Desktop preview</div></div>
           <div dir={rtl ? "rtl" : "ltr"} className="overflow-hidden rounded-[28px] border border-black/[.06]">{renderPreview()}</div>
         </section>
       </div>

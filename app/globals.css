@@ -35,24 +35,27 @@
 }
 
 :root {
+  --lf-red: #cd1e25;
+  --lf-green: #1a5632;
+  --lf-brown: #5c3327;
   --background: #f7f7f5;
   --foreground: #171717;
   --card: #ffffff;
   --card-foreground: #171717;
   --popover: #ffffff;
   --popover-foreground: #171717;
-  --primary: #df1f2d;
+  --primary: var(--lf-red);
   --primary-foreground: #ffffff;
   --secondary: #191919;
   --secondary-foreground: #ffffff;
   --muted: #efefec;
   --muted-foreground: #686865;
-  --accent: #0b7740;
+  --accent: var(--lf-green);
   --accent-foreground: #ffffff;
   --destructive: #b91c1c;
   --border: #deded9;
   --input: #deded9;
-  --ring: #df1f2d;
+  --ring: var(--lf-red);
   --radius: 1rem;
   --site-bg: #f7f7f3;
   --site-surface: #ffffff;
@@ -139,12 +142,12 @@ button { font: inherit; }
 
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(223, 31, 45, 0.35);
+  outline: 3px solid rgba(205, 30, 37, 0.35);
   outline-offset: 4px;
 }
 
 ::selection {
-  background: rgba(223, 31, 45, 0.18);
+  background: rgba(205, 30, 37, 0.18);
   color: #111111;
 }
 
@@ -166,7 +169,7 @@ a:focus-visible {
 [dir="rtl"] .theme-toggle { padding: 4px 5px 4px 11px; }
 
 .theme-toggle:hover {
-  border-color: color-mix(in srgb, #df1f2d 45%, transparent);
+  border-color: color-mix(in srgb, #cd1e25 45%, transparent);
   transform: translateY(-1px);
 }
 
@@ -248,8 +251,8 @@ a:focus-visible {
 [data-theme="dark"] .site-shell .soft-grid,
 [data-theme="dark"] .theme-page .soft-grid {
   background-image:
-    radial-gradient(circle at 16% 20%, rgba(223, 31, 45, 0.12), transparent 29rem),
-    radial-gradient(circle at 82% 78%, rgba(26, 145, 82, 0.1), transparent 24rem),
+    radial-gradient(circle at 16% 20%, rgba(205, 30, 37, 0.12), transparent 29rem),
+    radial-gradient(circle at 82% 78%, rgba(26, 86, 50, 0.1), transparent 24rem),
     linear-gradient(rgba(255, 255, 255, 0.027) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.027) 1px, transparent 1px);
 }
@@ -284,7 +287,7 @@ a:focus-visible {
 }
 
 .site-shell .action-card--light .action-card__icon {
-  color: #df1f2d !important;
+  color: #cd1e25 !important;
   background: rgba(255, 255, 255, 0.82) !important;
 }
 
@@ -319,8 +322,8 @@ a:focus-visible {
 
 .soft-grid {
   background-image:
-    radial-gradient(circle at 16% 20%, rgba(223, 31, 45, 0.08), transparent 29rem),
-    radial-gradient(circle at 82% 78%, rgba(11, 119, 64, 0.05), transparent 24rem),
+    radial-gradient(circle at 16% 20%, rgba(205, 30, 37, 0.08), transparent 29rem),
+    radial-gradient(circle at 82% 78%, rgba(26, 86, 50, 0.05), transparent 24rem),
     linear-gradient(rgba(17, 17, 17, 0.027) 1px, transparent 1px),
     linear-gradient(90deg, rgba(17, 17, 17, 0.027) 1px, transparent 1px);
   background-size: auto, auto, 54px 54px, 54px 54px;
@@ -383,14 +386,14 @@ a:focus-visible {
 }
 
 .wysiwyg-editable:hover {
-  background: rgba(223, 31, 45, 0.07);
-  box-shadow: 0 0 0 2px rgba(223, 31, 45, 0.16);
+  background: rgba(205, 30, 37, 0.07);
+  box-shadow: 0 0 0 2px rgba(205, 30, 37, 0.16);
 }
 
 .wysiwyg-editable:focus {
   background: rgba(255, 255, 255, 0.96);
   color: #171717;
-  box-shadow: 0 0 0 3px rgba(223, 31, 45, 0.3), 0 12px 35px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 0 3px rgba(205, 30, 37, 0.3), 0 12px 35px rgba(0, 0, 0, 0.1);
 }
 
 .wysiwyg-editable:empty::before {

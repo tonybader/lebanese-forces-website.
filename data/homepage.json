@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06T20:51:24.330Z",
+  "updatedAt": "2026-10-13T10:45:00.000Z",
   "navigation": [
     {
       "id": "home",
@@ -39,14 +39,6 @@
         "ar": "الأخبار",
         "en": "News",
         "fr": "Actualités"
-      }
-    },
-    {
-      "id": "diaspora",
-      "label": {
-        "ar": "الانتشار",
-        "en": "Diaspora",
-        "fr": "Diaspora"
       }
     },
     {
@@ -239,9 +231,9 @@
       "fr": "Ensemble pour le Liban"
     },
     "title": {
-      "ar": "ساهم في استمرار المسيرة",
-      "en": "Help carry the mission forward",
-      "fr": "Faites vivre notre engagement"
+      "ar": "دعمك يصنع أثراً",
+      "en": "Your support makes an impact",
+      "fr": "Votre soutien a un impact"
     },
     "text": {
       "ar": "دعمكم يساهم في تطوير العمل العام، وتعزيز التواصل، وإيصال صوت القوات اللبنانية إلى كل لبناني.",
@@ -681,9 +673,9 @@
       "fr": "Direction et blocs"
     },
     "text": {
-      "ar": "تعرّف إلى أعضاء الهيئة التنفيذية، نواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
-      "en": "Meet the Executive Committee, the Lebanese Forces MPs in Parliament and the current ministers.",
-      "fr": "Découvrez le Comité exécutif, les députés des Forces Libanaises et les ministres actuels."
+      "ar": "تعرّف إلى أعضاء الأمانة العامة والهيئة التنفيذية، ونواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
+      "en": "Meet the General Secretariat, the Executive Committee, Lebanese Forces MPs in Parliament and the current ministers.",
+      "fr": "Découvrez le Secrétariat général, le Comité exécutif, les députés des Forces Libanaises et les ministres actuels."
     }
   },
   "secretariat": [

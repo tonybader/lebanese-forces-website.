@@ -151,12 +151,12 @@ export function BiographyView({ imageUrl, socials, content }: { imageUrl: string
       </header>
 
       <section className="relative overflow-hidden bg-[#191919] text-white">
-        <div className="absolute -end-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#df1f2d]/25 blur-3xl" />
+        <div className="absolute -end-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#cd1e25]/25 blur-3xl" />
         <div className="relative mx-auto grid min-h-[690px] max-w-[1320px] items-stretch lg:grid-cols-[.88fr_1.12fr]">
           <div className="relative min-h-[480px] overflow-hidden bg-black lg:min-h-[690px]"><img src={imageUrl} alt={t.title} className="absolute inset-0 h-full w-full object-cover object-top grayscale" /><div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/5 to-transparent" /></div>
           <div className="flex flex-col justify-center px-6 py-14 sm:px-10 lg:px-16">
             <a href="/" className="mb-14 inline-flex w-fit items-center gap-2 text-[13px] font-bold text-white/48 transition hover:text-white"><ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />{t.back}</a>
-            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#ff6570]"><span className="h-2 w-2 rounded-full bg-[#ff6570]" />{t.kicker}</div>
+            <div className="flex items-center gap-2 text-[12px] font-extrabold text-[#cd1e25]"><span className="h-2 w-2 rounded-full bg-[#cd1e25]" />{t.kicker}</div>
             <h1 className="section-title mt-5 text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[1.1]">{t.title}</h1>
             <p className="mt-4 text-[17px] font-bold text-white/62">{t.role}</p>
             <p className="mt-8 max-w-3xl text-[16px] leading-9 text-white/68 sm:text-[18px]">{t.intro}</p>
@@ -173,16 +173,16 @@ export function BiographyView({ imageUrl, socials, content }: { imageUrl: string
       </section>
 
       <section className="mx-auto grid max-w-[1180px] gap-12 px-5 py-16 lg:grid-cols-[.65fr_1.35fr] lg:px-8 lg:py-24">
-        <div><div className="grid h-14 w-14 place-items-center rounded-full bg-[#df1f2d] text-white"><Quote size={22} /></div><h2 className="section-title mt-6 text-[clamp(2.2rem,5vw,4.6rem)] font-extrabold leading-[1.2]">{t.storyTitle}</h2></div>
+        <div><div className="grid h-14 w-14 place-items-center rounded-full bg-[#cd1e25] text-white"><Quote size={22} /></div><h2 className="section-title mt-6 text-[clamp(2.2rem,5vw,4.6rem)] font-extrabold leading-[1.2]">{t.storyTitle}</h2></div>
         <div className="space-y-5 text-[17px] leading-[1.9] text-black/68 sm:text-[19px]">{t.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
       </section>
 
       <section className="border-y border-black/[.06] bg-white">
         <div className="mx-auto max-w-[1180px] px-5 py-16 lg:px-8 lg:py-24">
-          <div className="flex items-center gap-3 text-[#df1f2d]"><CalendarDays size={20} /><span className="text-[12px] font-extrabold">{t.kicker}</span></div>
+          <div className="flex items-center gap-3 text-[#cd1e25]"><CalendarDays size={20} /><span className="text-[12px] font-extrabold">{t.kicker}</span></div>
           <h2 className="section-title mt-4 text-[clamp(2.2rem,5vw,4.8rem)] font-extrabold">{t.timelineTitle}</h2>
-          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.id} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[var(--site-bg)] transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#ff6570]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
-          <a href={content.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-bold text-black/40 transition hover:text-[#df1f2d]">{t.source}<ExternalLink size={14} /></a>
+          <div className="mt-11 grid gap-3 md:grid-cols-2">{milestones.map((item) => <article key={item.id} className="group grid grid-cols-[100px_1fr] overflow-hidden rounded-[24px] border border-black/[.07] bg-[var(--site-bg)] transition hover:-translate-y-0.5 hover:border-[#cd1e25]/30 hover:shadow-lg"><div className="grid place-items-center bg-[#191919] p-4 text-center text-[20px] font-extrabold text-[#cd1e25]">{item.year}</div><div className="p-5 sm:p-6"><h3 className="text-[17px] font-extrabold">{item.title[language]}</h3><p className="mt-2 text-[14px] leading-7 text-black/50">{item.text[language]}</p></div></article>)}</div>
+          <a href={content.sourceUrl} target="_blank" rel="noreferrer" className="mt-10 inline-flex items-center gap-2 text-[12px] font-bold text-black/40 transition hover:text-[#cd1e25]">{t.source}<ExternalLink size={14} /></a>
         </div>
       </section>
     </main>

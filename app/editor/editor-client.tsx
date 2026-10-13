@@ -2,7 +2,6 @@
 
 import {
   ArrowLeft,
-  BookOpen,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -82,12 +81,6 @@ const channelOptions = [
     label: "Party news",
     description: "Party news, meetings and activities",
     icon: Landmark,
-  },
-  {
-    value: "special" as const,
-    label: "Special articles",
-    description: "Analysis, opinion and long-form articles",
-    icon: BookOpen,
   },
   {
     value: "diaspora" as const,
@@ -259,7 +252,7 @@ function TagField({
   return (
     <div className="rounded-[20px] border border-black/[.07] bg-[#fafaf8] p-4">
       <Label htmlFor={id} className="flex items-center gap-2 font-extrabold">
-        <span className="text-[#df1f2d]">{icon}</span>
+        <span className="text-[#cd1e25]">{icon}</span>
         {label}
       </Label>
       <p className="mt-1 text-[11px] leading-5 text-black/42">{hint}</p>
@@ -283,7 +276,7 @@ function TagField({
               key={tag}
               type="button"
               onClick={() => onChange(tags.filter((item) => item !== tag).join(", "))}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#191919] px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-[#df1f2d]"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#191919] px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-[#cd1e25]"
               aria-label={`Remove ${tag}`}
             >
               {tag}<X size={12} />
@@ -364,7 +357,7 @@ export function EditorLogin({
     <ManagementFrame>
       <div className="grid min-h-[calc(100vh-4rem)] items-center gap-8 lg:grid-cols-[.92fr_1.08fr]">
         <section className="relative overflow-hidden rounded-[34px] bg-[#191919] p-8 text-white shadow-[0_28px_80px_rgba(0,0,0,.16)] sm:p-11 lg:min-h-[610px]">
-          <div className="absolute -right-28 -top-28 h-80 w-80 rounded-full bg-[#df1f2d]/30 blur-3xl" />
+          <div className="absolute -right-28 -top-28 h-80 w-80 rounded-full bg-[#cd1e25]/30 blur-3xl" />
           <div className="relative flex h-full flex-col">
             <a href="/" className="flex w-fit items-center gap-3">
               <span className="grid h-14 w-14 place-items-center rounded-full bg-white shadow-lg">
@@ -376,7 +369,7 @@ export function EditorLogin({
               </span>
             </a>
             <div className="relative mt-24 max-w-lg lg:mt-auto lg:pb-8">
-              <div className="mb-5 flex items-center gap-2 text-[12px] font-bold text-[#ff6570]"><Newspaper size={16} /> Editor access</div>
+              <div className="mb-5 flex items-center gap-2 text-[12px] font-bold text-[#cd1e25]"><Newspaper size={16} /> Editor access</div>
               <h1 className="section-title text-[clamp(2.4rem,5vw,4.6rem)] font-extrabold leading-[1.2]">News editor</h1>
               <p className="mt-5 max-w-md text-[16px] leading-8 text-white/58">Create, update and remove articles from one dedicated workspace.</p>
             </div>
@@ -385,7 +378,7 @@ export function EditorLogin({
 
         <section className="rounded-[30px] border border-black/[.07] bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,.07)] sm:p-10 lg:p-12">
           <div className="mb-9">
-            <div className="text-[12px] font-extrabold text-[#df1f2d]">EDITOR SIGN IN</div>
+            <div className="text-[12px] font-extrabold text-[#cd1e25]">EDITOR SIGN IN</div>
             <h2 className="mt-2 text-3xl font-extrabold">Welcome back</h2>
             <p className="mt-2 text-[14px] text-black/45">Use the editor credentials to continue.</p>
           </div>
@@ -406,11 +399,11 @@ export function EditorLogin({
               <Input id="editor-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} className="h-13 rounded-2xl px-4 text-[16px]" required />
             </div>
             {error && <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-[13px] font-bold text-red-700">{error}</p>}
-            <Button type="submit" disabled={loading || !configured} className="h-13 w-full rounded-2xl bg-[#df1f2d] text-[15px] font-extrabold hover:bg-[#c51825]">
+            <Button type="submit" disabled={loading || !configured} className="h-13 w-full rounded-2xl bg-[#cd1e25] text-[15px] font-extrabold hover:bg-[#cd1e25]">
               {loading ? <Loader2 className="animate-spin" /> : <LockKeyhole />} Sign in
             </Button>
           </form>
-          <a href="/" className="mt-7 flex items-center justify-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#df1f2d]"><ArrowLeft size={15} /> Back to website</a>
+          <a href="/" className="mt-7 flex items-center justify-center gap-2 text-[13px] font-bold text-black/45 transition hover:text-[#cd1e25]"><ArrowLeft size={15} /> Back to website</a>
         </section>
       </div>
     </ManagementFrame>
@@ -693,7 +686,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/media">Media & documents <ImagePlus /></a></Button>
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/editor/actions">Take action <ClipboardList /></a></Button>
           <Button asChild variant="outline" className="h-10 rounded-full border-black/10 px-4 font-bold"><a href="/news" target="_blank">View news <ExternalLink /></a></Button>
-          <Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#df1f2d]"><LogOut /> Sign out</Button>
+          <Button type="button" variant="ghost" onClick={logout} className="h-10 rounded-full px-4 font-bold text-black/50 hover:bg-red-50 hover:text-[#cd1e25]"><LogOut /> Sign out</Button>
         </div>
       </header>
 
@@ -709,7 +702,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
       <div className="grid items-start gap-6 xl:grid-cols-[.95fr_1.05fr]">
         <section ref={formRef} className="scroll-mt-5 rounded-[30px] border border-black/[.07] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,.055)] sm:p-8">
           <div className="mb-7 flex items-start justify-between gap-5">
-            <div><div className="text-[12px] font-extrabold text-[#df1f2d]">{editing ? "EDIT ARTICLE" : "NEW ARTICLE"}</div><h1 className="mt-2 text-[clamp(1.7rem,3vw,2.55rem)] font-extrabold">{editing ? "Update the selected story" : "Create a story"}</h1></div>
+            <div><div className="text-[12px] font-extrabold text-[#cd1e25]">{editing ? "EDIT ARTICLE" : "NEW ARTICLE"}</div><h1 className="mt-2 text-[clamp(1.7rem,3vw,2.55rem)] font-extrabold">{editing ? "Update the selected story" : "Create a story"}</h1></div>
             {editing && <Button type="button" variant="outline" onClick={clearForm} className="rounded-full"><X /> Cancel</Button>}
           </div>
 
@@ -728,11 +721,11 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
                     <Label
                       key={option.value}
                       htmlFor={`channel-${option.value}`}
-                      className={`flex min-h-[104px] cursor-pointer items-start gap-3 rounded-[18px] border p-4 transition ${selected ? "border-[#df1f2d] bg-red-50 shadow-[0_8px_25px_rgba(223,31,45,.08)]" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}
+                      className={`flex min-h-[104px] cursor-pointer items-start gap-3 rounded-[18px] border p-4 transition ${selected ? "border-[#cd1e25] bg-red-50 shadow-[0_8px_25px_rgba(205, 30, 37,.08)]" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}
                     >
                       <RadioGroupItem id={`channel-${option.value}`} value={option.value} className="mt-1" />
                       <span className="min-w-0">
-                        <span className={`flex items-center gap-2 text-[13px] font-extrabold ${selected ? "text-[#df1f2d]" : "text-[#191919]"}`}><Icon size={16} />{option.label}</span>
+                        <span className={`flex items-center gap-2 text-[13px] font-extrabold ${selected ? "text-[#cd1e25]" : "text-[#191919]"}`}><Icon size={16} />{option.label}</span>
                         <span className="mt-1.5 block text-[11px] font-normal leading-5 text-black/45">{option.description}</span>
                       </span>
                     </Label>
@@ -741,37 +734,37 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
               </RadioGroup>
             </fieldset>
 
-            <label className={`flex cursor-pointer items-start gap-4 rounded-[20px] border p-4 transition ${pinned ? "border-[#df1f2d]/35 bg-red-50" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}>
-              <input type="checkbox" checked={pinned} onChange={(event) => setPinned(event.target.checked)} className="mt-1 h-4 w-4 accent-[#df1f2d]" />
+            <label className={`flex cursor-pointer items-start gap-4 rounded-[20px] border p-4 transition ${pinned ? "border-[#cd1e25]/35 bg-red-50" : "border-black/[.07] bg-[#fafaf8] hover:border-black/15"}`}>
+              <input type="checkbox" checked={pinned} onChange={(event) => setPinned(event.target.checked)} className="mt-1 h-4 w-4 accent-[#cd1e25]" />
               <span className="min-w-0">
-                <span className="flex items-center gap-2 text-[13px] font-extrabold"><Pin size={15} className="text-[#df1f2d]" />Pin this story</span>
+                <span className="flex items-center gap-2 text-[13px] font-extrabold"><Pin size={15} className="text-[#cd1e25]" />Pin this story</span>
                 <span className="mt-1 block text-[11px] leading-5 text-black/45">Keep it at the top of its selected section even when newer stories are published.</span>
               </span>
             </label>
 
             <div>
               <Label htmlFor="article-image" className="mb-3 block font-extrabold">Cover photograph {editing ? "(optional)" : "*"}</Label>
-              <label htmlFor="article-image" className="group relative grid aspect-[16/7.5] cursor-pointer place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#df1f2d]/50">
-                {previewUrl ? <><img src={previewUrl} alt="Article preview" className="absolute inset-0 h-full w-full object-cover" /><span className="absolute inset-0 bg-black/24 transition group-hover:bg-black/34" /><span className="relative rounded-full bg-white/92 px-5 py-3 text-[13px] font-extrabold shadow-lg"><ImagePlus className="mr-2 inline" size={17} /> Change photo</span></> : <span className="text-center"><span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-white text-[#df1f2d] shadow-md"><ImagePlus size={22} /></span><span className="mt-4 block text-[15px] font-extrabold">Choose a photo</span><span className="mt-1 block text-[12px] text-black/40">JPG, PNG or WebP</span></span>}
+              <label htmlFor="article-image" className="group relative grid aspect-[16/7.5] cursor-pointer place-items-center overflow-hidden rounded-[24px] border border-dashed border-black/15 bg-[#f5f5f2] transition hover:border-[#cd1e25]/50">
+                {previewUrl ? <><img src={previewUrl} alt="Article preview" className="absolute inset-0 h-full w-full object-cover" /><span className="absolute inset-0 bg-black/24 transition group-hover:bg-black/34" /><span className="relative rounded-full bg-white/92 px-5 py-3 text-[13px] font-extrabold shadow-lg"><ImagePlus className="mr-2 inline" size={17} /> Change photo</span></> : <span className="text-center"><span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-white text-[#cd1e25] shadow-md"><ImagePlus size={22} /></span><span className="mt-4 block text-[15px] font-extrabold">Choose a photo</span><span className="mt-1 block text-[12px] text-black/40">JPG, PNG or WebP</span></span>}
               </label>
               <Input key={fileKey} id="article-image" className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void selectImage(event.target.files?.[0])} />
             </div>
 
             <Tabs defaultValue="ar" dir="ltr">
               <TabsList className="h-auto w-full justify-start gap-1 rounded-2xl bg-[#f3f3f0] p-1.5">
-                <TabsTrigger value="ar" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#df1f2d]">العربية *</TabsTrigger>
-                <TabsTrigger value="en" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#df1f2d]">English</TabsTrigger>
-                <TabsTrigger value="fr" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#df1f2d]">Français</TabsTrigger>
+                <TabsTrigger value="ar" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#cd1e25]">العربية *</TabsTrigger>
+                <TabsTrigger value="en" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#cd1e25]">English</TabsTrigger>
+                <TabsTrigger value="fr" className="h-10 flex-1 rounded-xl font-extrabold data-[state=active]:bg-white data-[state=active]:text-[#cd1e25]">Français</TabsTrigger>
               </TabsList>
               {(["ar", "en", "fr"] as ArticleLanguage[]).map((language) => (
                 <TabsContent key={language} value={language} className="mt-5 space-y-5" dir={language === "ar" ? "rtl" : "ltr"}>
                   <div className="space-y-2.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <Label htmlFor={`title-${language}`} className="font-extrabold">{language === "ar" ? "العنوان" : language === "en" ? "Title" : "Titre"}</Label>
-                      <Button type="button" variant="outline" size="sm" disabled={titleSuggestionLoading !== null} onClick={() => void analyzeArticleTitle(language)} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white">{titleSuggestionLoading === language ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Suggest title</Button>
+                      <Button type="button" variant="outline" size="sm" disabled={titleSuggestionLoading !== null} onClick={() => void analyzeArticleTitle(language)} className="rounded-full border-[#cd1e25]/20 bg-red-50 font-extrabold text-[#cd1e25] hover:bg-[#cd1e25] hover:text-white">{titleSuggestionLoading === language ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Suggest title</Button>
                     </div>
                     <Input id={`title-${language}`} value={title[language]} onChange={(event) => updateTranslation(setTitle, language, event.target.value)} maxLength={240} required={language === "ar"} className="h-13 rounded-2xl px-4 text-[16px]" placeholder={language === "ar" ? "عنوان واضح ومختصر" : "Optional translation"} />
-                    {titleAssistantMessage?.language === language && <p role="status" className="rounded-xl bg-red-50 px-3 py-2 text-[11px] font-bold leading-5 text-[#a21520]">{titleAssistantMessage.text}</p>}
+                    {titleAssistantMessage?.language === language && <p role="status" className="rounded-xl bg-red-50 px-3 py-2 text-[11px] font-bold leading-5 text-[#cd1e25]">{titleAssistantMessage.text}</p>}
                   </div>
                   <div className="space-y-2.5"><Label htmlFor={`body-${language}`} className="font-extrabold">{language === "ar" ? "نص المقال" : "Article"}</Label><Textarea id={`body-${language}`} value={body[language]} onChange={(event) => updateTranslation(setBody, language, event.target.value)} maxLength={40000} required={language === "ar"} className="min-h-[280px] resize-y rounded-2xl px-4 py-4 text-[16px] leading-8" placeholder={language === "ar" ? "اكتب نص المقال هنا…" : "Optional translation"} /></div>
                 </TabsContent>
@@ -780,8 +773,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
 
             <section aria-labelledby="article-tags-heading">
               <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
-                <h2 id="article-tags-heading" className="flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#df1f2d]" />Searchable tags</h2>
-                <Button type="button" variant="outline" size="sm" disabled={tagSuggestionLoading} onClick={() => void analyzeArticleTags()} className="rounded-full border-[#df1f2d]/20 bg-red-50 font-extrabold text-[#c51825] hover:bg-[#df1f2d] hover:text-white">{tagSuggestionLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Analyze & suggest tags</Button>
+                <h2 id="article-tags-heading" className="flex items-center gap-2 text-[14px] font-extrabold"><Tags size={17} className="text-[#cd1e25]" />Searchable tags</h2>
+                <Button type="button" variant="outline" size="sm" disabled={tagSuggestionLoading} onClick={() => void analyzeArticleTags()} className="rounded-full border-[#cd1e25]/20 bg-red-50 font-extrabold text-[#cd1e25] hover:bg-[#cd1e25] hover:text-white">{tagSuggestionLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}Analyze & suggest tags</Button>
               </div>
               <p className="mb-4 text-[12px] leading-6 text-black/45">The assistant detects regions, activity types and public figures from the title and article. For statements, it suggests a region only when the text identifies a regional chapter as the issuer. Every suggestion remains editable.</p>
               {tagAssistantMessage && <p role="status" className="mb-4 rounded-xl bg-[#191919] px-4 py-3 text-[11px] font-bold text-white/72">{tagAssistantMessage}</p>}
@@ -792,14 +785,14 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
               </div>
             </section>
 
-            <Button type="submit" disabled={submitting || !publishingConfigured} className="h-14 w-full rounded-2xl bg-[#df1f2d] text-[15px] font-extrabold shadow-[0_12px_30px_rgba(223,31,45,.2)] hover:bg-[#c51825] sm:w-auto sm:px-9">
+            <Button type="submit" disabled={submitting || !publishingConfigured} className="h-14 w-full rounded-2xl bg-[#cd1e25] text-[15px] font-extrabold shadow-[0_12px_30px_rgba(205, 30, 37,.2)] hover:bg-[#cd1e25] sm:w-auto sm:px-9">
               {submitting ? <Loader2 className="animate-spin" /> : editing ? <Save /> : <UploadCloud />} {editing ? "Save changes" : "Publish article"}
             </Button>
           </form>
         </section>
 
         <section className="rounded-[30px] bg-[#191919] p-5 text-white shadow-[0_20px_60px_rgba(0,0,0,.12)] sm:p-7">
-          <div className="flex items-center justify-between gap-4"><div><div className="text-[11px] font-bold text-[#ff6570]">PINNED, THEN NEWEST</div><h2 className="mt-1 text-2xl font-extrabold">Published articles</h2></div><Button type="button" onClick={clearForm} className="rounded-full bg-white text-[#191919] hover:bg-[#df1f2d] hover:text-white"><Plus /> New</Button></div>
+          <div className="flex items-center justify-between gap-4"><div><div className="text-[11px] font-bold text-[#cd1e25]">PINNED, THEN NEWEST</div><h2 className="mt-1 text-2xl font-extrabold">Published articles</h2></div><Button type="button" onClick={clearForm} className="rounded-full bg-white text-[#191919] hover:bg-[#cd1e25] hover:text-white"><Plus /> New</Button></div>
           <div className="relative mt-5">
             <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/35" />
             <Input value={articleSearch} onChange={(event) => { setArticleSearch(event.target.value); setArticlePage(1); }} placeholder="Search title, text, person, region or tag…" className="h-12 rounded-2xl border-white/10 bg-white/[.07] pl-11 text-white placeholder:text-white/30" />
@@ -807,8 +800,8 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
           <div className="mt-3 flex items-center justify-between text-[10px] font-bold text-white/35"><span>{filteredArticles.length} result{filteredArticles.length === 1 ? "" : "s"}</span><span>20 per page</span></div>
           <div className="mt-6 max-h-[900px] space-y-3 overflow-y-auto pr-1">
             {loadingArticles ? <div className="grid min-h-40 place-items-center"><Loader2 className="animate-spin text-white/40" /></div> : !pagedArticles.length ? <div className="rounded-[20px] border border-dashed border-white/10 px-5 py-12 text-center text-sm text-white/35">No matching articles.</div> : pagedArticles.map((article, index) => (
-              <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#df1f2d] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
-                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#ff6570]">#{(visibleArticlePage - 1) * articlePageSize + index + 1}</span><span className="rounded-full bg-[#df1f2d]/18 px-2 py-0.5 font-bold text-[#ff8d95]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
+              <article key={article.id} className={`rounded-[20px] border p-3.5 transition ${editing?.id === article.id ? "border-[#cd1e25] bg-white/10" : "border-white/[.07] bg-white/[.045]"}`}>
+                <div className="flex gap-3"><img src={article.imageUrl} alt="" className="h-20 w-24 shrink-0 rounded-[14px] object-cover" /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2 text-[10px] text-white/35"><span className="text-[#cd1e25]">#{(visibleArticlePage - 1) * articlePageSize + index + 1}</span><span className="rounded-full bg-[#cd1e25]/18 px-2 py-0.5 font-bold text-[#cd1e25]">{articleChannelText(getArticleChannel(article), "en")}</span>{article.pinned && <span className="inline-flex items-center gap-1 rounded-full bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200"><Pin size={10} fill="currentColor" />Pinned</span>}{formatArticleDate(article.publishedAt, "ar")}</div><h3 dir="rtl" className="mt-2 line-clamp-2 text-right text-[13px] font-extrabold leading-6">{article.title.ar}</h3></div></div>
                 {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[...(article.regions || []), ...(article.activityTypes || []), ...(article.people || [])].slice(0, 5).map((tag, tagIndex) => <span key={`${tag}-${tagIndex}`} className="rounded-full bg-white/[.07] px-2.5 py-1 text-[10px] font-bold text-white/50">{tag}</span>)}
@@ -818,7 +811,7 @@ export function EditorDashboard({ publishingConfigured }: { publishingConfigured
                   <Button type="button" size="sm" onClick={() => startEdit(article)} className="rounded-full bg-white/8 text-white hover:bg-white hover:text-[#191919]"><Edit3 /> Edit</Button>
                   <Button asChild type="button" size="sm" variant="ghost" className="rounded-full text-white/55 hover:bg-white/8 hover:text-white"><a href={articleHref(article)} target="_blank"><ExternalLink /> View</a></Button>
                   <AlertDialog>
-                    <AlertDialogTrigger asChild><Button type="button" size="sm" variant="ghost" className="ml-auto rounded-full text-[#ff7a84] hover:bg-red-500/15 hover:text-[#ff9aa2]"><Trash2 /> Delete</Button></AlertDialogTrigger>
+                    <AlertDialogTrigger asChild><Button type="button" size="sm" variant="ghost" className="ml-auto rounded-full text-[#cd1e25] hover:bg-red-500/15 hover:text-[#cd1e25]"><Trash2 /> Delete</Button></AlertDialogTrigger>
                     <AlertDialogContent dir="ltr" className="rounded-[24px]">
                       <AlertDialogHeader><AlertDialogTitle>Delete this article?</AlertDialogTitle><AlertDialogDescription>This permanently removes the article from the news archive. This action cannot be undone.</AlertDialogDescription></AlertDialogHeader>
                       <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction disabled={deletingId === article.id} onClick={() => void removeArticle(article)} className="bg-red-600 hover:bg-red-700">{deletingId === article.id ? <Loader2 className="animate-spin" /> : <Trash2 />} Delete article</AlertDialogAction></AlertDialogFooter>

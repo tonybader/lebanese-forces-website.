@@ -32,13 +32,13 @@ export default async function ContactSubmissionsPage() {
           <a href="/editor" className="flex items-center gap-3 font-extrabold"><ArrowLeft size={17} /><img src="/lf-logo.png" alt="" className="h-10 w-10 rounded-full object-contain" /><span>Articles editor</span></a>
           <div className="flex flex-wrap gap-2">
             <a href="/editor/submissions" className="inline-flex h-10 items-center gap-2 rounded-full border border-black/10 px-4 text-[13px] font-extrabold"><RefreshCw size={15} />Refresh</a>
-            <a href="/api/contact/submissions?format=csv" className="inline-flex h-10 items-center gap-2 rounded-full bg-[#df1f2d] px-5 text-[13px] font-extrabold text-white shadow-sm hover:bg-[#c51825]"><Download size={16} />Export for Excel</a>
+            <a href="/api/contact/submissions?format=csv" className="inline-flex h-10 items-center gap-2 rounded-full bg-[#cd1e25] px-5 text-[13px] font-extrabold text-white shadow-sm hover:bg-[#cd1e25]"><Download size={16} />Export for Excel</a>
           </div>
         </header>
 
         <section className="mb-7 overflow-hidden rounded-[30px] bg-[#191919] p-7 text-white shadow-[0_20px_60px_rgba(0,0,0,.12)] sm:p-9">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <div><div className="flex items-center gap-2 text-[11px] font-extrabold tracking-[.12em] text-[#ff6570]"><Inbox size={15} />CONTACT INBOX</div><h1 className="mt-3 text-[clamp(2rem,5vw,4rem)] font-extrabold tracking-[-.04em]">Website submissions</h1><p className="mt-3 max-w-2xl text-[13px] leading-7 text-white/55">Messages are stored in private application storage. They are not emailed and can only be read after signing into the editor.</p></div>
+            <div><div className="flex items-center gap-2 text-[11px] font-extrabold tracking-[.12em] text-[#cd1e25]"><Inbox size={15} />CONTACT INBOX</div><h1 className="mt-3 text-[clamp(2rem,5vw,4rem)] font-extrabold tracking-[-.04em]">Website submissions</h1><p className="mt-3 max-w-2xl text-[13px] leading-7 text-white/55">Messages are stored in private application storage. They are not emailed and can only be read after signing into the editor.</p></div>
             <div className="rounded-2xl bg-white/[.07] px-5 py-4"><span className="block text-3xl font-extrabold">{submissions.length}</span><span className="text-[11px] text-white/45">submissions</span></div>
           </div>
         </section>
@@ -52,7 +52,7 @@ export default async function ContactSubmissionsPage() {
             {submissions.map((item) => (
               <article key={item.id} className="rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_12px_38px_rgba(0,0,0,.04)] sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/[.06] pb-4">
-                  <div><h2 className="text-lg font-extrabold">{item.name}</h2><div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-black/48"><a className="hover:text-[#df1f2d]" href={`mailto:${item.email}`}>{item.email}</a>{item.phone && <a className="hover:text-[#df1f2d]" href={`tel:${item.phone}`}>{item.phone}</a>}<span>{item.region}</span></div></div>
+                  <div><h2 className="text-lg font-extrabold">{item.name}</h2><div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-black/48"><a className="hover:text-[#cd1e25]" href={`mailto:${item.email}`}>{item.email}</a>{item.phone && <a className="hover:text-[#cd1e25]" href={`tel:${item.phone}`}>{item.phone}</a>}<span>{item.region}</span></div></div>
                   <time className="rounded-full bg-[#f3f3f0] px-3 py-1.5 text-[11px] font-bold text-black/45" dateTime={item.createdAt}>{new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Beirut" }).format(new Date(item.createdAt))}</time>
                 </div>
                 <p dir="auto" className="mt-4 whitespace-pre-wrap text-[14px] leading-8 text-black/70">{item.message}</p>

@@ -21,7 +21,6 @@ import {
   MessageSquareQuote,
   Music2,
   Play,
-  Plane,
   Quote,
   Radio,
   Search,
@@ -30,6 +29,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { ArticleTagLinks } from "@/components/article-tag-links";
 import { ActionCenter } from "@/components/action-center";
 import { HeroV2 } from "@/components/hero-v2";
@@ -67,6 +67,7 @@ import { ministers, mps, profileText, type PublicProfile } from "@/lib/people";
 type Lang = "ar" | "en" | "fr";
 type Localized = { ar: string; en: string; fr: string };
 type LeadershipTab = "cabinet" | "parliament" | "secretariat" | "executive";
+type PartyScope = "lebanon" | "diaspora";
 
 const text = (value: Localized, lang: Lang) => value[lang];
 
@@ -148,7 +149,7 @@ const ui = {
     leadershipKicker: "المؤسسات والتمثيل",
     leadershipTitle: "القيادة والكتل",
     leadershipText:
-      "تعرّف إلى أعضاء الهيئة التنفيذية، نواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
+      "تعرّف إلى أعضاء الأمانة العامة والهيئة التنفيذية، ونواب القوات اللبنانية في المجلس النيابي والوزراء الحاليين.",
     tabs: ["الكتلة الوزارية", "الكتلة النيابية", "الأمانة العامة", "الهيئة التنفيذية"],
     committeeMember: "عضو منتخب في الهيئة التنفيذية",
     vicePresident: "نائب رئيس الحزب",
@@ -163,6 +164,8 @@ const ui = {
     read: "اقرأ الخبر",
     browseSection: "عرض كل المواد",
     noStories: "لا توجد مواد منشورة في هذا القسم بعد.",
+    partyLebanon: "لبنان",
+    partyDiaspora: "الانتشار",
     instagramKicker: "منصاتنا الرقمية",
     instagramTitle: "من القوات على إنستغرام",
     instagramText: "أحدث الصور والفيديوهات المنشورة عبر الحساب الرسمي للقوات اللبنانية.",
@@ -247,7 +250,7 @@ const ui = {
     leadershipKicker: "Institutions & representation",
     leadershipTitle: "Leadership and blocs",
     leadershipText:
-      "Meet the Executive Committee, the Lebanese Forces MPs in Parliament and the current ministers.",
+      "Meet the General Secretariat, the Executive Committee, Lebanese Forces MPs in Parliament and the current ministers.",
     tabs: ["Ministerial bloc", "Parliamentary bloc", "General Secretariat", "Executive Committee"],
     committeeMember: "Elected Executive Committee member",
     vicePresident: "Party vice president",
@@ -262,6 +265,8 @@ const ui = {
     read: "Read article",
     browseSection: "View all coverage",
     noStories: "No stories have been published in this section yet.",
+    partyLebanon: "Lebanon",
+    partyDiaspora: "Diaspora",
     instagramKicker: "Our digital channels",
     instagramTitle: "From the LF on Instagram",
     instagramText: "The latest photos and videos from the official Lebanese Forces account.",
@@ -346,7 +351,7 @@ const ui = {
     leadershipKicker: "Institutions & représentation",
     leadershipTitle: "Direction et blocs",
     leadershipText:
-      "Découvrez le Comité exécutif, les députés des Forces Libanaises et les ministres actuels.",
+      "Découvrez le Secrétariat général, le Comité exécutif, les députés des Forces Libanaises et les ministres actuels.",
     tabs: ["Bloc ministériel", "Bloc parlementaire", "Secrétariat général", "Comité exécutif"],
     committeeMember: "Membre élu du Comité exécutif",
     vicePresident: "Vice-président du parti",
@@ -361,6 +366,8 @@ const ui = {
     read: "Lire l’article",
     browseSection: "Voir toute l’actualité",
     noStories: "Aucun contenu n’a encore été publié dans cette rubrique.",
+    partyLebanon: "Liban",
+    partyDiaspora: "Diaspora",
     instagramKicker: "Nos canaux numériques",
     instagramTitle: "Les Forces Libanaises sur Instagram",
     instagramText: "Les dernières photos et vidéos du compte officiel des Forces Libanaises.",
@@ -391,7 +398,7 @@ const ui = {
   },
 } as const;
 
-const newsChannelPresentation: Record<ArticleChannel, {
+const newsChannelPresentation: Record<Exclude<ArticleChannel, "diaspora">, {
   title: Localized;
   description: Localized;
   moreTitle: Localized;
@@ -418,34 +425,14 @@ const newsChannelPresentation: Record<ArticleChannel, {
     icon: MessageSquareQuote,
   },
   party: {
-    title: { ar: "آخر أخبار ونشاطات الحزب", en: "Latest party news & activities", fr: "Dernières actualités et activités du parti" },
+    title: { ar: "آخر أخبار ونشاطات الحزب في لبنان والانتشار", en: "Latest party news & activities in Lebanon and the diaspora", fr: "Dernières actualités et activités du parti au Liban et dans la diaspora" },
     moreTitle: { ar: "أخبار ونشاطات إضافية", en: "More party news & activities", fr: "Autres actualités et activités" },
     description: {
-      ar: "اجتماعات، جولات ونشاطات حزبية من مختلف المناطق.",
-      en: "Meetings, visits and party activities from across Lebanon.",
-      fr: "Réunions, visites et activités du parti dans tout le Liban.",
+      ar: "اجتماعات، جولات ونشاطات حزبية من لبنان ومراكز الانتشار حول العالم.",
+      en: "Meetings, visits and party activities from Lebanon and LF chapters around the world.",
+      fr: "Réunions, visites et activités du parti au Liban et dans les sections de la diaspora.",
     },
     icon: Landmark,
-  },
-  special: {
-    title: { ar: "مقالات خاصة", en: "Special articles", fr: "Articles spéciaux" },
-    moreTitle: { ar: "مقالات أُخرى", en: "More articles", fr: "Autres articles" },
-    description: {
-      ar: "قراءات معمّقة وآراء تضيء على القضايا السياسية والوطنية.",
-      en: "In-depth analysis and perspectives on political and national issues.",
-      fr: "Analyses approfondies et regards sur les enjeux politiques et nationaux.",
-    },
-    icon: BookOpen,
-  },
-  diaspora: {
-    title: { ar: "نشاطات الانتشار", en: "Diaspora activities", fr: "Activités de la diaspora" },
-    moreTitle: { ar: "نشاطات اغترابية أُخرى", en: "More diaspora activities", fr: "Autres activités de la diaspora" },
-    description: {
-      ar: "أخبار ونشاطات مراكز القوات اللبنانية حول العالم.",
-      en: "News and activities from Lebanese Forces chapters around the world.",
-      fr: "Actualités et activités des sections des Forces Libanaises dans le monde.",
-    },
-    icon: Plane,
   },
 };
 
@@ -645,8 +632,8 @@ function SectionHeading({
 }) {
   return (
     <div className="max-w-3xl" data-reveal>
-      <div className={"arabic-safe mb-4 flex items-center gap-3 text-[13px] font-extrabold uppercase tracking-[.12em] " + (light ? "text-[#ff6470]" : "text-[#df1f2d]")}>
-        <span className={"h-2 w-2 rounded-full " + (light ? "bg-[#ff6470]" : "bg-[#df1f2d]")} />
+      <div className={"arabic-safe mb-4 flex items-center gap-3 text-[13px] font-extrabold uppercase tracking-[.12em] " + (light ? "text-[#cd1e25]" : "text-[#cd1e25]")}>
+        <span className={"h-2 w-2 rounded-full " + (light ? "bg-[#cd1e25]" : "bg-[#cd1e25]")} />
         {kicker}
       </div>
       <h2 className={"section-title text-[clamp(2.15rem,4.5vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-.035em] " + (light ? "text-white" : "text-[#171717]")}>{title}</h2>
@@ -667,7 +654,7 @@ function PersonCard({
   index: number;
 }) {
   return (
-    <article className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_22px_55px_rgba(0,0,0,.11)]" data-reveal>
+    <article className="group overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/30 hover:shadow-[0_22px_55px_rgba(0,0,0,.11)]" data-reveal>
       <a href={`/people/${person.slug}`} className="block">
         <div className="relative aspect-[4/4.5] overflow-hidden bg-[#ecece8]">
           <img src={person.imageUrl} alt={profileText(person.name, lang)} className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.035]" />
@@ -676,13 +663,13 @@ function PersonCard({
         </div>
       </a>
       <div className="p-5">
-        <div className="text-[10px] font-extrabold text-[#df1f2d]">{role}</div>
-        <h3 className="mt-2 text-[17px] font-extrabold leading-7 transition group-hover:text-[#df1f2d]"><a href={`/people/${person.slug}`}>{profileText(person.name, lang)}</a></h3>
+        <div className="text-[10px] font-extrabold text-[#cd1e25]">{role}</div>
+        <h3 className="mt-2 text-[17px] font-extrabold leading-7 transition group-hover:text-[#cd1e25]"><a href={`/people/${person.slug}`}>{profileText(person.name, lang)}</a></h3>
         <p className="mt-1.5 text-[12px] font-normal leading-6 text-black/45">{profileText(person.office, lang)}</p>
         {person.socials && (
           <div className="mt-4 flex gap-1.5 border-t border-black/[.06] pt-3">
             {person.socials.x && <a href={person.socials.x} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on X`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[11px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white">𝕏</a>}
-            {person.socials.instagram && <a href={person.socials.instagram} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on Instagram`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[13px] font-extrabold text-black/48 transition hover:bg-[#df1f2d] hover:text-white">◎</a>}
+            {person.socials.instagram && <a href={person.socials.instagram} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on Instagram`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[13px] font-extrabold text-black/48 transition hover:bg-[#cd1e25] hover:text-white">◎</a>}
             {person.socials.facebook && <a href={person.socials.facebook} target="_blank" rel="noreferrer" aria-label={`${profileText(person.name, lang)} on Facebook`} className="grid h-8 w-8 place-items-center rounded-full bg-[#f3f3f0] text-[12px] font-extrabold text-black/48 transition hover:bg-[#1877f2] hover:text-white">f</a>}
           </div>
         )}
@@ -703,16 +690,16 @@ function ExecutiveRegionCard({
   index: number;
 }) {
   return (
-    <article className="group relative overflow-hidden rounded-[26px] border border-black/[.07] bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.09)]" data-reveal>
-      <div className="absolute inset-x-0 top-0 h-1 origin-right scale-x-0 bg-[#df1f2d] transition-transform duration-500 group-hover:scale-x-100" />
+    <article className="group relative overflow-hidden rounded-[26px] border border-black/[.07] bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.09)]" data-reveal>
+      <div className="absolute inset-x-0 top-0 h-1 origin-right scale-x-0 bg-[#cd1e25] transition-transform duration-500 group-hover:scale-x-100" />
       <div className="flex items-center justify-between gap-4">
-        <span className="flex items-center gap-2 text-[13px] font-extrabold text-[#df1f2d]"><MapPin size={16} />{region}</span>
+        <span className="flex items-center gap-2 text-[13px] font-extrabold text-[#cd1e25]"><MapPin size={16} />{region}</span>
         <span className="text-[11px] font-bold tabular-nums text-black/22">{String(index + 1).padStart(2, "0")}</span>
       </div>
       <div className="mt-6 space-y-3">
         {members.map((member) => (
           <div key={member} className="flex items-center gap-3 rounded-2xl bg-[#f7f7f5] px-4 py-3.5 transition group-hover:bg-[#f3f3f0]">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#0b7740]" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[#1a5632]" />
             <div>
               <h3 className="text-[16px] font-extrabold leading-7">{member}</h3>
               <p className="mt-0.5 text-[12px] font-normal text-black/40">{label}</p>
@@ -731,26 +718,50 @@ function NewsChannelPanel({
   readLabel,
   browseLabel,
   emptyLabel,
+  partyScope,
+  partyScopeLabels,
+  onPartyScopeChange,
 }: {
-  channel: Exclude<ArticleChannel, "diaspora" | "special">;
+  channel: Exclude<ArticleChannel, "diaspora">;
   stories: Article[];
   lang: Lang;
   readLabel: string;
   browseLabel: string;
   emptyLabel: string;
+  partyScope?: PartyScope;
+  partyScopeLabels?: Record<PartyScope, string>;
+  onPartyScopeChange?: (scope: PartyScope) => void;
 }) {
   const presentation = newsChannelPresentation[channel];
   const Icon = presentation.icon;
   const lead = stories[0];
+  const browseChannel: ArticleChannel = channel === "party" && partyScope === "diaspora"
+    ? "diaspora"
+    : channel;
 
   return (
     <section className="flex min-h-[620px] flex-col overflow-hidden rounded-[30px] border border-black/[.07] bg-white shadow-[0_15px_50px_rgba(0,0,0,.055)]" data-reveal>
       <div className="border-b border-black/[.06] p-6 sm:p-7">
         <div className="flex items-start justify-between gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f4f4f1] text-[#df1f2d]"><Icon size={20} /></span>
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f4f4f1] text-[#cd1e25]"><Icon size={20} /></span>
           <span className="text-[10px] font-extrabold uppercase tracking-[.12em] text-black/25">{articleChannelText(channel, lang)}</span>
         </div>
         <h3 className="section-title mt-5 text-[clamp(1.45rem,2.6vw,2rem)] font-extrabold leading-[1.35]">{text(presentation.title, lang)}</h3>
+        {channel === "party" && partyScope && partyScopeLabels && onPartyScopeChange && (
+          <div className="mt-4 inline-flex w-fit rounded-full border border-black/[.08] bg-[#f4f4f1] p-1" role="group" aria-label={text(presentation.title, lang)}>
+            {(["lebanon", "diaspora"] as PartyScope[]).map((scope) => (
+              <button
+                key={scope}
+                type="button"
+                aria-pressed={partyScope === scope}
+                onClick={() => onPartyScopeChange(scope)}
+                className={`rounded-full px-4 py-2 text-[11px] font-extrabold transition ${partyScope === scope ? "bg-[#cd1e25] text-white shadow-sm" : "text-black/45 hover:text-[#cd1e25]"}`}
+              >
+                {partyScopeLabels[scope]}
+              </button>
+            ))}
+          </div>
+        )}
         <p className="mt-3 min-h-[52px] text-[13px] leading-6 text-black/45">{text(presentation.description, lang)}</p>
       </div>
 
@@ -761,58 +772,33 @@ function NewsChannelPanel({
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
           </a>
           <div className="flex flex-1 flex-col p-6 sm:p-7">
-            <div className="text-[11px] font-bold text-[#df1f2d]">{formatArticleDate(lead.publishedAt, lang)}</div>
-            <h4 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(lead)} className="transition hover:text-[#df1f2d]">{articleText(lead.title, lang)}</a></h4>
+            <div className="text-[11px] font-bold text-[#cd1e25]">{formatArticleDate(lead.publishedAt, lang)}</div>
+            <h4 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(lead)} className="transition hover:text-[#cd1e25]">{articleText(lead.title, lang)}</a></h4>
             <div className="mt-4"><ArticleTagLinks article={lead} language={lang} compact /></div>
             {stories.slice(1, 3).length > 0 && (
               <div className="mt-6 space-y-3 border-t border-black/[.07] pt-5">
                 <div className="mb-4 flex items-center gap-2 text-[11px] font-extrabold text-black/38">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#df1f2d]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#cd1e25]" />
                   {text(presentation.moreTitle, lang)}
                 </div>
                 {stories.slice(1, 3).map((story) => (
-                  <a key={story.id} href={articleHref(story)} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#df1f2d]">
+                  <a key={story.id} href={articleHref(story)} className="group flex items-start justify-between gap-3 text-[13px] font-bold leading-6 text-black/58 transition hover:text-[#cd1e25]">
                     <span>{articleText(story.title, lang)}</span><ArrowUpLeft size={14} className="mt-1 shrink-0 transition group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
                   </a>
                 ))}
               </div>
             )}
-            <a href={articleHref(lead)} className="mt-auto inline-flex items-center gap-2 pt-7 text-[12px] font-extrabold text-black/45 transition hover:text-[#df1f2d]">{readLabel}<ArrowUpLeft size={15} /></a>
+            <a href={articleHref(lead)} className="mt-auto inline-flex items-center gap-2 pt-7 text-[12px] font-extrabold text-black/45 transition hover:text-[#cd1e25]">{readLabel}<ArrowUpLeft size={15} /></a>
           </div>
         </div>
       ) : (
         <div className="grid flex-1 place-items-center p-8 text-center text-[13px] leading-7 text-black/38">{emptyLabel}</div>
       )}
 
-      <a href={articleChannelHref(channel)} className="flex items-center justify-between border-t border-black/[.06] px-6 py-4 text-[12px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white sm:px-7">
+      <a href={articleChannelHref(browseChannel)} className="flex items-center justify-between border-t border-black/[.06] px-6 py-4 text-[12px] font-extrabold text-black/48 transition hover:bg-[#191919] hover:text-white sm:px-7">
         {browseLabel}<ArrowLeft size={15} />
       </a>
     </section>
-  );
-}
-
-function DiasporaStoryCard({
-  article,
-  lang,
-  readLabel,
-}: {
-  article: Article;
-  lang: Lang;
-  readLabel: string;
-}) {
-  return (
-    <article className="group overflow-hidden rounded-[26px] border border-white/[.08] bg-white/[.055] transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-white/[.075]">
-      <a href={articleHref(article)} className="relative block aspect-[16/9] overflow-hidden bg-black/20">
-        <img src={article.imageUrl} alt={articleText(article.imageAlt, lang)} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
-      </a>
-      <div className="p-6">
-        <div className="text-[11px] font-bold text-[#ff7780]">{formatArticleDate(article.publishedAt, lang)}</div>
-        <h3 className="mt-3 text-[18px] font-extrabold leading-8"><a href={articleHref(article)}>{articleText(article.title, lang)}</a></h3>
-        <div className="mt-4"><ArticleTagLinks article={article} language={lang} dark compact /></div>
-        <a href={articleHref(article)} className="mt-6 inline-flex items-center gap-2 text-[12px] font-extrabold text-white/55 transition group-hover:text-white">{readLabel}<ArrowUpLeft size={15} /></a>
-      </div>
-    </article>
   );
 }
 
@@ -825,6 +811,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [leadershipOpen, setLeadershipOpen] = useState(false);
   const [leadershipTab, setLeadershipTab] = useState<LeadershipTab>("cabinet");
+  const [partyScope, setPartyScope] = useState<PartyScope>("lebanon");
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [articles, setArticles] = useState<Article[]>(
@@ -840,7 +827,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
     () => (seedMediaData as MediaContent).instagramPosts || [],
   );
   const sourceNavigation = homepage.navigation
-    .filter((item) => item.id !== "contact")
+    .filter((item) => !["contact", "diaspora"].includes(item.id))
     .map((item) => [item.id, homepageText(item.label, lang)] as [string, string]);
   const additionMap = new Map(navigationAdditions[lang]);
   const homeNavigation = sourceNavigation.find(([id]) => id === "home");
@@ -923,11 +910,10 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       statements: [],
       positions: [],
       party: [],
-      special: [],
       diaspora: [],
     };
     articles.forEach((article) => grouped[getArticleChannel(article)].push(article));
-    (["statements", "positions", "party", "special", "diaspora"] as ArticleChannel[]).forEach((channel) => grouped[channel].sort(
+    (["statements", "positions", "party", "diaspora"] as ArticleChannel[]).forEach((channel) => grouped[channel].sort(
       (left, right) => Number(right.pinned === true) - Number(left.pinned === true) || new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
     ));
     return grouped;
@@ -939,51 +925,54 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   }, [lang, rtl]);
 
   useEffect(() => {
-    if (siteTimeline.length && !siteTimeline.some((item) => item.id === activeYear)) {
-      setActiveYear(siteTimeline[0].id);
-    }
-  }, [activeYear, siteTimeline]);
-
-  useEffect(() => {
     let active = true;
-    const refreshContent = async () => {
+    const readJson = async <T,>(result: PromiseSettledResult<Response>): Promise<T | null> => {
+      if (result.status !== "fulfilled" || !result.value.ok) return null;
       try {
-        const requestOptions = {
-          cache: "no-store" as const,
-          headers: { "Cache-Control": "no-cache" },
-        };
-        const fresh = Date.now();
-        const [articlesResponse, homepageResponse, mediaResponse, instagramResponse] = await Promise.all([
-          fetch(`/api/articles?fresh=${fresh}`, requestOptions),
-          fetch(`/api/homepage?fresh=${fresh}`, requestOptions),
-          fetch(`/api/media?fresh=${fresh}`, requestOptions),
-          fetch(`/api/instagram?fresh=${fresh}`, requestOptions),
-        ]);
-        if (!articlesResponse.ok || !homepageResponse.ok || !mediaResponse.ok) return;
-        const [articleData, homepageData, mediaData, instagramData] = await Promise.all([
-          articlesResponse.json() as Promise<{ articles?: Article[] }>,
-          homepageResponse.json() as Promise<{ content?: HomepageContent }>,
-          mediaResponse.json() as Promise<{ content?: MediaContent }>,
-          instagramResponse.ok
-            ? instagramResponse.json() as Promise<{ posts?: MediaInstagramPost[] }>
-            : Promise.resolve({ posts: undefined }),
-        ]);
-        if (!active) return;
-        if (articleData.articles) setArticles(articleData.articles);
-        if (homepageData.content) setHomepage(homepageData.content);
-        if (mediaData.content) setMedia(mediaData.content);
-        if (instagramData.posts?.length) setInstagramPosts(instagramData.posts);
+        return await result.value.json() as T;
       } catch {
-        // Keep the last known content if the network is temporarily unavailable.
+        return null;
       }
     };
+    const refreshContent = async () => {
+      const requestOptions = {
+        cache: "no-store" as const,
+        headers: { "Cache-Control": "no-cache" },
+      };
+      const fresh = Date.now();
+      const requests = await Promise.allSettled([
+        fetch(`/api/articles?fresh=${fresh}`, requestOptions),
+        fetch(`/api/homepage?fresh=${fresh}`, requestOptions),
+        fetch(`/api/media?fresh=${fresh}`, requestOptions),
+        fetch(`/api/instagram?fresh=${fresh}`, requestOptions),
+      ]);
+      if (!active) return;
+
+      const [articlesResult, homepageResult, mediaResult, instagramResult] = requests;
+      const [articleData, homepageData, mediaData, instagramData] = await Promise.all([
+        readJson<{ articles?: Article[] }>(articlesResult),
+        readJson<{ content?: HomepageContent }>(homepageResult),
+        readJson<{ content?: MediaContent }>(mediaResult),
+        readJson<{ posts?: MediaInstagramPost[] }>(instagramResult),
+      ]);
+      if (!active) return;
+      if (articleData?.articles) setArticles(articleData.articles);
+      if (homepageData?.content) setHomepage(homepageData.content);
+      if (mediaData?.content) setMedia(mediaData.content);
+      if (instagramData?.posts?.length) setInstagramPosts(instagramData.posts);
+    };
     void refreshContent();
-    const refreshTimer = window.setInterval(refreshContent, 5 * 60 * 1000);
+    const refreshTimer = window.setInterval(refreshContent, 2 * 60 * 1000);
     window.addEventListener("focus", refreshContent);
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void refreshContent();
+    };
+    document.addEventListener("visibilitychange", refreshWhenVisible);
     return () => {
       active = false;
       window.clearInterval(refreshTimer);
       window.removeEventListener("focus", refreshContent);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, []);
 
@@ -1043,7 +1032,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
   };
 
   const changeTimeline = (direction: number) => {
-    const currentIndex = siteTimeline.findIndex((item) => item.id === activeYear);
+    const currentIndex = siteTimeline.findIndex((item) => item.id === currentTimeline.id);
     const nextIndex = (currentIndex + direction + siteTimeline.length) % siteTimeline.length;
     setActiveYear(siteTimeline[nextIndex].id);
   };
@@ -1077,14 +1066,14 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <button
                 key={id}
                 onClick={() => goTo(id)}
-                className={"relative py-2 text-[13px] font-bold transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:mx-auto after:h-0.5 after:rounded-full after:bg-[#df1f2d] after:transition-all hover:text-[#df1f2d] " + (activeSection === id ? "text-[#df1f2d] after:w-full" : "text-black/58 after:w-0")}
+                className={"relative py-2 text-[13px] font-bold transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:mx-auto after:h-0.5 after:rounded-full after:bg-[#cd1e25] after:transition-all hover:text-[#cd1e25] " + (activeSection === id ? "text-[#cd1e25] after:w-full" : "text-black/58 after:w-0")}
               >
                 {label}
               </button>
             ))}
           </nav>
 
-          <form action="/news" className="hidden h-10 w-[190px] shrink-0 items-center gap-2 rounded-full border border-black/[.08] bg-white/80 px-3 shadow-sm transition focus-within:w-[240px] focus-within:border-[#df1f2d]/35 2xl:flex">
+          <form action="/news" className="hidden h-10 w-[190px] shrink-0 items-center gap-2 rounded-full border border-black/[.08] bg-white/80 px-3 shadow-sm transition focus-within:w-[240px] focus-within:border-[#cd1e25]/35 2xl:flex">
             <Search size={15} className="shrink-0 text-black/35" />
             <input name="q" aria-label={lang === "ar" ? "البحث في الموقع" : lang === "fr" ? "Rechercher sur le site" : "Search the website"} placeholder={lang === "ar" ? "ابحث في الأخبار…" : lang === "fr" ? "Rechercher…" : "Search news…"} className="min-w-0 flex-1 bg-transparent text-[12px] font-bold outline-none placeholder:text-black/28" />
           </form>
@@ -1110,7 +1099,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                         setLang(code);
                         setLanguageOpen(false);
                       }}
-                      className={"w-full rounded-xl px-3 py-2 text-start text-sm font-bold hover:bg-black/5 " + (code === lang ? "text-[#df1f2d]" : "")}
+                      className={"w-full rounded-xl px-3 py-2 text-start text-sm font-bold hover:bg-black/5 " + (code === lang ? "text-[#cd1e25]" : "")}
                     >
                       {code === "ar" ? "العربية" : code === "en" ? "English" : "Français"}
                     </button>
@@ -1122,20 +1111,20 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               aria-label="Menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(true)}
-              className="grid h-10 w-10 place-items-center rounded-full bg-[#191919] text-white shadow-md transition hover:bg-[#df1f2d] xl:hidden"
+              className="grid h-10 w-10 place-items-center rounded-full bg-[#191919] text-white shadow-md transition hover:bg-[#cd1e25] xl:hidden"
             >
               <Menu size={19} />
             </button>
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-black/[.025]">
-          <div className="h-full bg-[#df1f2d] transition-[width] duration-150" style={{ width: `${scrollProgress}%` }} />
+          <div className="h-full bg-[#cd1e25] transition-[width] duration-150" style={{ width: `${scrollProgress}%` }} />
         </div>
           </header>
 
           {menuOpen && (
             <div className="fixed inset-0 z-50 overflow-hidden bg-[#191919] text-white xl:hidden">
-          <div className="absolute -end-32 top-20 h-96 w-96 rounded-full bg-[#df1f2d]/20 blur-3xl" />
+          <div className="absolute -end-32 top-20 h-96 w-96 rounded-full bg-[#cd1e25]/20 blur-3xl" />
           <div className="relative mx-auto flex h-full max-w-2xl flex-col px-6 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -1146,7 +1135,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                 <X size={20} />
               </button>
             </div>
-            <form action="/news" className="mt-8 flex h-13 items-center gap-3 rounded-2xl border border-white/12 bg-white/[.06] px-4 focus-within:border-[#ff6570]/50">
+            <form action="/news" className="mt-8 flex h-13 items-center gap-3 rounded-2xl border border-white/12 bg-white/[.06] px-4 focus-within:border-[#cd1e25]/50">
               <Search size={18} className="shrink-0 text-white/45" />
               <input name="q" aria-label={lang === "ar" ? "البحث في الموقع" : lang === "fr" ? "Rechercher sur le site" : "Search the website"} placeholder={lang === "ar" ? "ابحث في الأخبار والبيانات…" : lang === "fr" ? "Rechercher dans les actualités…" : "Search news and statements…"} className="min-w-0 flex-1 bg-transparent text-[14px] font-bold text-white outline-none placeholder:text-white/32" />
             </form>
@@ -1154,7 +1143,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               {t.nav.map(([id, label], index) => (
                 <button key={id} onClick={() => goTo(id)} className={"flex items-center justify-between rounded-2xl px-4 py-3 text-start text-[clamp(1.55rem,6vw,2.25rem)] font-extrabold transition " + (activeSection === id ? "bg-white text-[#191919]" : "hover:bg-white/[.06]")}>
                   <span>{label}</span>
-                  <span className="text-[11px] font-bold text-[#ff6570]">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="text-[11px] font-bold text-[#cd1e25]">{String(index + 1).padStart(2, "0")}</span>
                 </button>
               ))}
             </nav>
@@ -1164,12 +1153,12 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           )}
 
           <section id="home" className="soft-grid relative isolate overflow-hidden pb-20 pt-4 sm:pb-28">
-        <div className="absolute -start-56 top-8 -z-10 h-[560px] w-[560px] rounded-full bg-[#df1f2d]/10 blur-3xl" />
-        <div className="absolute -end-64 bottom-0 -z-10 h-[520px] w-[520px] rounded-full bg-[#0b7740]/[.06] blur-3xl" />
+        <div className="absolute -start-56 top-8 -z-10 h-[560px] w-[560px] rounded-full bg-[#cd1e25]/10 blur-3xl" />
+        <div className="absolute -end-64 bottom-0 -z-10 h-[520px] w-[520px] rounded-full bg-[#1a5632]/[.06] blur-3xl" />
         <div className="mx-auto grid min-h-[650px] max-w-[1380px] items-center gap-12 px-5 py-14 lg:grid-cols-[1.06fr_.94fr] lg:px-8 lg:py-20">
           <div className="max-w-[760px]" data-reveal>
-            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#df1f2d]/15 bg-white/75 px-4 py-2 text-[13px] font-extrabold text-[#df1f2d] shadow-sm backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-[#df1f2d] shadow-[0_0_0_5px_rgba(223,31,45,.1)]" />
+            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#cd1e25]/15 bg-white/75 px-4 py-2 text-[13px] font-extrabold text-[#cd1e25] shadow-sm backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-[#cd1e25] shadow-[0_0_0_5px_rgba(205, 30, 37,.1)]" />
               {t.eyebrow}
             </div>
             <h1 className="display-title whitespace-pre-line text-[clamp(2.8rem,6vw,5.9rem)] font-extrabold leading-[1.06] tracking-[-0.045em] text-[#161616]">
@@ -1177,12 +1166,12 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             </h1>
             <p className="mt-7 max-w-[680px] text-[17px] font-normal leading-8 text-black/58 sm:text-[19px] sm:leading-9">{t.intro}</p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <button onClick={() => goTo("history")} className="group inline-flex min-h-13 items-center gap-4 rounded-full bg-[#191919] px-6 py-3 text-[14px] font-bold text-white shadow-[0_12px_32px_rgba(0,0,0,.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#df1f2d]">
+              <button onClick={() => goTo("history")} className="group inline-flex min-h-13 items-center gap-4 rounded-full bg-[#191919] px-6 py-3 text-[14px] font-bold text-white shadow-[0_12px_32px_rgba(0,0,0,.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#cd1e25]">
                 {t.historyCta}
                 <ArrowLeft size={18} className={"transition-transform group-hover:-translate-x-1 " + (rtl ? "" : "rotate-180")} />
               </button>
               <button onClick={() => goTo("media")} className="inline-flex min-h-13 items-center gap-3 rounded-full border border-black/[.08] bg-white/80 px-6 py-3 text-[14px] font-bold shadow-sm backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#df1f2d] text-white">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#cd1e25] text-white">
                   <Play size={12} fill="currentColor" />
                 </span>
                 {t.mediaCta}
@@ -1191,8 +1180,8 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
           </div>
 
           <div className="relative mx-auto w-full max-w-[510px] lg:justify-self-end" data-reveal>
-            <div className="absolute inset-8 rounded-[42%] bg-[#df1f2d] opacity-90 blur-[1px]" />
-            <div className="absolute -inset-5 rounded-full border border-[#df1f2d]/10" />
+            <div className="absolute inset-8 rounded-[42%] bg-[#cd1e25] opacity-90 blur-[1px]" />
+            <div className="absolute -inset-5 rounded-full border border-[#cd1e25]/10" />
             <div className="cedar-float glass relative aspect-square overflow-hidden rounded-[42px] p-7 sm:p-10">
               <img src={homepage.hero.imageUrl} alt={homepageText(homepage.hero.imageAlt, lang)} className="h-full w-full rounded-[30px] object-contain mix-blend-multiply" />
             </div>
@@ -1201,7 +1190,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <div className="mt-1 text-[11px] font-normal text-white/55">{t.since}</div>
             </div>
             <div className="absolute -end-3 top-8 hidden h-16 w-16 place-items-center rounded-full bg-white shadow-xl sm:grid">
-              <span className="h-3 w-3 rounded-full bg-[#0b7740] shadow-[0_0_0_8px_rgba(11,119,64,.09)]" />
+              <span className="h-3 w-3 rounded-full bg-[#1a5632] shadow-[0_0_0_8px_rgba(26, 86, 50,.09)]" />
             </div>
           </div>
         </div>
@@ -1211,18 +1200,18 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
       <section aria-label={homepageText(homepage.support.title, lang)} className="relative z-10 px-5 pt-8 lg:px-8 lg:pt-10">
         <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[30px] bg-[#191919] px-6 py-7 text-white shadow-[0_22px_70px_rgba(0,0,0,.14)] sm:px-9 sm:py-9" data-reveal>
-          <div className="absolute -end-20 -top-24 h-64 w-64 rounded-full bg-[#df1f2d]/35 blur-3xl" />
-          <div className="absolute -bottom-28 start-1/3 h-56 w-56 rounded-full bg-[#0b7740]/20 blur-3xl" />
+          <div className="absolute -end-20 -top-24 h-64 w-64 rounded-full bg-[#cd1e25]/35 blur-3xl" />
+          <div className="absolute -bottom-28 start-1/3 h-56 w-56 rounded-full bg-[#1a5632]/20 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
             <div className="flex max-w-3xl items-start gap-4 sm:gap-6">
-              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/[.08] text-[#ff6570] ring-1 ring-white/10 sm:h-16 sm:w-16"><HeartHandshake size={27} /></span>
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/[.08] text-[#cd1e25] ring-1 ring-white/10 sm:h-16 sm:w-16"><HeartHandshake size={27} /></span>
               <div>
-                <div className="text-[11px] font-extrabold uppercase tracking-[.12em] text-[#ff6570]">{homepageText(homepage.support.kicker, lang)}</div>
+                <div className="text-[11px] font-extrabold uppercase tracking-[.12em] text-[#cd1e25]">{homepageText(homepage.support.kicker, lang)}</div>
                 <h2 className="section-title mt-2 text-[clamp(1.55rem,3vw,2.6rem)] font-extrabold leading-[1.25]">{homepageText(homepage.support.title, lang)}</h2>
                 <p className="mt-3 max-w-2xl text-[13px] font-normal leading-7 text-white/58 sm:text-[14px]">{homepageText(homepage.support.text, lang)}</p>
               </div>
             </div>
-            <a href={supportUrl} target={supportUrl.startsWith("http") ? "_blank" : undefined} rel={supportUrl.startsWith("http") ? "noreferrer" : undefined} className="inline-flex min-h-13 shrink-0 items-center gap-3 rounded-full bg-[#df1f2d] px-6 py-3 text-[13px] font-extrabold text-white shadow-[0_12px_30px_rgba(223,31,45,.28)] transition hover:-translate-y-0.5 hover:bg-white hover:text-[#191919]">
+            <a href={supportUrl} target={supportUrl.startsWith("http") ? "_blank" : undefined} rel={supportUrl.startsWith("http") ? "noreferrer" : undefined} className="inline-flex min-h-13 shrink-0 items-center gap-3 rounded-full bg-[#cd1e25] px-6 py-3 text-[13px] font-extrabold text-white shadow-[0_12px_30px_rgba(205, 30, 37,.28)] transition hover:-translate-y-0.5 hover:bg-white hover:text-[#191919]">
               {homepageText(homepage.support.buttonLabel, lang)}
               <ArrowUpLeft size={17} />
             </a>
@@ -1235,80 +1224,30 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       <section id="news" className="mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
         <div className="mb-10 flex items-end justify-between gap-5">
           <SectionHeading kicker={t.latestKicker} title={t.latest} description={t.newsText} />
-          <a href="/news" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
+          <Link href="/news" className="hidden items-center gap-2 rounded-full border border-black/[.08] bg-white px-5 py-3 text-[13px] font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex">
             {t.allNews}
             <ArrowLeft size={16} className={rtl ? "" : "rotate-180"} />
-          </a>
+          </Link>
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
           {(["statements", "positions", "party"] as const).map((channel) => (
             <NewsChannelPanel
               key={channel}
               channel={channel}
-              stories={articlesByChannel[channel].slice(0, 3)}
+              stories={(channel === "party" && partyScope === "diaspora"
+                ? articlesByChannel.diaspora
+                : articlesByChannel[channel]).slice(0, 3)}
               lang={lang}
               readLabel={t.read}
               browseLabel={t.browseSection}
               emptyLabel={t.noStories}
+              {...(channel === "party" ? {
+                partyScope,
+                partyScopeLabels: { lebanon: t.partyLebanon, diaspora: t.partyDiaspora },
+                onPartyScopeChange: setPartyScope,
+              } : {})}
             />
           ))}
-        </div>
-      </section>
-
-      <section id="diaspora" className="px-5 pb-12 lg:px-8 lg:pb-20">
-        <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] px-6 py-14 text-white shadow-[0_30px_80px_rgba(0,0,0,.14)] sm:px-9 lg:px-14 lg:py-18">
-          <div className="absolute -end-32 -top-36 h-96 w-96 rounded-full bg-[#df1f2d]/24 blur-3xl" />
-          <div className="absolute -bottom-40 -start-28 h-80 w-80 rounded-full bg-[#0b7740]/16 blur-3xl" />
-          <div className="relative flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              kicker={articleChannelText("diaspora", lang)}
-              title={text(newsChannelPresentation.diaspora.title, lang)}
-              description={text(newsChannelPresentation.diaspora.description, lang)}
-              light
-            />
-            <a href={articleChannelHref("diaspora")} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[.06] px-5 py-3 text-[12px] font-extrabold text-white/70 transition hover:bg-white hover:text-[#191919]">{t.browseSection}<ArrowLeft size={15} className={rtl ? "" : "rotate-180"} /></a>
-          </div>
-          <div className="relative mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal>
-            {articlesByChannel.diaspora.length > 0 ? articlesByChannel.diaspora.slice(0, 3).map((article) => (
-              <DiasporaStoryCard key={article.id} article={article} lang={lang} readLabel={t.read} />
-            )) : (
-              <div className="rounded-[24px] border border-white/[.08] bg-white/[.045] p-8 text-[13px] leading-7 text-white/45 md:col-span-2 lg:col-span-3">{t.noStories}</div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-[1380px] px-5 pb-20 lg:px-8 lg:pb-28">
-        <div className="overflow-hidden rounded-[34px] border border-black/[.07] bg-[#eeeee9] p-6 sm:p-9 lg:p-12" data-reveal>
-          <div className="flex flex-col justify-between gap-6 border-b border-black/[.08] pb-8 sm:flex-row sm:items-end">
-            <SectionHeading
-              kicker={articleChannelText("special", lang)}
-              title={text(newsChannelPresentation.special.title, lang)}
-              description={text(newsChannelPresentation.special.description, lang)}
-            />
-            <a href={articleChannelHref("special")} className="inline-flex w-fit items-center gap-2 rounded-full bg-[#191919] px-5 py-3 text-[12px] font-extrabold text-white transition hover:bg-[#df1f2d]">
-              {t.browseSection}<ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />
-            </a>
-          </div>
-          {articlesByChannel.special.length ? (
-            <div className="mt-2 divide-y divide-black/[.08]">
-              {articlesByChannel.special.slice(0, 4).map((article, index) => (
-                <article key={article.id} className="group grid gap-4 py-7 sm:grid-cols-[70px_1fr_auto] sm:items-center">
-                  <span className="text-[11px] font-extrabold tabular-nums text-black/24">{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#df1f2d]">{formatArticleDate(article.publishedAt, lang)}</div>
-                    <h3 className="mt-2 max-w-4xl text-[clamp(1.15rem,2.1vw,1.65rem)] font-extrabold leading-[1.55]">
-                      <a href={articleHref(article)} className="transition group-hover:text-[#df1f2d]">{articleText(article.title, lang)}</a>
-                    </h3>
-                    <div className="mt-3"><ArticleTagLinks article={article} language={lang} compact /></div>
-                  </div>
-                  <a href={articleHref(article)} aria-label={articleText(article.title, lang)} className="grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white text-black/45 transition group-hover:border-[#df1f2d] group-hover:bg-[#df1f2d] group-hover:text-white"><ArrowUpLeft size={17} /></a>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 text-[14px] text-black/40">{t.noStories}</div>
-          )}
         </div>
       </section>
 
@@ -1320,8 +1259,8 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <button
                 key={item.id}
                 onClick={() => setActiveYear(item.id)}
-                aria-pressed={activeYear === item.id}
-                className={"relative min-w-[100px] flex-1 rounded-2xl px-4 py-3.5 text-center transition duration-300 " + (activeYear === item.id ? "bg-[#df1f2d] text-white shadow-[0_10px_25px_rgba(223,31,45,.22)]" : "text-black/38 hover:bg-[#f4f4f1] hover:text-black")}
+                aria-pressed={currentTimeline.id === item.id}
+                className={"relative min-w-[100px] flex-1 rounded-2xl px-4 py-3.5 text-center transition duration-300 " + (currentTimeline.id === item.id ? "bg-[#cd1e25] text-white shadow-[0_10px_25px_rgba(205, 30, 37,.22)]" : "text-black/38 hover:bg-[#f4f4f1] hover:text-black")}
               >
                 <span className="block text-[17px] font-extrabold tabular-nums">{item.year}</span>
               </button>
@@ -1335,16 +1274,16 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <span className="arabic-safe relative mt-12 text-[11px] font-bold uppercase tracking-[.12em] text-white/35">{t.historyKicker}</span>
             </div>
             <div key={currentTimeline.id} className="timeline-enter flex flex-col justify-center p-8 lg:p-14">
-              <div className="mb-7 grid h-12 w-12 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d]">
+              <div className="mb-7 grid h-12 w-12 place-items-center rounded-full bg-[#f3f3f0] text-[#cd1e25]">
                 <Quote size={20} />
               </div>
               <h3 className="timeline-title text-[clamp(2rem,3.8vw,3.7rem)] font-extrabold leading-tight tracking-[-.035em]">{text(currentTimeline.title, lang)}</h3>
               <p className="mt-5 max-w-3xl text-[16px] font-normal leading-8 text-black/56 sm:text-[18px] sm:leading-9">{text(currentTimeline.body, lang)}</p>
               <div className="mt-9 flex gap-2">
-                <button onClick={() => changeTimeline(rtl ? 1 : -1)} aria-label={rtl ? "المحطة السابقة" : lang === "fr" ? "Étape précédente" : "Previous milestone"} className="grid h-11 w-11 place-items-center rounded-full border border-black/[.08] bg-white text-black/60 transition hover:border-[#df1f2d] hover:bg-[#df1f2d] hover:text-white">
+                <button onClick={() => changeTimeline(rtl ? 1 : -1)} aria-label={rtl ? "المحطة السابقة" : lang === "fr" ? "Étape précédente" : "Previous milestone"} className="grid h-11 w-11 place-items-center rounded-full border border-black/[.08] bg-white text-black/60 transition hover:border-[#cd1e25] hover:bg-[#cd1e25] hover:text-white">
                   {rtl ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
                 </button>
-                <button onClick={() => changeTimeline(rtl ? -1 : 1)} aria-label={rtl ? "المحطة التالية" : lang === "fr" ? "Étape suivante" : "Next milestone"} className="grid h-11 w-11 place-items-center rounded-full border border-black/[.08] bg-white text-black/60 transition hover:border-[#df1f2d] hover:bg-[#df1f2d] hover:text-white">
+                <button onClick={() => changeTimeline(rtl ? -1 : 1)} aria-label={rtl ? "المحطة التالية" : lang === "fr" ? "Étape suivante" : "Next milestone"} className="grid h-11 w-11 place-items-center rounded-full border border-black/[.08] bg-white text-black/60 transition hover:border-[#cd1e25] hover:bg-[#cd1e25] hover:text-white">
                   {rtl ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
                 </button>
               </div>
@@ -1355,7 +1294,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
       <section id="president" className="px-5 py-10 lg:px-8 lg:py-16">
         <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-[#191919] text-white shadow-[0_30px_85px_rgba(0,0,0,.15)]" data-reveal>
-          <div className="absolute -end-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#df1f2d]/30 blur-3xl" />
+          <div className="absolute -end-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#cd1e25]/30 blur-3xl" />
           <div className="relative grid items-stretch lg:grid-cols-[.92fr_1.08fr]">
           <div className="relative min-h-[500px] overflow-hidden bg-[#111] lg:min-h-[650px]">
             <img
@@ -1369,14 +1308,14 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             </div>
           </div>
           <div className="relative flex flex-col justify-center px-6 py-16 sm:px-9 lg:px-14 lg:py-20">
-            <div className="arabic-safe mb-5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[.12em] text-[#ff6570]"><span className="h-2 w-2 rounded-full bg-[#ff6570]" />{t.presidentKicker}</div>
+            <div className="arabic-safe mb-5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[.12em] text-[#cd1e25]"><span className="h-2 w-2 rounded-full bg-[#cd1e25]" />{t.presidentKicker}</div>
             <h2 className="section-title text-[clamp(2.7rem,5.5vw,5.5rem)] font-extrabold leading-[1.08] tracking-[-.045em]">{t.presidentTitle}</h2>
             <p className="mt-4 text-[16px] font-bold text-white/66 sm:text-lg">{t.presidentRole}</p>
             <div className="mt-7 max-w-2xl space-y-4 text-[15px] font-normal leading-8 text-white/68 sm:text-[16px]">
               <p>{t.presidentBio}</p>
               <p>{t.presidentBio2}</p>
             </div>
-            <a href="/samir-geagea" className="mt-8 inline-flex w-fit items-center gap-3 rounded-full bg-white px-6 py-3 text-[13px] font-bold text-[#161616] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#df1f2d] hover:text-white">
+            <a href="/samir-geagea" className="mt-8 inline-flex w-fit items-center gap-3 rounded-full bg-white px-6 py-3 text-[13px] font-bold text-[#161616] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#cd1e25] hover:text-white">
               {t.bioLink}
               <ArrowLeft size={15} className={rtl ? "" : "rotate-180"} />
             </a>
@@ -1390,7 +1329,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             <div className="mt-10 grid gap-2 sm:grid-cols-3">
               {t.presidentFacts.map(([year, fact]) => (
                 <div key={year} className="rounded-[18px] border border-white/[.07] bg-white/[.05] p-4">
-                  <div className="text-xl font-extrabold tabular-nums text-[#ff6570]">{year}</div>
+                  <div className="text-xl font-extrabold tabular-nums text-[#cd1e25]">{year}</div>
                   <div className="mt-1 text-[11px] font-normal leading-5 text-white/50">{fact}</div>
                 </div>
               ))}
@@ -1418,13 +1357,13 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                 setLeadershipTab(preview.value);
                 setLeadershipOpen(!isActive);
               }}
-              className={`group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border p-5 text-start transition hover:-translate-y-0.5 hover:border-[#df1f2d]/30 hover:shadow-lg ${leadershipOpen && leadershipTab === preview.value ? "border-[#df1f2d]/35 bg-[#df1f2d]/[.035] shadow-lg" : "border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)]"}`}
+              className={`group flex min-h-[128px] items-center justify-between gap-4 rounded-[24px] border p-5 text-start transition hover:-translate-y-0.5 hover:border-[#cd1e25]/30 hover:shadow-lg ${leadershipOpen && leadershipTab === preview.value ? "border-[#cd1e25]/35 bg-[#cd1e25]/[.035] shadow-lg" : "border-black/[.07] bg-white shadow-[0_8px_30px_rgba(0,0,0,.035)]"}`}
             >
-              <span><span className="block text-[28px] font-extrabold tabular-nums text-[#df1f2d]">{preview.count}</span><span className="mt-1 block text-[13px] font-extrabold">{preview.label}</span></span>
+              <span><span className="block text-[28px] font-extrabold tabular-nums text-[#cd1e25]">{preview.count}</span><span className="mt-1 block text-[13px] font-extrabold">{preview.label}</span></span>
               {preview.images.length ? (
                 <span className="flex -space-x-3 rtl:space-x-reverse">{preview.images.slice(0, 3).map((imageUrl, imageIndex) => <img key={`${preview.label}-${imageIndex}`} src={imageUrl} alt="" className="h-12 w-12 rounded-full border-2 border-white bg-white object-cover object-top shadow-sm" />)}</span>
               ) : (
-                <span className="grid h-14 w-14 place-items-center rounded-full bg-[#f3f3f0] text-[#df1f2d]"><Users size={21} /></span>
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-[#f3f3f0] text-[#cd1e25]"><Users size={21} /></span>
               )}
               <span className="sr-only">{previewIndex + 1}</span>
             </button>
@@ -1450,12 +1389,12 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <TabsContent value="secretariat" className="mt-7">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {homepage.secretariat.map((person, index) => (
-                    <article key={person.id} className="group flex min-h-[150px] items-center gap-5 rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/30 hover:shadow-[0_20px_50px_rgba(0,0,0,.09)]" data-reveal>
+                    <article key={person.id} className="group flex min-h-[150px] items-center gap-5 rounded-[24px] border border-black/[.07] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/30 hover:shadow-[0_20px_50px_rgba(0,0,0,.09)]" data-reveal>
                       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[20px] bg-[#f3f3f0] ring-1 ring-black/[.05]">
                         <img src={person.imageUrl} alt={homepageText(person.name, lang)} className="h-full w-full bg-white object-cover object-top" />
                       </div>
                       <div className="min-w-0">
-                        <span className="text-[10px] font-extrabold tabular-nums text-[#df1f2d]">{String(index + 1).padStart(2, "0")}</span>
+                        <span className="text-[10px] font-extrabold tabular-nums text-[#cd1e25]">{String(index + 1).padStart(2, "0")}</span>
                         <h3 className="mt-1 text-[17px] font-extrabold leading-7">{homepageText(person.name, lang)}</h3>
                         <p className="mt-1 text-[12px] font-normal leading-6 text-black/45">{homepageText(person.role, lang)}</p>
                       </div>
@@ -1485,7 +1424,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             return (
               <a key={library.section} href={`/publications/${library.section}`} target="_blank" rel="noreferrer" className="group flex min-h-[310px] flex-col overflow-hidden rounded-[30px] border border-black/[.07] bg-white p-7 shadow-[0_12px_38px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#191919] hover:bg-[#191919] hover:text-white hover:shadow-[0_25px_65px_rgba(0,0,0,.15)] lg:p-8">
                 <div className="flex items-start justify-between">
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#f3f3f0] text-[#df1f2d] transition group-hover:bg-[#df1f2d] group-hover:text-white"><Icon size={22} /></span>
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#f3f3f0] text-[#cd1e25] transition group-hover:bg-[#cd1e25] group-hover:text-white"><Icon size={22} /></span>
                   <span className="text-xs font-extrabold text-black/22 group-hover:text-white/28">0{index + 1}</span>
                 </div>
                 <div className="mt-auto pt-14">
@@ -1503,11 +1442,11 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       </section>
 
       <section id="media" className="relative overflow-hidden bg-[#191919] text-white">
-        <div className="absolute -end-56 top-28 h-[520px] w-[520px] rounded-full bg-[#df1f2d]/12 blur-3xl" />
+        <div className="absolute -end-56 top-28 h-[520px] w-[520px] rounded-full bg-[#cd1e25]/12 blur-3xl" />
         <div className="relative mx-auto max-w-[1380px] px-5 py-24 lg:px-8 lg:py-30">
           <SectionHeading kicker={t.mediaKicker} title={t.mediaTitle} description={t.mediaText} light />
           <div className="mt-12 grid gap-5 lg:grid-cols-[.92fr_1.08fr]" data-reveal>
-            <div className="rounded-[30px] bg-gradient-to-br from-[#e52b39] to-[#b91320] p-7 shadow-[0_24px_60px_rgba(0,0,0,.22)] lg:p-9">
+            <div className="rounded-[30px] bg-gradient-to-br from-[#cd1e25] to-[#cd1e25] p-7 shadow-[0_24px_60px_rgba(0,0,0,.22)] lg:p-9">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3"><Music2 size={22} /><h3 className="text-[22px] font-extrabold">{t.songs}</h3></div>
                 <span className="text-[10px] font-bold tracking-[.14em] text-white/45">AUDIO</span>
@@ -1540,11 +1479,11 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             </div>
 
             <a href={media.officialYouTubeUrl} target="_blank" rel="noreferrer" className="group relative min-h-[430px] overflow-hidden rounded-[30px] border border-white/[.07] bg-white/[.045] p-7 transition duration-300 hover:border-white/15 hover:bg-white/[.065] lg:p-9">
-              <div className="absolute -end-24 -top-24 h-80 w-80 rounded-full bg-[#df1f2d]/35 blur-2xl transition duration-700 group-hover:scale-110" />
+              <div className="absolute -end-24 -top-24 h-80 w-80 rounded-full bg-[#cd1e25]/35 blur-2xl transition duration-700 group-hover:scale-110" />
               <div className="relative flex h-full flex-col">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3"><Video size={22} /><span className="text-[13px] font-bold">{t.videos}</span></div>
-                  <span className="grid h-14 w-14 place-items-center rounded-full bg-white text-[#171717] shadow-xl transition group-hover:bg-[#df1f2d] group-hover:text-white"><Play size={17} fill="currentColor" /></span>
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-white text-[#171717] shadow-xl transition group-hover:bg-[#cd1e25] group-hover:text-white"><Play size={17} fill="currentColor" /></span>
                 </div>
                 <div className="mt-auto max-w-xl pt-24">
                   <h3 className="section-title text-[clamp(2.1rem,4.2vw,4.2rem)] font-extrabold leading-[1.12] tracking-[-.035em]">{t.videoTitle}</h3>
@@ -1564,7 +1503,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                 <img src={photo.imageUrl} alt={mediaText(photo.title, lang)} className={`h-full w-full transition duration-700 group-hover:scale-105 ${photo.fit === "contain" ? "bg-white p-8 object-contain" : "object-cover grayscale group-hover:grayscale-0"}`} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <div className="mb-2 flex items-center gap-2 text-[11px] font-bold text-[#ff6570]"><ImageIcon size={13} />0{index + 1}</div>
+                  <div className="mb-2 flex items-center gap-2 text-[11px] font-bold text-[#cd1e25]"><ImageIcon size={13} />0{index + 1}</div>
                   <div className="text-[15px] font-bold leading-6">{mediaText(photo.title, lang)}</div>
                 </div>
               </button>
@@ -1574,31 +1513,31 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
       </section>
 
       <section id="instagram" className="relative overflow-hidden border-t border-black/[.06] bg-[var(--site-surface-soft)] px-5 py-10 lg:px-8 lg:py-12">
-        <div className="absolute -end-44 -top-44 h-80 w-80 rounded-full bg-[#df1f2d]/8 blur-3xl" />
+        <div className="absolute -end-44 -top-44 h-80 w-80 rounded-full bg-[#cd1e25]/8 blur-3xl" />
         <div className="relative mx-auto max-w-[1180px]">
           <div className="grid gap-4 lg:grid-cols-[270px_1fr]" data-reveal>
             <div className="flex flex-col rounded-[24px] border border-black/[.07] bg-[var(--site-surface)] p-6 shadow-[0_10px_30px_var(--site-shadow)]">
-              <div className="arabic-safe flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]">
+              <div className="arabic-safe flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#cd1e25]">
                 <Camera size={15} />{t.instagramKicker}
               </div>
               <h2 className="section-title mt-4 text-[clamp(1.7rem,2.8vw,2.35rem)] font-extrabold leading-[1.2] tracking-[-.03em]">{t.instagramTitle}</h2>
               <p className="mt-3 text-[12px] font-normal leading-6 text-[var(--site-muted)]">{t.instagramText}</p>
-              <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#191919] px-4 py-2.5 text-[10px] font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#df1f2d] lg:mt-auto">
+              <a href={media.instagramProfileUrl || homepage.socials.instagram} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#191919] px-4 py-2.5 text-[10px] font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#cd1e25] lg:mt-auto">
                 {t.followInstagram}<ArrowUpLeft size={13} />
               </a>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
               {instagramPosts.slice(0, 3).map((post) => (
-                <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" aria-label={mediaText(post.caption, lang)} className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-[var(--site-surface)] shadow-[0_10px_30px_var(--site-shadow)] transition duration-300 hover:-translate-y-1 hover:border-[#df1f2d]/25 hover:shadow-[0_18px_42px_var(--site-shadow)]">
-                  <span className="relative block aspect-square overflow-hidden bg-[#d51f2a]">
+                <a key={post.id} href={post.permalink} target="_blank" rel="noreferrer" aria-label={mediaText(post.caption, lang)} className="group overflow-hidden rounded-[22px] border border-black/[.07] bg-[var(--site-surface)] shadow-[0_10px_30px_var(--site-shadow)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/25 hover:shadow-[0_18px_42px_var(--site-shadow)]">
+                  <span className="relative block aspect-square overflow-hidden bg-[#cd1e25]">
                     <img src={post.imageUrl} alt="" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.02]" />
-                    <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/94 text-[#df1f2d] shadow-md"><Camera size={14} /></span>
+                    <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/94 text-[#cd1e25] shadow-md"><Camera size={14} /></span>
                     {post.mediaType === "VIDEO" && <span className="absolute end-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-[#191919]/78 text-white backdrop-blur"><Play size={11} fill="currentColor" /></span>}
                   </span>
                   <span className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-[9px] font-bold text-[var(--site-muted)]">
                     <span>{post.publishedAt ? formatArticleDate(post.publishedAt, lang) : "@LFPartyOfficial"}</span>
-                    <ArrowUpLeft size={13} className="shrink-0 text-[#df1f2d]" />
+                    <ArrowUpLeft size={13} className="shrink-0 text-[#cd1e25]" />
                   </span>
                 </a>
               ))}
@@ -1607,10 +1546,10 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
 
           {media.mediaPartners.length > 0 && (
             <div className="mt-5 flex flex-col gap-3 border-t border-black/[.07] pt-5 lg:flex-row lg:items-center" data-reveal>
-              <div className="flex shrink-0 items-center gap-2.5 text-[12px] font-extrabold"><Radio size={16} className="text-[#df1f2d]" />{t.mediaPartners}</div>
+              <div className="flex shrink-0 items-center gap-2.5 text-[12px] font-extrabold"><Radio size={16} className="text-[#cd1e25]" />{t.mediaPartners}</div>
               <div className="grid flex-1 gap-3 sm:grid-cols-2">
                 {media.mediaPartners.map((partner) => (
-                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[72px] items-center gap-3.5 rounded-[17px] border border-black/[.07] bg-[var(--site-surface)] p-3 shadow-[0_6px_18px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#df1f2d]/25">
+                  <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer" className="group flex min-h-[72px] items-center gap-3.5 rounded-[17px] border border-black/[.07] bg-[var(--site-surface)] p-3 shadow-[0_6px_18px_var(--site-shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[#cd1e25]/25">
                     <span className="grid h-12 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-black/[.05]">
                       <img src={partner.logoUrl} alt={mediaText(partner.name, lang)} className="max-h-full max-w-full object-contain" />
                     </span>
@@ -1618,7 +1557,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                       <span className="block text-[15px] font-extrabold leading-6">{mediaText(partner.name, lang)}</span>
                       <span className="mt-0.5 line-clamp-1 block text-[11px] font-normal leading-5 text-[var(--site-muted)]">{mediaText(partner.description, lang)}</span>
                     </span>
-                    <ArrowUpLeft size={15} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#df1f2d]" />
+                    <ArrowUpLeft size={15} className="shrink-0 text-[var(--site-muted)] transition group-hover:text-[#cd1e25]" />
                   </a>
                 ))}
               </div>
@@ -1651,7 +1590,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                   { mark: "𝕏", label: "X", href: homepage.socials.x },
                   { mark: "▶", label: "YouTube", href: homepage.socials.youtube || media.officialYouTubeUrl },
                 ].map(({ mark, label, href }) => (
-                  <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="grid h-12 w-12 place-items-center rounded-full border border-white/14 text-white/70 transition hover:-translate-y-0.5 hover:border-[#df1f2d] hover:bg-[#df1f2d] hover:text-white">
+                  <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="grid h-12 w-12 place-items-center rounded-full border border-white/14 text-white/70 transition hover:-translate-y-0.5 hover:border-[#cd1e25] hover:bg-[#cd1e25] hover:text-white">
                     <span className="text-[16px] font-extrabold">{mark}</span>
                   </a>
                 ))}
@@ -1676,7 +1615,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
               <DialogHeader className="p-6 text-start">
                 <DialogTitle className="text-xl font-extrabold">{mediaText(photos[selectedPhoto].title, lang)}</DialogTitle>
                 <DialogDescription className="text-white/45">{photos[selectedPhoto].credit}</DialogDescription>
-                <a href={photos[selectedPhoto].sourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-2 text-[13px] font-bold text-[#ff6570]">{t.source}<ExternalLink size={14} /></a>
+                <a href={photos[selectedPhoto].sourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-2 text-[13px] font-bold text-[#cd1e25]">{t.source}<ExternalLink size={14} /></a>
               </DialogHeader>
             </>
           )}

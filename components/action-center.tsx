@@ -131,8 +131,8 @@ const copy = {
 const kinds: ActionKind[] = ["enroll", "idea", "volunteer", "newsletter"];
 const icons = { enroll: UserPlus, idea: Lightbulb, volunteer: Users, newsletter: MailPlus } as const;
 const colors = {
-  enroll: "from-[#df1f2d] to-[#ad111d]",
-  idea: "from-[#176f45] to-[#0c4930]",
+  enroll: "from-[#cd1e25] to-[#cd1e25]",
+  idea: "from-[#1a5632] to-[#1a5632]",
   volunteer: "from-[#232925] to-[#111512]",
   newsletter: "from-[#f0e9dc] to-[#ddd4c5]",
 } as const;
@@ -215,17 +215,17 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
     }
   };
 
-  const field = "mt-2 h-12 w-full rounded-2xl border border-black/[.09] bg-[var(--site-surface-soft)] px-4 text-[13px] font-bold text-[var(--site-text)] outline-none transition focus:border-[#df1f2d]/40 focus:ring-4 focus:ring-[#df1f2d]/8";
+  const field = "mt-2 h-12 w-full rounded-2xl border border-black/[.09] bg-[var(--site-surface-soft)] px-4 text-[13px] font-bold text-[var(--site-text)] outline-none transition focus:border-[#cd1e25]/40 focus:ring-4 focus:ring-[#cd1e25]/8";
   const selectedCopy = selected ? t.cards[selected] : null;
   const SelectedActionIcon = selected ? icons[selected] : HeartHandshake;
 
   return (
     <section id="actions" className="relative overflow-hidden px-5 py-24 lg:px-8 lg:py-30">
       <div className="absolute inset-0 -z-20 bg-[var(--site-bg)]" />
-      <div className="absolute -start-40 top-20 -z-10 h-96 w-96 rounded-full bg-[#df1f2d]/8 blur-3xl" />
+      <div className="absolute -start-40 top-20 -z-10 h-96 w-96 rounded-full bg-[#cd1e25]/8 blur-3xl" />
       <div className="mx-auto max-w-[1380px]">
         <div className="max-w-none" data-reveal>
-          <div className="arabic-safe mb-4 flex items-center gap-3 text-[12px] font-extrabold uppercase tracking-[.12em] text-[#df1f2d]"><HeartHandshake size={18} />{t.kicker}</div>
+          <div className="arabic-safe mb-4 flex items-center gap-3 text-[12px] font-extrabold uppercase tracking-[.12em] text-[#cd1e25]"><HeartHandshake size={18} />{t.kicker}</div>
           <h2 className="section-title whitespace-nowrap text-[clamp(1.65rem,5.5vw,5.8rem)] font-extrabold leading-[1.15] tracking-[-.055em]">{t.title}</h2>
           <p className="mt-5 max-w-2xl text-[15px] font-normal leading-8 text-[var(--site-muted)] sm:text-[17px]">{t.description}</p>
         </div>
@@ -236,7 +236,7 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
             const lightCard = kind === "newsletter";
             return (
               <button key={kind} onClick={() => openAction(kind)} className={`action-card group relative min-h-[330px] overflow-hidden rounded-[30px] bg-gradient-to-br ${colors[kind]} p-6 text-start shadow-[0_18px_55px_rgba(0,0,0,.12)] transition duration-300 hover:-translate-y-2 hover:shadow-[0_28px_75px_rgba(0,0,0,.18)] sm:p-7 ${lightCard ? "action-card--light text-[#171717]" : "text-white"}`}>
-                <span aria-hidden="true" className={`action-card__icon absolute start-6 top-6 grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 sm:start-7 sm:top-7 ${lightCard ? "bg-white/75 text-[#df1f2d]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
+                <span aria-hidden="true" className={`action-card__icon absolute start-6 top-6 grid h-14 w-14 place-items-center rounded-[19px] transition duration-300 group-hover:scale-105 sm:start-7 sm:top-7 ${lightCard ? "bg-white/75 text-[#cd1e25]" : "bg-white/12 text-white"}`}><Icon size={23} /></span>
                 <span className={`action-card__number absolute end-6 top-7 font-mono text-[10px] font-bold ${lightCard ? "text-black/25" : "text-white/30"}`}>0{index + 1}</span>
                 <span className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
                   <span className="action-card__title section-title block text-[24px] font-extrabold leading-[1.35]">{t.cards[kind][0]}</span>
@@ -254,7 +254,7 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
           {selected && selectedCopy && (
             <form onSubmit={submit} className="p-6 sm:p-9">
               <DialogHeader className="text-start">
-                <span className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#df1f2d] text-white"><SelectedActionIcon size={21} /></span>
+                <span className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#cd1e25] text-white"><SelectedActionIcon size={21} /></span>
                 <DialogTitle className="section-title text-[clamp(1.8rem,5vw,2.7rem)] font-extrabold leading-[1.35] text-[var(--site-text)]">{selectedCopy[0]}</DialogTitle>
                 <DialogDescription className="mt-2 text-[13px] leading-7 text-[var(--site-muted)]">{selectedCopy[1]}</DialogDescription>
               </DialogHeader>
@@ -272,16 +272,16 @@ export function ActionCenter({ lang }: { lang: PositionLanguage }) {
                 {selected === "newsletter" && <label className="text-[11px] font-extrabold text-[var(--site-muted)] sm:col-span-2">{t.form.preferredLanguage}<select name="preferredLanguage" defaultValue={lang} className={field}><option value="ar">العربية</option><option value="en">English</option><option value="fr">Français</option></select></label>}
               </div>
 
-              {(selected === "idea" || selected === "volunteer" || selected === "enroll") && <label className="mt-4 block text-[11px] font-extrabold text-[var(--site-muted)]">{selected === "idea" ? t.form.idea : t.form.skills}<textarea name="message" required={selected === "idea"} minLength={selected === "idea" ? 10 : undefined} maxLength={5000} rows={4} className="mt-2 w-full resize-y rounded-2xl border border-black/[.09] bg-[var(--site-surface-soft)] px-4 py-4 text-[13px] leading-7 text-[var(--site-text)] outline-none transition focus:border-[#df1f2d]/40 focus:ring-4 focus:ring-[#df1f2d]/8" /></label>}
+              {(selected === "idea" || selected === "volunteer" || selected === "enroll") && <label className="mt-4 block text-[11px] font-extrabold text-[var(--site-muted)]">{selected === "idea" ? t.form.idea : t.form.skills}<textarea name="message" required={selected === "idea"} minLength={selected === "idea" ? 10 : undefined} maxLength={5000} rows={4} className="mt-2 w-full resize-y rounded-2xl border border-black/[.09] bg-[var(--site-surface-soft)] px-4 py-4 text-[13px] leading-7 text-[var(--site-text)] outline-none transition focus:border-[#cd1e25]/40 focus:ring-4 focus:ring-[#cd1e25]/8" /></label>}
 
               <div className="mt-5 flex flex-col gap-3 rounded-[22px] bg-[var(--site-surface-soft)] p-4 sm:flex-row sm:items-end">
-                <label className="flex-1 text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.captcha}: <span dir="ltr" className="text-[#df1f2d]">{captcha?.question || "…"}</span><input name="captchaAnswer" inputMode="numeric" required className={`${field} bg-[var(--site-surface)]`} placeholder={t.form.answer} /></label>
-                <button type="button" onClick={() => void loadCaptcha()} className="inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-[10px] font-extrabold text-[var(--site-muted)] transition hover:bg-[var(--site-surface)] hover:text-[#df1f2d]"><RefreshCw size={13} />{t.form.refresh}</button>
+                <label className="flex-1 text-[11px] font-extrabold text-[var(--site-muted)]">{t.form.captcha}: <span dir="ltr" className="text-[#cd1e25]">{captcha?.question || "…"}</span><input name="captchaAnswer" inputMode="numeric" required className={`${field} bg-[var(--site-surface)]`} placeholder={t.form.answer} /></label>
+                <button type="button" onClick={() => void loadCaptcha()} className="inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-[10px] font-extrabold text-[var(--site-muted)] transition hover:bg-[var(--site-surface)] hover:text-[#cd1e25]"><RefreshCw size={13} />{t.form.refresh}</button>
               </div>
 
               {status && <div role="status" className={`mt-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-[12px] font-bold leading-6 ${status.kind === "success" ? "bg-emerald-50 text-emerald-800" : "bg-red-50 text-red-700"}`}>{status.kind === "success" && <CheckCircle2 className="mt-0.5 shrink-0" size={16} />}{status.text}</div>}
               <p className="mt-4 text-[9px] font-normal leading-5 text-[var(--site-muted)]">{t.form.privacy}</p>
-              <button type="submit" disabled={submitting || !captcha} className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#191919] px-6 text-[12px] font-extrabold text-white transition hover:bg-[#df1f2d] disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">{submitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}{t.form.submit}</button>
+              <button type="submit" disabled={submitting || !captcha} className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#191919] px-6 text-[12px] font-extrabold text-white transition hover:bg-[#cd1e25] disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">{submitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}{t.form.submit}</button>
             </form>
           )}
         </DialogContent>

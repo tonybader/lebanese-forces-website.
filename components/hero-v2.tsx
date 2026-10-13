@@ -45,7 +45,6 @@ const content = {
     closeMenu: "إغلاق القائمة",
     visionAction: "اكتشف رؤيتنا",
     causeAction: "القضية التي تجمعنا",
-    footerLabel: ["ثوابتنا.", "طريقنا إلى الغد."],
     pause: "إيقاف تبديل الرسائل تلقائياً",
     play: "تشغيل تبديل الرسائل تلقائياً",
     currentLabel: "النسخة السابقة",
@@ -108,7 +107,6 @@ const content = {
     closeMenu: "Close menu",
     visionAction: "Discover our vision",
     causeAction: "The cause that unites us",
-    footerLabel: ["Our constants.", "Our path forward."],
     pause: "Pause automatic messages",
     play: "Play automatic messages",
     currentLabel: "Classic version",
@@ -171,7 +169,6 @@ const content = {
     closeMenu: "Fermer le menu",
     visionAction: "Découvrir notre vision",
     causeAction: "La cause qui nous unit",
-    footerLabel: ["Nos constantes.", "Notre chemin vers demain."],
     pause: "Suspendre le défilement automatique",
     play: "Reprendre le défilement automatique",
     currentLabel: "Version classique",
@@ -454,7 +451,6 @@ export function HeroV2({
         </div>
 
         <div className={`${styles.heroFooter} ${styles.frame}`}>
-          <div className={styles.footerLabel}>{copy.footerLabel[0]}<br />{copy.footerLabel[1]}</div>
           <div className={styles.themes} role="group" aria-label="Choose a message">
             {copy.themes.map(([title, subtitle], index) => (
               <button
