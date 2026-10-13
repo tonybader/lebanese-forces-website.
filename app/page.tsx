@@ -461,23 +461,31 @@ function normalizeNewsLookup(value: string): string {
     .toLowerCase();
 }
 
-function articleLookupText(article: Article): string {
-  return normalizeNewsLookup([
+function normalizePersonLookup(value: string): string {
+  return normalizeNewsLookup(value)
+    .split(" ")
+    .map((token, index) => index > 0 && token.startsWith("ال") && token.length > 3
+      ? token.slice(2)
+      : token)
+    .join(" ");
+}
+
+function articleMatchesProfiles(article: Article, profiles: PublicProfile[]): boolean {
+  const searchableValues = [
     ...(article.people || []),
     article.title.ar,
     article.title.en,
     article.title.fr,
-  ].join(" "));
-}
-
-function articleMatchesProfiles(article: Article, profiles: PublicProfile[]): boolean {
-  const searchable = articleLookupText(article);
+  ];
   return profiles.some((profile) => [
     ...profile.aliases,
     profile.name.ar,
     profile.name.en,
     profile.name.fr,
-  ].some((alias) => searchable.includes(normalizeNewsLookup(alias))));
+  ].some((alias) => searchableValues.some((value) => (
+    normalizeNewsLookup(value).includes(normalizeNewsLookup(alias))
+      || normalizePersonLookup(value).includes(normalizePersonLookup(alias))
+  ))));
 }
 
 function isPartyPresidentStatement(article: Article): boolean {
