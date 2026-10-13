@@ -686,9 +686,9 @@
       "imageUrl": "/lf-logo.png"
     },
     {
-      "id": "georges-eid",
-      "name": { "ar": "جورج عيد", "en": "Georges Eid", "fr": "Georges Eid" },
-      "role": { "ar": "الأمين المساعد لشؤون المناطق", "en": "Assistant Secretary-General for Regional Affairs", "fr": "Secrétaire général adjoint chargé des régions" },
+      "id": "imad-wakim",
+      "name": { "ar": "عماد واكيم", "en": "Imad Wakim", "fr": "Imad Wakim" },
+      "role": { "ar": "الأمين المساعد لشؤون الانتشار", "en": "Assistant Secretary-General for Diaspora Affairs", "fr": "Secrétaire général adjoint chargé de la diaspora" },
       "imageUrl": "/lf-logo.png"
     },
     {
@@ -698,9 +698,9 @@
       "imageUrl": "/lf-logo.png"
     },
     {
-      "id": "imad-wakim",
-      "name": { "ar": "عماد واكيم", "en": "Imad Wakim", "fr": "Imad Wakim" },
-      "role": { "ar": "الأمين المساعد لشؤون الانتشار", "en": "Assistant Secretary-General for Diaspora Affairs", "fr": "Secrétaire général adjoint chargé de la diaspora" },
+      "id": "georges-eid",
+      "name": { "ar": "جورج عيد", "en": "Georges Eid", "fr": "Georges Eid" },
+      "role": { "ar": "الأمين المساعد لشؤون المناطق", "en": "Assistant Secretary-General for Regional Affairs", "fr": "Secrétaire général adjoint chargé des régions" },
       "imageUrl": "/lf-logo.png"
     },
     {

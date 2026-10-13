@@ -15,7 +15,6 @@ import {
   ImageIcon,
   Landmark,
   Library,
-  MapPin,
   Megaphone,
   Menu,
   MessageSquareQuote,
@@ -624,41 +623,61 @@ const defaultTimeline: { id: string; year: string; title: Localized; body: Local
   },
 ];
 
-const executiveRegions: { region: Localized; members: Localized[] }[] = [
+type ExecutiveMember = {
+  name: Localized;
+  role: Localized;
+  emphasis: "leadership" | "elected" | "appointed";
+};
+
+const electedExecutiveMembers: Localized[] = [
+  { ar: "جوزيف جبيلي", en: "Joseph Jbeily", fr: "Joseph Jbeily" },
+  { ar: "دانيال سبيرو", en: "Daniel Spiro", fr: "Daniel Spiro" },
+  { ar: "إدي أبي اللمع", en: "Eddy Abi Lamaa", fr: "Eddy Abi Lamaa" },
+  { ar: "مايا زغريني", en: "Maya Zoghrini", fr: "Maya Zoghrini" },
+  { ar: "طوني كرم", en: "Tony Karam", fr: "Tony Karam" },
+  { ar: "أنطوان زهرا", en: "Antoine Zahra", fr: "Antoine Zahra" },
+  { ar: "وهبي قاطيشا", en: "Wehbe Katicha", fr: "Wehbe Katicha" },
+  { ar: "إيلي كيروز", en: "Elie Keyrouz", fr: "Elie Keyrouz" },
+  { ar: "بشير مطر", en: "Bachir Matar", fr: "Bachir Matar" },
+  { ar: "ميشال تنوري", en: "Michel Tannoury", fr: "Michel Tannoury" },
+  { ar: "أسعد سعيد", en: "Assaad Said", fr: "Assaad Said" },
+];
+
+const executiveMembers: ExecutiveMember[] = [
   {
-    region: { ar: "الانتشار", en: "Diaspora", fr: "Diaspora" },
-    members: [{ ar: "جوزيف جبيلي", en: "Joseph Jbeily", fr: "Joseph Jbeily" }],
+    name: { ar: "سمير جعجع", en: "Samir Geagea", fr: "Samir Geagea" },
+    role: { ar: "رئيس الحزب", en: "Party president", fr: "Président du parti" },
+    emphasis: "leadership",
   },
   {
-    region: { ar: "بيروت", en: "Beirut", fr: "Beyrouth" },
-    members: [{ ar: "دانيال سبيرو", en: "Daniel Spiro", fr: "Daniel Spiro" }],
+    name: { ar: "جورج عدوان", en: "Georges Adwan", fr: "Georges Adwan" },
+    role: { ar: "نائب رئيس الحزب", en: "Party vice president", fr: "Vice-président du parti" },
+    emphasis: "leadership",
+  },
+  ...electedExecutiveMembers.map((name) => ({
+    name,
+    role: { ar: "عضو منتخب", en: "Elected member", fr: "Membre élu" },
+    emphasis: "elected" as const,
+  })),
+  {
+    name: { ar: "رجا الراسي", en: "Raja Rassi", fr: "Raja Rassi" },
+    role: { ar: "مفوض المال", en: "Commissioner for Finance", fr: "Commissaire aux finances" },
+    emphasis: "appointed",
   },
   {
-    region: { ar: "جبل لبنان", en: "Mount Lebanon", fr: "Mont-Liban" },
-    members: [
-      { ar: "إدي أبي اللمع", en: "Eddy Abi Lamaa", fr: "Eddy Abi Lamaa" },
-      { ar: "مايا زغريني", en: "Maya Zoghrini", fr: "Maya Zoghrini" },
-      { ar: "طوني كرم", en: "Tony Karam", fr: "Tony Karam" },
-    ],
+    name: { ar: "اميل مكرزل", en: "Emil Moukarzel", fr: "Emil Moukarzel" },
+    role: { ar: "الأمين العام", en: "Secretary-General", fr: "Secrétaire général" },
+    emphasis: "appointed",
   },
   {
-    region: { ar: "الشمال", en: "North", fr: "Nord" },
-    members: [
-      { ar: "أنطوان زهرا", en: "Antoine Zahra", fr: "Antoine Zahra" },
-      { ar: "وهبي قاطيشا", en: "Wehbe Katicha", fr: "Wehbe Katicha" },
-      { ar: "إيلي كيروز", en: "Elie Keyrouz", fr: "Elie Keyrouz" },
-    ],
+    name: { ar: "إيلي براغيد", en: "Elie Braghid", fr: "Elie Braghid" },
+    role: { ar: "عضو الهيئة التنفيذية", en: "Executive Committee member", fr: "Membre du Comité exécutif" },
+    emphasis: "appointed",
   },
   {
-    region: { ar: "البقاع", en: "Bekaa", fr: "Békaa" },
-    members: [
-      { ar: "بشير مطر", en: "Bachir Matar", fr: "Bachir Matar" },
-      { ar: "ميشال تنوري", en: "Michel Tannoury", fr: "Michel Tannoury" },
-    ],
-  },
-  {
-    region: { ar: "الجنوب", en: "South", fr: "Sud" },
-    members: [{ ar: "أسعد سعيد", en: "Assaad Said", fr: "Assaad Said" }],
+    name: { ar: "انطوان نجم", en: "Antoine Najm", fr: "Antoine Najm" },
+    role: { ar: "عضو الهيئة التنفيذية", en: "Executive Committee member", fr: "Membre du Comité exécutif" },
+    emphasis: "appointed",
   },
 ];
 
@@ -742,35 +761,28 @@ function PersonCard({
   );
 }
 
-function ExecutiveRegionCard({
-  region,
-  members,
-  label,
+function ExecutiveMemberCard({
+  member,
+  lang,
   index,
 }: {
-  region: string;
-  members: string[];
-  label: string;
+  member: ExecutiveMember;
+  lang: Lang;
   index: number;
 }) {
+  const isLeadership = member.emphasis === "leadership";
+
   return (
-    <article className="group relative overflow-hidden rounded-[26px] border border-black/[.07] bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,.035)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/25 hover:shadow-[0_22px_55px_rgba(0,0,0,.09)]" data-reveal>
+    <article className="group relative min-h-[160px] overflow-hidden rounded-[24px] border border-[var(--site-line)] bg-[var(--site-surface)] p-5 text-[var(--site-text)] shadow-[0_8px_30px_rgba(0,0,0,.04)] transition duration-300 hover:-translate-y-1 hover:border-[#cd1e25]/35 hover:shadow-[0_22px_55px_rgba(0,0,0,.12)]" data-reveal>
       <div className="absolute inset-x-0 top-0 h-1 origin-right scale-x-0 bg-[#cd1e25] transition-transform duration-500 group-hover:scale-x-100" />
       <div className="flex items-center justify-between gap-4">
-        <span className="flex items-center gap-2 text-[13px] font-extrabold text-[#cd1e25]"><MapPin size={16} />{region}</span>
-        <span className="text-[11px] font-bold tabular-nums text-black/22">{String(index + 1).padStart(2, "0")}</span>
+        <span className={`grid h-11 w-11 place-items-center rounded-2xl text-[11px] font-extrabold tabular-nums ${isLeadership ? "bg-[#cd1e25] text-white" : "bg-[#cd1e25]/10 text-[#cd1e25]"}`}>
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className={`h-2.5 w-2.5 rounded-full ${member.emphasis === "elected" ? "bg-[#1a5632]" : "bg-[#cd1e25]"}`} aria-hidden="true" />
       </div>
-      <div className="mt-6 space-y-3">
-        {members.map((member) => (
-          <div key={member} className="flex items-center gap-3 rounded-2xl bg-[#f7f7f5] px-4 py-3.5 transition group-hover:bg-[#f3f3f0]">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#1a5632]" />
-            <div>
-              <h3 className="text-[16px] font-extrabold leading-7">{member}</h3>
-              <p className="mt-0.5 text-[12px] font-normal text-black/40">{label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <h3 className="mt-6 text-[17px] font-extrabold leading-7 text-[var(--site-text)]">{text(member.name, lang)}</h3>
+      <p className="mt-1.5 text-[12px] font-bold leading-6 text-[var(--site-muted)]">{text(member.role, lang)}</p>
     </article>
   );
 }
@@ -1444,7 +1456,7 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
             { value: "cabinet" as const, label: t.tabs[0], count: siteMinisters.length, images: siteMinisters.map((person) => person.imageUrl) },
             { value: "parliament" as const, label: t.tabs[1], count: siteMps.length, images: siteMps.map((person) => person.imageUrl) },
             { value: "secretariat" as const, label: t.tabs[2], count: homepage.secretariat.length, images: homepage.secretariat.map((person) => person.imageUrl) },
-            { value: "executive" as const, label: t.tabs[3], count: 11, images: [] },
+            { value: "executive" as const, label: t.tabs[3], count: executiveMembers.length, images: [] },
           ].map((preview, previewIndex) => (
             <button
               key={preview.value}
@@ -1501,9 +1513,9 @@ export function HomePage({ heroVariant = "v2" }: { heroVariant?: "current" | "v2
                 </div>
               </TabsContent>
               <TabsContent value="executive" className="mt-7">
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {executiveRegions.map((group, index) => (
-                    <ExecutiveRegionCard key={text(group.region, lang)} region={text(group.region, lang)} members={group.members.map((member) => text(member, lang))} label={t.committeeMember} index={index} />
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {executiveMembers.map((member, index) => (
+                    <ExecutiveMemberCard key={`${member.name.ar}-${member.role.ar}`} member={member} lang={lang} index={index} />
                   ))}
                 </div>
               </TabsContent>
