@@ -35,7 +35,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "fbd15b9d-5e2d-4b38-aed1-637710baf43c",
@@ -74,7 +78,11 @@
       "طوني بدر",
       "سليم أبي ضاهر"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-position-adwan-elections-2026",
@@ -114,7 +122,11 @@
     "people": [
       "جورج عدوان"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-position-saddi-cabinet-2026",
@@ -126,7 +138,7 @@
       "fr": "Saddi suspend sa participation au gouvernement en attendant une décision pour EDL"
     },
     "body": {
-      "ar": "أعلن وزير الطاقة والمياه جو الصدّي اعتكافه في هذه المرحلة عن حضور جلسات مجلس الوزراء إلى حين تحمّل الحكومة مسؤولياتها تجاه قطاع الكهرباء، وتسديد الإعفاءات والمتأخرات المستحقة لمؤسسة كهرباء لبنان.\n\nوأوضح أن خطوته تحمّل للمسؤولية وليست هروباً منها، مؤكداً استمرار العمل اليومي والورشة الإصلاحية، وأن حماية المواطنين من أعباء إضافية تتطلب معالجة مالية وهيكلية مستدامة للقطاع.",
+      "ar": "أعلن وزير الطاقة والمياه جو الصدّي اعتكافه في هذه المرحلة عن حضور جلسات مجلس الوزراء إلى حين تحمّل الحكومة مسؤولياتها تجاه قطاع الكهرباء، وتسديد الإعفاءات والمتأخرات المستحقة لمؤسسة كهرباء لبنان.\r\n\r\nوأوضح أن خطوته تحمّل للمسؤولية وليست هروباً منها، مؤكداً استمرار العمل اليومي والورشة الإصلاحية، وأن حماية المواطنين من أعباء إضافية تتطلب معالجة مالية وهيكلية مستدامة للقطاع.",
       "en": "Energy Minister Joe Saddi announced that he would temporarily refrain from attending cabinet sessions until the government addresses its obligations toward the electricity sector and Électricité du Liban. He said the reform programme and daily work would continue.",
       "fr": "Le ministre de l’Énergie Joe Saddi a annoncé qu’il suspendait temporairement sa participation aux réunions du Conseil des ministres jusqu’à ce que le gouvernement assume ses obligations envers le secteur électrique et Électricité du Liban."
     },
@@ -137,9 +149,9 @@
     },
     "imageUrl": "https://www.lstatic.org/UserFiles/images/2017/lf/lf-leaders/2018/Joe-Saddi.jpg",
     "imageAlt": {
-      "ar": "وزير الطاقة والمياه جو الصدّي",
-      "en": "Energy Minister Joe Saddi",
-      "fr": "Le ministre de l’Énergie Joe Saddi"
+      "ar": "الصدّي يعتكف عن جلسات الحكومة حتى إنصاف مؤسسة كهرباء لبنان",
+      "en": "Saddi suspends cabinet attendance pending action for Électricité du Liban",
+      "fr": "Saddi suspend sa participation au gouvernement en attendant une décision pour EDL"
     },
     "sourceUrl": "https://www.lebanese-forces.com/2026/10/06/%D8%A7%D9%84%D8%B5%D8%AF%D9%8A-119/",
     "channel": "positions",
@@ -151,7 +163,11 @@
     "people": [
       "جو الصدّي"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 11.272721724076703,
+      "y": 12.17211766098485
+    }
   },
   {
     "id": "9fdc415f-6bf0-4aeb-8c1e-4ebd1836fc2a",
@@ -188,7 +204,11 @@
     "people": [
       "نزيه متّى"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "8190b11e-3578-40a7-baea-9ec5c5444352",
@@ -221,7 +241,11 @@
     "people": [
       "جو صدي"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "e8399966-34f2-4b05-b849-22fad4eb832a",
@@ -254,7 +278,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-diaspora-san-diego-2026",
@@ -294,7 +322,11 @@
     "people": [
       "بشير الجميّل"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-diaspora-ghana-2026",
@@ -336,7 +368,11 @@
       "سمير جعجع",
       "بشير الجميّل"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-position-issa-khoury-project-lebanon-2026",
@@ -375,7 +411,11 @@
     "people": [
       "جو عيسى الخوري"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-diaspora-new-jersey-2026",
@@ -415,7 +455,11 @@
     "people": [
       "بشير الجميّل"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-diaspora-dallas-2026",
@@ -455,7 +499,11 @@
     "people": [
       "بشير الجميّل"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-geagea-qassem-2026",
@@ -492,7 +540,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-lebanon-debate-2026",
@@ -527,7 +579,11 @@
       "رد إعلامي"
     ],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-diaspora-halifax-2026",
@@ -567,7 +623,11 @@
     "people": [
       "بشير الجميّل"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "seed-annual-mass-2026",
@@ -599,7 +659,11 @@
     "regions": [],
     "activityTypes": [],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "seed-naaman-2026",
@@ -631,7 +695,11 @@
     "regions": [],
     "activityTypes": [],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "seed-memory-2026",
@@ -663,7 +731,11 @@
     "regions": [],
     "activityTypes": [],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "seed-state-decision-2026",
@@ -695,7 +767,11 @@
     "regions": [],
     "activityTypes": [],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-party-deir-el-ahmar-2026",
@@ -735,7 +811,11 @@
     "people": [
       "أنطوان حبشي"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-party-baabdat-dinner-2026",
@@ -777,7 +857,11 @@
       "ملحم الرياشي",
       "رازي الحاج"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-party-marjeyoun-remembrance-2026",
@@ -819,7 +903,11 @@
       "جورج عقيص",
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-party-marjeyoun-membership-2026",
@@ -860,7 +948,11 @@
     "people": [
       "جورج عقيص"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-position-okais-state-2026",
@@ -899,7 +991,11 @@
     "people": [
       "جورج عقيص"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-party-aley-membership-2026",
@@ -939,7 +1035,11 @@
     "people": [
       "نزيه متّى"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-lebanon-state-2026",
@@ -975,7 +1075,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-media-response-2026",
@@ -1010,7 +1114,11 @@
       "رد إعلامي"
     ],
     "people": [],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-historic-march-2026",
@@ -1047,7 +1155,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-statement-effective-state-2026",
@@ -1083,7 +1195,11 @@
     "people": [
       "سمير جعجع"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   },
   {
     "id": "showcase-position-rajji-unifil-2026",
@@ -1122,6 +1238,10 @@
     "people": [
       "يوسف رجّي"
     ],
-    "pinned": false
+    "pinned": false,
+    "imagePosition": {
+      "x": 50,
+      "y": 50
+    }
   }
 ]
