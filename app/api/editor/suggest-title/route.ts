@@ -128,7 +128,7 @@ export async function POST(request: Request) {
   const fallbackTitle = generateFallbackHeadline({ body, language, channel, people: deterministicTags.people, regions: deterministicTags.regions });
 
   try {
-    const model = process.env.AI_GATEWAY_MODEL?.trim() || "openai/gpt-5.4-mini";
+    const model = process.env.AI_GATEWAY_MODEL?.trim() || "anthropic/claude-sonnet-5";
     const { output } = await generateText({
       model,
       output: Output.object({ schema: articleAnalysisSchema }),
