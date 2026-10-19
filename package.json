@@ -1,6 +1,8 @@
 {
-  "name": "site-creator-vinext-starter",
-  "version": "0.1.0",
+  "name": "lebanese-forces-website",
+  "version": "1.0.0",
+  "description": "Official multilingual Lebanese Forces website developed by Innovative Solutions.",
+  "author": "Innovative Solutions",
   "private": true,
   "engines": {
     "node": ">=22.13.0"

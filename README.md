@@ -2,6 +2,15 @@
 
 The multilingual Lebanese Forces website, article archive, newsroom, media library, publications library and visual homepage editor. Arabic is the primary language, with English and French versions. The production application uses the Next.js App Router and is deployed on Vercel.
 
+## Developer
+
+This website is designed, developed and technically maintained by **Innovative Solutions**.
+
+- Client and content owner: Lebanese Forces
+- Website developer: Innovative Solutions
+- Design, frontend and backend implementation: Innovative Solutions
+- Technical architecture, deployment and maintenance: Innovative Solutions
+
 ## Main areas
 
 - Public multilingual website with light and dark themes
@@ -92,3 +101,7 @@ Keep all credentials in Vercel Environment Variables. Never commit secrets to th
 The project uses the Next.js framework preset. Leave the Output Directory setting empty. `vercel.json` runs the native Next.js production build.
 
 Pushing to `main` triggers a production deployment through the connected Git repository.
+
+## Copyright and development credit
+
+© 2026 Lebanese Forces. Website designed and developed by **Innovative Solutions**.

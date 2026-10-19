@@ -198,7 +198,7 @@ const ui = {
     close: "إغلاق",
     source: "المصدر",
     footerLine: "جمهورية قوية. دولة واحدة. مستقبل يليق باللبنانيين.",
-    rights: "نموذج موقع تفاعلي للقوات اللبنانية",
+    rights: "تصميم وتطوير الموقع: Innovative Solutions",
     official: "الموقع الإخباري الرسمي",
   },
   en: {
@@ -303,7 +303,7 @@ const ui = {
     close: "Close",
     source: "Source",
     footerLine: "A strong republic. One state. A future worthy of the Lebanese.",
-    rights: "Interactive Lebanese Forces website concept",
+    rights: "Website designed and developed by Innovative Solutions",
     official: "Official news website",
   },
   fr: {
@@ -408,7 +408,7 @@ const ui = {
     close: "Fermer",
     source: "Source",
     footerLine: "Une république forte. Un seul État. Un avenir digne des Libanais.",
-    rights: "Concept de site interactif des Forces Libanaises",
+    rights: "Site conçu et développé par Innovative Solutions",
     official: "Site officiel d’actualités",
   },
 } as const;

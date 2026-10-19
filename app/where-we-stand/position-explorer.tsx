@@ -43,6 +43,7 @@ const copy = {
     position: "موقفنا",
     results: "محاور",
     noResults: "لا توجد نتائج مطابقة. جرّب كلمة أخرى.",
+    developer: "تصميم وتطوير الموقع: Innovative Solutions",
   },
   en: {
     brand: "Lebanese Forces",
@@ -58,6 +59,7 @@ const copy = {
     position: "Our position",
     results: "pillars",
     noResults: "No matching position. Try another search.",
+    developer: "Website designed and developed by Innovative Solutions",
   },
   fr: {
     brand: "Forces Libanaises",
@@ -73,6 +75,7 @@ const copy = {
     position: "Notre position",
     results: "piliers",
     noResults: "Aucun résultat. Essayez une autre recherche.",
+    developer: "Site conçu et développé par Innovative Solutions",
   },
 } as const;
 
@@ -255,7 +258,10 @@ export function PositionExplorer() {
       <footer className="border-t border-black/[.07] bg-[var(--site-bg)]">
         <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-5 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <Link href="/" className="inline-flex items-center gap-3 text-[12px] font-extrabold hover:text-[#cd1e25]"><ChevronLeft size={17} className={rtl ? "rotate-180" : ""} />{t.back}</Link>
-          <span className="text-[10px] font-bold text-black/30">© 2026 Lebanese Forces</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-bold text-[var(--site-muted)]">
+            <span>© 2026 Lebanese Forces</span>
+            <span>{t.developer}</span>
+          </div>
         </div>
       </footer>
     </main>

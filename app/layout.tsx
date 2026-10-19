@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "القوات اللبنانية | Lebanese Forces",
   description:
     "الموقع التفاعلي للقوات اللبنانية: التاريخ، القيادة، الكتل، الأخبار والمنشورات والميديا.",
+  applicationName: "Lebanese Forces Website",
+  authors: [{ name: "Innovative Solutions" }],
+  creator: "Innovative Solutions",
+  publisher: "Lebanese Forces",
   icons: {
     icon: "/lf-logo.png",
     shortcut: "/lf-logo.png",
